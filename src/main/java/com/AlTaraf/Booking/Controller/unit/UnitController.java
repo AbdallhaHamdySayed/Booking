@@ -895,20 +895,6 @@ public class UnitController {
         return sortDirection.equalsIgnoreCase("desc") ? Sort.by("price").descending() : Sort.by("price").ascending();
     }
 
-//    private List<UnitDtoFavorite> sortByLocation(List<UnitDtoFavorite> units, Double userLat, Double userLong, String sortDirection) {
-//        units.sort(Comparator.comparingDouble(unit -> {
-//            double latDiff = userLat - unit.getLatForMapping();
-//            double longDiff = userLong - unit.getLongForMapping();
-//            return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
-//        }));
-//
-//        if (sortDirection.equalsIgnoreCase("desc")) {
-//            Collections.reverse(units);
-//        }
-//
-//        return units;
-//    }
-
     private Sort getSortByEvaluationId(String sortDirection) {
         return sortDirection.equalsIgnoreCase("desc") ? Sort.by("evaluation.id").descending() : Sort.by("evaluation.id").ascending();
     }
