@@ -16,6 +16,11 @@ public class UnitSpecifications {
                 criteriaBuilder.equal(root.get("unitType").get("id"), unitTypeId);
     }
 
+    public static Specification<Unit> byHallTypeId(Long hallTypeId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("typesOfEventHalls").get("id"), hallTypeId);
+    }
+
     public static Specification<Unit> byAccommodationTypeIds(Set<Long> accommodationTypeId) {
         return (root, query, criteriaBuilder) ->
                 root.get("accommodationType").get("id").in(accommodationTypeId);

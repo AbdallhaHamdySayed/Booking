@@ -48,7 +48,7 @@ public interface UnitService {
     Page<Unit> getUnitsByUserId(Long userId, Pageable pageable);
 
     List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
-                                  Long unitTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
+                                  Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
                                   Set<Long> basicFeaturesIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
                                   Set<Long> evaluationId,
                                   int capacityHalls, int adultsAllowed, int childrenAllowed, int priceMin, int priceMax

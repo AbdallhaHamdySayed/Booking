@@ -963,7 +963,7 @@ public class UnitController {
         for (Unit unit: unitsPage.getContent()){
             Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
 
-            if (userFavoriteUnitService.existsByUserAndUnit(user,  unitForFavorite)){
+            if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitForFavorite.getId())){
                 unitForFavorite.setFavorite(true);
             }
         }
@@ -976,6 +976,7 @@ public class UnitController {
             @RequestParam(required = false) Long regionId,
             @RequestParam(required = false) Long availablePeriodsId,
             @RequestParam(required = false) Long unitTypeId,
+            @RequestParam(required = false) Long hallTypeId,
             @RequestParam(required = false) Set<Long> accommodationTypeIds,
             @RequestParam(required = false) Set<Long> hotelClassificationIds,
             @RequestParam(required = false) Set<Long> basicFeaturesIds,
@@ -1019,17 +1020,16 @@ public class UnitController {
             }
 
             List<Unit> units = unitService.findUnitsByFilters(cityId, regionId, availablePeriodsId,
-                    unitTypeId, accommodationTypeIds, hotelClassificationIds,
+                    unitTypeId, hallTypeId, accommodationTypeIds, hotelClassificationIds,
                     basicFeaturesIds, subFeaturesIds, foodOptionsIds, evaluationId, capacityHalls, adultsAllowed, childrenAllowed,
                     priceMin, priceMax, dateOfArrival, departureDate, sort);
 
 
-            User user = userRepository.findById(userId).orElse(null);
 
             for (Unit unit: units){
                 Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
 
-                if (userFavoriteUnitService.existsByUserAndUnit(user,  unit)){
+                if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitForFavorite.getId())){
                     unitForFavorite.setFavorite(true);
                 }
             }

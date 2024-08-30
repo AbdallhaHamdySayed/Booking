@@ -66,16 +66,16 @@ public class UnitServiceImpl implements UnitService {
     AdsRepository adsRepository;
 
     @Autowired
-    private FileForUnitRepository fileForUnitRepository;
+    FileForUnitRepository fileForUnitRepository;
 
     @Autowired
-    private FileForAdsRepository fileForAdsRepository;
+    FileForAdsRepository fileForAdsRepository;
 
     @Autowired
-    private UnitFavoriteMapper unitFavoriteMapper;
+    UnitFavoriteMapper unitFavoriteMapper;
 
     @Autowired
-    private UnitDashboardMapper unitDashboardMapper;
+    UnitDashboardMapper unitDashboardMapper;
 
     @Autowired
     UserRepository userRepository;
@@ -351,7 +351,7 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     public List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
-                                         Long unitTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
+                                         Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
                                          Set<Long> basicFeaturesIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
                                          Set<Long> evaluationIds, int capacityHalls, int adultsAllowed, int childrenAllowed, int priceMin, int priceMax
             , LocalDate dateOfArrival, LocalDate departureDate, Sort sort) {
@@ -376,6 +376,10 @@ public class UnitServiceImpl implements UnitService {
 
         if (unitTypeId != null) {
             spec = spec.and(UnitSpecifications.byUnitTypeId(unitTypeId));
+        }
+
+        if (hallTypeId != null) {
+            spec = spec.and(UnitSpecifications.byHallTypeId(hallTypeId));
         }
 
         if (accommodationTypeIds != null) {
@@ -588,6 +592,7 @@ public class UnitServiceImpl implements UnitService {
 
 
         fileForUnitRepository.deleteByUnitId(id);
+        fileForAdsRepository.deleteByUnitId(id);
         reservationRepository.deleteByUnitId(id);
 
         technicalSupportUnitRepository.deleteByUnitId(id);
