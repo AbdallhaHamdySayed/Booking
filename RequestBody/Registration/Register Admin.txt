@@ -1,0 +1,9 @@
+{
+  "name": "string",
+  "email": "",
+  "phoneNumber": "111111111",
+  "password": "11111111"
+  "roles": [
+    "ROLE_LESSOR"
+  ]
+}

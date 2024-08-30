@@ -1,0 +1,19 @@
+{
+        "unitTypeId": 2,
+        "userId": 1,
+        "nameUnit": "الاندلس",
+        "description": "قاعة افراح",
+        "cityId": 1,
+        "regionId": 1,
+        "capacityHalls": 300,
+        "featuresHallsIds": [
+        1, 2, 3, 4, 5
+        ],
+        "availablePeriodsHallsIds": [
+        1, 2
+        ],
+        "oldPriceHall": 500,
+        "newPriceHall": 250,
+        "latForMapping": 0,
+        "longForMapping": 0
+}

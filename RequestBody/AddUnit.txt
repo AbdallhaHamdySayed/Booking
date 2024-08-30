@@ -1,0 +1,27 @@
+{
+  "unitTypeId": 1,
+  "userId": 1,
+  "nameUnit": "المختار",
+  "description": "حوش عني",
+  "cityId": 1,
+  "regionId": 2,
+  "accommodationTypeId": 1,
+  "hotelClassificationId": 1,
+  "roomAvailableIds": [
+    1, 2, 3, 4
+  ],
+  "basicFeaturesIds": [
+    1, 2
+  ],
+  "subFeaturesIds": [
+    1, 2
+  ],
+  "foodOptionsIds": [
+    1, 2
+  ],
+  "adultsAllowed": 30,
+  "childrenAllowed": 40,
+ 
+  "latForMapping": 200,
+  "longForMapping": 300
+}

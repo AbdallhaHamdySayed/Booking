@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h1>Payment WebSocket Test</h1>
+
+<div id="connection-status">Connecting...</div>
+<div>
+    <h3>Payment Status:</h3>
+    <pre id="payment-status">Waiting for status...</pre>
+</div>
+
+<script>
+    // Connect to the WebSocket endpoint
+    var socket = new SockJS('https://api.ihjezly.com/ws-payment');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        document.getElementById('connection-status').textContent = 'Connected';
+
+        // Subscribe to the payment topic
+        stompClient.subscribe('/topic/payment', function (message) {
+            console.log('Payment status: ' + message.body);
+            document.getElementById('payment-status').textContent = message.body;
+        });
+    });
+
+    // Handle connection errors
+    stompClient.onclose = function(event) {
+        document.getElementById('connection-status').textContent = 'Disconnected';
+        console.log('WebSocket connection closed:', event);
+    };
+</script>
+</body>
+</html>

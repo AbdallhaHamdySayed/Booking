@@ -1,0 +1,5 @@
+ALTER TABLE users
+DROP FOREIGN KEY FKeu3faw8428jho37512fnch3wq,
+ADD CONSTRAINT FKeu3faw8428jho37512fnch3wq FOREIGN KEY (file_for_profile_id) REFERENCES file_for_profile(id) ON DELETE CASCADE;
+
+

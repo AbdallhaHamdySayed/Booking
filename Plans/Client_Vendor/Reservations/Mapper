@@ -1,0 +1,21 @@
+- Create Interface For Mapper                                                   --- Done ---
+
+    - Map clientName                                                            --- Done ---
+
+    - Map clientPhone                                                           --- Done ---
+
+    - Map unitId                                                                --- Done ---
+
+    - Map roomAvailableIds                                                      --- Done ---
+
+    - Map availableAreaSet                                                      --- Done ---
+
+    - Map basicFeaturesIds                                                      --- Done ---
+
+    - Map subFeaturesSet                                                        --- Done ---
+
+    - Map foodOptionsSet                                                        --- Done ---
+
+    - Map capacityHalls                                                         --- Done ---
+
+    - Map availablePeriodsHallsIds                                              --- Doen ---

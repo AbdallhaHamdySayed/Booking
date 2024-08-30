@@ -1,0 +1,464 @@
+  ------------ application.properties -------------------
+
+  main:
+    allow-circular-references: true
+
+
+    ------------- AuthTokenFilter -----------------------
+
+    public class AuthTokenFilter extends OncePerRequestFilter {
+
+        @Autowired
+        private JwtUtils jwtUtils;
+
+        @Autowired
+        private UserDetailsServiceImpl userDetailsService;
+
+        private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                throws ServletException, IOException {
+            try {
+                String jwt = parseJwt(request);
+                if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                    String phone = jwtUtils.getPhoneFromJwtToken(jwt);
+                    String role = jwtUtils.getRoleFromJwtToken(jwt); // Assuming you have a method to extract the role from the JWT
+
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(phone + ":" + role);
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception e) {
+                logger.error("Cannot set user authentication: {}", e);
+            }
+
+            filterChain.doFilter(request, response);
+        }
+
+        private String parseJwt(HttpServletRequest request) {
+            String headerAuth = request.getHeader("Authorization");
+
+            if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+                return headerAuth.substring(7);
+            }
+
+            return null;
+        }
+    }
+
+
+    ---------- JwtUtils ----------
+
+    @Component
+    public class JwtUtils {
+        private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+
+        @Value("${bezkoder.app.jwtSecret}")
+        private String jwtSecret;
+
+        @Value("${bezkoder.app.jwtExpirationMs}")
+        private long jwtExpirationMs;
+
+        @Value("${bezkoder.app.stayLoggedInExpirationMs}")
+        private long stayLoggedInExpirationMs;
+
+        public String generateJwtToken(Authentication authentication, boolean stayLoggedIn) {
+
+            long expirationMs = stayLoggedIn ? stayLoggedInExpirationMs : jwtExpirationMs;
+
+            // stayLoggedIn is working but not
+    //        System.out.println("ExpirationMs: " + expirationMs);
+
+            UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+            return Jwts.builder()
+                    .setSubject((userPrincipal.getPhone()))
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date((new Date()).getTime() + expirationMs))
+                    .signWith(key(), SignatureAlgorithm.HS256)
+                    .compact();
+        }
+
+        private Key key() {
+            return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        }
+
+        public String getPhoneFromJwtToken(String token) {
+            return Jwts.parserBuilder().setSigningKey(key()).build()
+                    .parseClaimsJws(token).getBody().getSubject();
+        }
+
+        public String getRoleFromJwtToken(String token) {
+            Claims claims = Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token).getBody();
+            return (String) claims.get("role"); // Assuming "role" is the key for the role in your JWT claims
+        }
+
+        public boolean validateJwtToken(String authToken) {
+            try {
+                Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
+                return true;
+            } catch (MalformedJwtException e) {
+                logger.error("Invalid JWT token: {}", e.getMessage());
+            } catch (ExpiredJwtException e) {
+                logger.error("JWT token is expired: {}", e.getMessage());
+            } catch (UnsupportedJwtException e) {
+                logger.error("JWT token is unsupported: {}", e.getMessage());
+            } catch (IllegalArgumentException e) {
+                logger.error("JWT claims string is empty: {}", e.getMessage());
+            }
+
+            return false;
+        }
+    }
+
+
+    -------- LoginRequest ---------
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class LoginRequest {
+        @NotBlank
+        private String phone;
+        @NotBlank
+        private String password;
+        private boolean stayLoggedIn;
+        private Set<String> roles;
+    }
+
+    ---------- UserDetailsConfig -------
+    @Configuration
+    public class UserDetailsConfig {
+
+        @Autowired
+        private UserService userService;
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+            return new UserDetailsServiceImpl(userService);
+        }
+    }
+
+
+    ----------- UserDetailsServiceImpl -----------
+
+    @Service
+    public class UserDetailsServiceImpl implements UserDetailsService {
+        @Autowired
+        UserRepository userRepository;
+
+        @Autowired
+        UserService userService;
+
+        @Autowired
+        public UserDetailsServiceImpl(UserService userService) {
+            this.userService = userService;
+        }
+
+        @Override
+        @Transactional
+        public UserDetails loadUserByUsername(String usernameOrPhone) throws UsernameNotFoundException {
+            String[] parts = usernameOrPhone.split(":");
+            if (parts.length != 2) {
+                throw new IllegalArgumentException("Invalid username format. Expected format: phoneNumber:role");
+            }
+
+            String phone = parts[0];
+            String roleName = parts[1];
+
+            User user = userRepository.findByPhone(phone)
+                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found with phone number: " + phone));
+
+            Set<ERole> roleNames = EnumSet.of(ERole.valueOf(roleName));
+            if (!userService.existsByEmailAndRolesOrPhoneNumberAndRoles(user.getEmail(), phone, roleNames)) {
+                throw new UsernameNotFoundException("User Not Found with phone number and role: " + phone + ", " + roleName);
+            }
+
+            List<GrantedAuthority> authorities = user.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                    .collect(Collectors.toList());
+
+            return new org.springframework.security.core.userdetails.User(
+                    user.getUsername(),
+                    user.getPassword(),
+                    authorities);
+        }
+    }
+
+
+    -------- UserServiceImpl ---------
+
+
+    @Service
+    public class UserServiceImpl implements UserService {
+
+        @Autowired
+        UserRepository userRepository;
+
+        @Autowired
+        RoleService roleService;
+
+        @Autowired
+        CityService cityService;
+
+        @Autowired
+        CityMapper cityMapper;
+
+        @Autowired
+        UserMapper userMapper;
+
+    //    @Autowired
+    //    AuthenticationManager authenticationManager;
+
+        @Autowired
+        RoleRepository roleRepository;
+
+        @Autowired
+        PasswordEncoder encoder;
+
+        @Autowired
+        JwtUtils jwtUtils;
+
+        private final AuthenticationManager authenticationManager;
+
+        @Autowired
+        public UserServiceImpl(AuthenticationManager authenticationManager) {
+            this.authenticationManager = authenticationManager;
+        }
+
+        public String generateOtpForUser() {
+            // For simplicity, let's assume a random 4-digit OTP
+            return String.valueOf((int) (Math.random() * 9000) + 1000);
+        }
+
+        @Override
+        public Boolean existsByEmail(String email) {
+            if (email == null || email.trim().isEmpty()) {
+                // Handle empty email case, e.g., return false or throw an exception
+                return false;
+            }
+
+            return userRepository.existsByEmail(email);
+        }
+
+        @Override
+        public Boolean existsByPhone(String phone) {
+            return userRepository.existsByPhone(phone);
+        }
+
+        @Override
+        public Boolean existsByEmailAndRolesOrPhoneNumberAndRoles(String email, String phone, Set<ERole> roleNames) {
+            return userRepository.existsByEmailAndRolesOrPhoneNumberAndRoles(email, phone, roleNames);
+        }
+
+        @Override
+        public User registerUser(UserRegisterDto userRegisterDto) {
+            String phone = userRegisterDto.getPhoneNumber();
+            Optional<User> existingUserOptional = userRepository.findFirstByPhone(phone);
+
+            if (existingUserOptional.isPresent()) {
+                // User with the same phone number already exists, create a new user with a different role
+                Set<String> strRoles = userRegisterDto.getRoles();
+                Set<Role> roles = new HashSet<>();
+
+                if (strRoles == null) {
+                    Role userRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(userRole);
+                } else {
+                    strRoles.forEach(role -> {
+                        switch (role) {
+                            case "lessor":
+                                Role adminRole = roleRepository.findByName(ERole.ROLE_LESSOR)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(adminRole);
+                                break;
+                            case "guest":
+                                Role modRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(modRole);
+                                break;
+                            default:
+                                Role userRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(userRole);
+                        }
+                    });
+                }
+
+                // Check if the city exists
+                CityDto cityDto = userRegisterDto.getCity();
+                City city = cityMapper.cityDTOToCity(cityDto);
+                if (city == null) {
+                    throw new RuntimeException("City " + cityDto.getCityName() + " not found");
+                }
+
+                // Map UserRegisterDto to User entity
+                User user = new User();
+                user.setUsername(userRegisterDto.getName());
+                user.setEmail(userRegisterDto.getEmail());
+                user.setPassword(encoder.encode(userRegisterDto.getPassword()));
+                user.setPhone(phone); // Use the provided phone number
+                user.setCity(city);
+                user.setRoles(roles);
+
+                // Save the user entity
+                return userRepository.save(user);
+            } else {
+                // User does not exist, proceed with registration
+                Set<String> strRoles = userRegisterDto.getRoles();
+                Set<Role> roles = new HashSet<>();
+
+                if (strRoles == null) {
+                    Role userRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(userRole);
+                } else {
+                    strRoles.forEach(role -> {
+                        switch (role) {
+                            case "lessor":
+                                Role adminRole = roleRepository.findByName(ERole.ROLE_LESSOR)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(adminRole);
+                                break;
+                            case "guest":
+                                Role modRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(modRole);
+                                break;
+                            default:
+                                Role userRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(userRole);
+                        }
+                    });
+                }
+
+                // Check if the city exists
+                CityDto cityDto = userRegisterDto.getCity();
+                City city = cityMapper.cityDTOToCity(cityDto);
+                if (city == null) {
+                    throw new RuntimeException("City " + cityDto.getCityName() + " not found");
+                }
+
+                // Map UserRegisterDto to User entity
+                User user = new User();
+                user.setUsername(userRegisterDto.getName());
+                user.setEmail(userRegisterDto.getEmail());
+                user.setPassword(encoder.encode(userRegisterDto.getPassword()));
+                user.setPhone(phone); // Use the provided phone number
+                user.setCity(city);
+                user.setRoles(roles);
+
+                // Save the user entity
+                return userRepository.save(user);
+            }
+        }
+
+
+        @Override
+        public User getUserById(Long id) {
+            return userRepository.findById(id).get();
+        }
+
+        public void resetPasswordByPhone(String phone, PasswordResetDto passwordResetDto) {
+            // Retrieve the user from the database using phone number
+            User user = userRepository.findByPhone(phone)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Update the password
+            user.setPassword(encoder.encode(passwordResetDto.getNewPassword()));
+
+            // Save the updated user
+            userRepository.save(user);
+        }
+
+        @Override
+        public void updateUser(User user) {
+            // You might want to perform additional validation or business logic here
+            userRepository.save(user);
+        }
+        }
+
+
+        ---------- WebSecurityConfig ------------
+
+        @Configuration
+        @EnableMethodSecurity
+        public class WebSecurityConfig  {
+            @Autowired
+            UserDetailsServiceImpl userDetailsServiceImpl;
+
+            private final UserDetailsService userDetailsService;
+
+            @Autowired
+            private AuthEntryPointJwt unauthorizedHandler;
+
+            @Autowired
+            public WebSecurityConfig(UserDetailsService userDetailsService) {
+                this.userDetailsService = userDetailsService;
+            }
+
+            @Bean
+            public AuthTokenFilter authenticationJwtTokenFilter() {
+                return new AuthTokenFilter();
+            }
+
+            @Bean
+            public DaoAuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+                authProvider.setUserDetailsService(userDetailsServiceImpl);
+                authProvider.setPasswordEncoder(passwordEncoder());
+
+                return authProvider;
+            }
+
+            @Bean
+            public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+                return authConfig.getAuthenticationManager();
+            }
+
+            @Bean
+            public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+            }
+
+            @Bean
+            public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http.csrf(csrf -> csrf.disable())
+                        .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+                        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .authorizeHttpRequests(auth ->
+                                auth.requestMatchers("/api/users/Register/**").permitAll()
+                                        .requestMatchers("/api/units/filter-unit-by-name").permitAll()
+                                        .requestMatchers("/api/cities/**").permitAll() // Adjust roles as needed
+                                        .requestMatchers("/regions/byCity/**").permitAll() // Adjust roles as needed
+                                        .requestMatchers("/api/roles/**").permitAll()  // Adjust roles as needed
+                                        .requestMatchers("/api/users/**").permitAll()  // Adjust roles as needed
+                                        .requestMatchers("/image/**").permitAll()
+                                        .requestMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**", "/bezkoder-documentation/**", "/bezkoder-api-docs/**").permitAll()
+                                        .anyRequest().authenticated()
+                        );
+
+                http.authenticationProvider(authenticationProvider());
+
+                http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+                return http.build();
+            }
+
+        }
+
+
+
+
+
+        Despite circular references being allowed, the dependency cycle between beans could not be broken. Update your application to remove the dependency cycle

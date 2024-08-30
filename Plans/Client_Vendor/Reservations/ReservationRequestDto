@@ -1,0 +1,23 @@
+	- Create Reservation Request Dto ( Lombok )													--- Done ---
+
+		1- Add clientName 																		--- Done ---
+
+		2- Add clientPhone 																		--- Done ---
+
+		3- Add unitId																			--- Done ---
+
+		4- Add userId																			--- Done ---
+
+		5- Add roomAvailableIds																	--- Done ---
+
+		6- Add availableAreaIds																	--- Done ---
+
+		7- Add basicFeaturesIds																	--- Done ---
+
+		8- Add subFeaturesIds																	--- Done ---
+
+		9- Add foodOptionsIds																	--- Done ---
+
+		10- Add capacityHalls																	--- Done ---
+
+		11- Add availablePeriodsHallsIds														--- Done ---

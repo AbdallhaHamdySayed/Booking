@@ -1,0 +1,20 @@
+{
+  "unitTypeId": 2,
+  "userId": 20,
+  "nameUnit": "تجربة فلل مناسبات",
+  "typesOfEventHalls": 2,
+  "description": "وصف",
+  "cityId": 1,
+  "regionId": 1,
+  "capacityHalls": 4,
+  "featuresHallsIds": [
+    1
+  ],
+  "availablePeriodsHallsIds": [
+    1
+  ],
+  "oldPriceHall": 200,
+  "newPriceHall": 100,
+  "latForMapping": 545.56,
+  "longForMapping": 456.5
+}

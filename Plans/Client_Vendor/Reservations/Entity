@@ -1,0 +1,33 @@
+	- Create Entity Reservations (Lombok - Audit) 												--- Done ---
+
+	- Add Attributes																			--- Done ---
+
+		1- Id																					--- Done ---
+
+		2- clientName																			--- Done ---
+
+		3- clientPhone																			--- Done ---
+
+		4- create Relation Many to one with Unit												--- Done ---
+
+		5- Create Relation Many to one with User												--- Done ---
+
+		6- Create Relation Many to Many with room Available Set									--- Done ---
+
+		7- Create Relation Many to Many with Available Area Set									--- Done ---
+
+		8- Create Relation Many to Many with basic Features Set									--- Done ---
+
+		9- Create Relation Many to Many with sub Features Set									--- Done ---
+
+		10- Create Relation Many to Many with food Options Set									--- Done ---
+
+		11- create Relation Many to one with status unit										--- Done ---
+
+		12- Add capcity Halls																	--- Done ---
+
+		13- Create Relation Many to Many with Available Periods Halls Set						--- Done ---
+
+		14- Create Relation Many to Many with room Details Set									--- Done ---
+
+	- Create Default Constructor for set status 1L												--- Done ---

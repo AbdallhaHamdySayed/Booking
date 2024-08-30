@@ -1,0 +1,24 @@
+{
+  "unitTypeId": 1,
+  "userId": 8,
+  "nameUnit": "تجربة ادخال شقة",
+  "description": "تجربة ادخال شقة فندقية",
+  "cityId": 1,
+  "regionId": 1,
+  "accommodationTypeId": 2,
+  "availableAreaIds": [
+    1, 2, 3
+  ],
+  "basicFeaturesIds": [
+    1, 2
+  ],
+  "subFeaturesIds": [
+    1, 2
+  ],
+  "foodOptionsIds": [
+    1
+  ],
+
+  "latForMapping": 0,
+  "longForMapping": 0
+}
