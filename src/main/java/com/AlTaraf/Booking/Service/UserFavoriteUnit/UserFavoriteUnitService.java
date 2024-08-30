@@ -6,6 +6,8 @@ import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -19,4 +21,9 @@ public interface UserFavoriteUnitService {
     void deleteUserFavoriteUnit(Long userId, Long unitId);
 
     boolean existsByUserAndUnit(User user, Unit unit);
+
+    boolean existsByUserIdAndUnitId(Long userId, Long unitId);
+
+    List<Unit> findUnitsByUserFavoriteUnitIds(Long userFavoriteUnitId);
+
 }

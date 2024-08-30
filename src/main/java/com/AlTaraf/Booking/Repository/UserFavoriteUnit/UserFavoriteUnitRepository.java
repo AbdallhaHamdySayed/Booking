@@ -25,6 +25,9 @@ public interface UserFavoriteUnitRepository extends JpaRepository<UserFavoriteUn
     @Query("SELECT COUNT(u) > 0 FROM UserFavoriteUnit u WHERE u.user = :user AND u.unit = :unit")
     boolean existsByUserAndUnit(@Param("user") User user, @Param("unit") Unit unit);
 
+    @Query("SELECT COUNT(u) > 0 FROM UserFavoriteUnit u WHERE u.user.id = :userId AND u.unit.id = :unitId")
+    boolean existsByUserIdAndUnitId(@Param("userId") Long userId, @Param("unitId") Long unitId);
+
     @Modifying
     @Query("DELETE FROM UserFavoriteUnit uf WHERE uf.user = :user AND uf.unit = :unit")
     void deleteByUserAndUnit(@Param("user") User user, @Param("unit") Unit unit);
@@ -38,5 +41,8 @@ public interface UserFavoriteUnitRepository extends JpaRepository<UserFavoriteUn
     void deleteByUnit(@Param("unitId") Long unitId);
 
     void deleteByUser(User user);
+
+    @Query("SELECT uf.unit FROM UserFavoriteUnit uf WHERE uf.id IN :userFavoriteUnitIds")
+    List<Unit> findUnitsByUserFavoriteUnitIds(@Param("userFavoriteUnitIds") Long userFavoriteUnitId);
 
 }
