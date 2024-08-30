@@ -62,6 +62,8 @@ public interface UnitGeneralResponseMapper {
     @Mapping(source = "departureDate", target = "departureDate")
     @Mapping(source = "adultsAllowed", target = "adultsAllowed")
     @Mapping(source = "childrenAllowed", target = "childrenAllowed")
+    @Mapping(source = "favorite", target = "favorite")
+
     UnitGeneralResponseDto toResponseDto(Unit unit);
 
     @Named("mapEntityToFeaturesHallsDto")

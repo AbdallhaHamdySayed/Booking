@@ -544,38 +544,6 @@ public class UnitController {
         }
     }
 
-    @GetMapping("By-Id-General/{id}")
-    public ResponseEntity<?> getUnitById(@PathVariable Long id,
-                                         @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
-        try {
-
-            Locale locale = LocaleContextHolder.getLocale();
-
-            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
-                try {
-                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
-                    if (!languageRanges.isEmpty()) {
-                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
-                    }
-                } catch (IllegalArgumentException e) {
-                    System.out.println("IllegalArgumentException: " + e);
-                }
-            }
-
-            Unit unit = unitService.getUnitById(id);
-            if (unit != null) {
-                UnitGeneralResponseDto responseDto = unitGeneralResponseMapper.toResponseDto(unit);
-                return ResponseEntity.ok(responseDto);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(404, messageSource.getMessage("not_found.message", null, LocaleContextHolder.getLocale())));
-            }
-        } catch (Exception e) {
-            System.out.println("Error Message : " + e);
-            ApiResponse response = new ApiResponse(500, messageSource.getMessage("internal_server_error.message", null, LocaleContextHolder.getLocale()));
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
     @GetMapping("By-Id-For-Residencies/{id}")
     public ResponseEntity<?> getResidenciesUnitById(@PathVariable Long id,
                                                     @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
@@ -899,6 +867,44 @@ public class UnitController {
         return sortDirection.equalsIgnoreCase("desc") ? Sort.by("evaluation.id").descending() : Sort.by("evaluation.id").ascending();
     }
 
+    @GetMapping("By-Id-General/{id}/{userId}")
+    public ResponseEntity<?> getUnitById(@PathVariable Long id,
+                                         @PathVariable Long userId,
+                                         @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+        try {
+
+            Locale locale = LocaleContextHolder.getLocale();
+
+            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+                try {
+                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                    if (!languageRanges.isEmpty()) {
+                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException: " + e);
+                }
+            }
+
+            Unit unit = unitService.getUnitById(id);
+            User user = userRepository.findById(userId).orElse(null);
+
+            Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
+
+            if (userFavoriteUnitService.existsByUserAndUnit(user,  unitForFavorite)){
+                assert unitForFavorite != null;
+                unitForFavorite.setFavorite(true);
+            }
+
+            UnitGeneralResponseDto responseDto = unitGeneralResponseMapper.toResponseDto(unit);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            System.out.println("Error Message : " + e);
+            ApiResponse response = new ApiResponse(500, messageSource.getMessage("internal_server_error.message", null, LocaleContextHolder.getLocale()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
     @GetMapping("/Get-Units/{userId}")
     public Page<UnitDtoFavorite> getUnits(
             @RequestParam(required = false) String nameUnit,
@@ -960,7 +966,7 @@ public class UnitController {
             if (userFavoriteUnitService.existsByUserAndUnit(user,  unitForFavorite)){
                 unitForFavorite.setFavorite(true);
             }
-    }
+        }
             return unitsPage.map(unit -> unitFavoriteMapper.toUnitFavoriteDto(unit));
     }
 
