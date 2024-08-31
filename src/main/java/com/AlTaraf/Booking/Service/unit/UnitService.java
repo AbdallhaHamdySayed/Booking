@@ -49,7 +49,7 @@ public interface UnitService {
 
     List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
                                   Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
-                                  Set<Long> basicFeaturesIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
+                                  Set<Long> basicFeaturesIds, Set<Long> featuresHallsIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
                                   Set<Long> evaluationId,
                                   int capacityHalls, int adultsAllowed, int childrenAllowed, int priceMin, int priceMax
             , LocalDate dateOfArrival, LocalDate departureDate, Sort sort);

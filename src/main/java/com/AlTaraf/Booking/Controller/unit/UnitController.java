@@ -980,6 +980,7 @@ public class UnitController {
             @RequestParam(required = false) Set<Long> accommodationTypeIds,
             @RequestParam(required = false) Set<Long> hotelClassificationIds,
             @RequestParam(required = false) Set<Long> basicFeaturesIds,
+            @RequestParam(required = false) Set<Long> featuresHallsIds,
             @RequestParam(required = false) Set<Long> subFeaturesIds,
             @RequestParam(required = false) Set<Long> foodOptionsIds,
             @RequestParam(required = false) Set<Long> evaluationId,
@@ -1021,7 +1022,7 @@ public class UnitController {
 
             List<Unit> units = unitService.findUnitsByFilters(cityId, regionId, availablePeriodsId,
                     unitTypeId, hallTypeId, accommodationTypeIds, hotelClassificationIds,
-                    basicFeaturesIds, subFeaturesIds, foodOptionsIds, evaluationId, capacityHalls, adultsAllowed, childrenAllowed,
+                    basicFeaturesIds, featuresHallsIds, subFeaturesIds, foodOptionsIds, evaluationId, capacityHalls, adultsAllowed, childrenAllowed,
                     priceMin, priceMax, dateOfArrival, departureDate, sort);
 
 

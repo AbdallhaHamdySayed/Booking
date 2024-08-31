@@ -352,7 +352,7 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
                                          Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
-                                         Set<Long> basicFeaturesIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
+                                         Set<Long> basicFeaturesIds, Set<Long> featuresHallsIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
                                          Set<Long> evaluationIds, int capacityHalls, int adultsAllowed, int childrenAllowed, int priceMin, int priceMax
             , LocalDate dateOfArrival, LocalDate departureDate, Sort sort) {
         Specification<Unit> spec = Specification.where(null);
@@ -396,6 +396,10 @@ public class UnitServiceImpl implements UnitService {
 
         if (basicFeaturesIds != null && !basicFeaturesIds.isEmpty()) {
             spec = spec.and(UnitSpecifications.byBasicFeaturesIds(basicFeaturesIds));
+        }
+
+        if (featuresHallsIds != null && !featuresHallsIds.isEmpty()) {
+            spec = spec.and(UnitSpecifications.byFeaturesHallsIds(featuresHallsIds));
         }
 
         if (subFeaturesIds != null && !subFeaturesIds.isEmpty()) {

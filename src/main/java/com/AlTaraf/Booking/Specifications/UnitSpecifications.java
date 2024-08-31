@@ -2,6 +2,7 @@ package com.AlTaraf.Booking.Specifications;
 
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.feature.Feature;
+import com.AlTaraf.Booking.Entity.unit.featureForHalls.FeatureForHalls;
 import com.AlTaraf.Booking.Entity.unit.subFeature.SubFeature;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -56,6 +57,14 @@ public class UnitSpecifications {
             return featuresJoin.get("id").in(basicFeaturesIds);
         };
     }
+
+    public static Specification<Unit> byFeaturesHallsIds(Set<Long> featuresHallsIds) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Unit, FeatureForHalls> featuresJoin = root.join("featuresHallsSet", JoinType.INNER);
+            return featuresJoin.get("id").in(featuresHallsIds);
+        };
+    }
+
 
     public static Specification<Unit> bySubFeaturesIds(Set<Long> subFeaturesIds) {
         return (root, query, criteriaBuilder) -> {
