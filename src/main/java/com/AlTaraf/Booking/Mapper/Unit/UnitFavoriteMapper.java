@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +44,14 @@ public interface UnitFavoriteMapper {
         if (fileForUnits == null || fileForUnits.isEmpty()) {
             return null; // or return a default value if preferred
         }
-        return fileForUnits.get(0).getFileImageUrl();
+        return fileForUnits.stream()
+                .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
+                        .thenComparing(FileForUnit::getCreatedTime))
+                .map(FileForUnit::getFileImageUrl)
+                .findFirst()
+                .orElse(null); // or a default value if no element is found
     }
+
 
     default String extractFirstFileVideoPath(List<FileForUnit> fileForUnits) {
         if (fileForUnits == null || fileForUnits.isEmpty()) {

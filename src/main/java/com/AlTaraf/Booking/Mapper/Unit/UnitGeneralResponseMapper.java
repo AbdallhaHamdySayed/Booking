@@ -12,6 +12,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +23,7 @@ public interface UnitGeneralResponseMapper {
     @Mapping(source = "id", target = "unitId")
     @Mapping(source = "unitType", target = "unitType")
     @Mapping(source = "user.deviceToken", target = "deviceToken")
-    @Mapping(target = "imagePaths", expression = "java(extractFilePaths(unit.getFileForUnits()))")
+    @Mapping(target = "imagePaths", expression = "java(extractFileImagePaths(unit.getFileForUnits()))")
     @Mapping(target = "videoPaths", expression = "java(extractFirstFileVideoPath(unit.getFileForUnits()))")
     @Mapping(source = "nameUnit", target = "nameUnit")
     @Mapping(source = "description", target = "description")
@@ -81,10 +83,14 @@ public interface UnitGeneralResponseMapper {
                 .collect(Collectors.toSet());
     }
 
-    default List<String> extractFilePaths(List<FileForUnit> fileForUnits) {
+    default List<String> extractFileImagePaths(List<FileForUnit> fileForUnits) {
+        if (fileForUnits == null) {
+            return Collections.emptyList();
+        }
         return fileForUnits.stream()
+                .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
+                        .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
-                .filter(url -> url != null) // Exclude null URLs
                 .collect(Collectors.toList());
     }
 

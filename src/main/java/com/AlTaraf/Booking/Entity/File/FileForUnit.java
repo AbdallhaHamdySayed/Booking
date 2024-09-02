@@ -10,6 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Table(name = "FILE_FOR_UNIT")
 @NoArgsConstructor
@@ -45,9 +48,19 @@ public class FileForUnit {
     @JsonBackReference
     private Unit unit;
 
+    private LocalDate createdDate;
+
+    private LocalTime createdTime;
+
     public FileForUnit(String name, String type, byte[] data) {
         this.name = name;
         this.type = type;
         this.data = data;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDate.now();
+        this.createdTime = LocalTime.now();
     }
 }

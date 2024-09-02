@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,11 +34,16 @@ public interface UnitMapper {
 
     // Define a method to extract file paths from ImageData entities
     default List<String> extractFileImagePaths(List<FileForUnit> fileForUnits) {
+        if (fileForUnits == null) {
+            return Collections.emptyList();
+        }
         return fileForUnits.stream()
+                .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
+                        .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
                 .collect(Collectors.toList());
-
     }
+
 
     default String extractFirstFileVideoPath(List<FileForUnit> fileForUnits) {
         if (fileForUnits == null || fileForUnits.isEmpty()) {

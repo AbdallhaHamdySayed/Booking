@@ -7,6 +7,8 @@ import com.AlTaraf.Booking.Payload.response.Unit.UnitResidenciesResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,8 +53,13 @@ public interface UnitResidenciesResponseMapper {
         return fileForUnitDTO;
     }
 
-    default List<String> extractFileImagePaths(List<FileForUnit> images) {
-        return images.stream()
+    default List<String> extractFileImagePaths(List<FileForUnit> fileForUnits) {
+        if (fileForUnits == null) {
+            return Collections.emptyList();
+        }
+        return fileForUnits.stream()
+                .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
+                        .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
                 .collect(Collectors.toList());
     }

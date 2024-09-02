@@ -13,6 +13,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 public interface EventHallsMapper {
     @Mapping(source = "id", target = "unitId")
     @Mapping(source = "typesOfEventHalls", target = "typesOfEventHalls")
-    @Mapping(target = "imagePaths", expression = "java(extractFilePaths(unit.getFileForUnits()))")
+    @Mapping(target = "imagePaths", expression = "java(extractFileImagePaths(unit.getFileForUnits()))")
     @Mapping(target = "videoPaths", expression = "java(extractFirstFileVideoPath(unit.getFileForUnits()))")
     @Mapping(source = "capacityHalls", target = "capacityHalls")
     @Mapping(source = "nameUnit", target = "nameUnit")
@@ -72,8 +74,13 @@ public interface EventHallsMapper {
         return imageDataDTO;
     }
 
-    default List<String> extractFilePaths(List<FileForUnit> fileForUnits) {
+    default List<String> extractFileImagePaths(List<FileForUnit> fileForUnits) {
+        if (fileForUnits == null) {
+            return Collections.emptyList();
+        }
         return fileForUnits.stream()
+                .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
+                        .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
                 .collect(Collectors.toList());
     }
