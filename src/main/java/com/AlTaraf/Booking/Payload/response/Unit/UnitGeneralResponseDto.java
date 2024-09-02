@@ -90,5 +90,6 @@ public class UnitGeneralResponseDto {
     private int adultsAllowed;
     private int childrenAllowed;
     private Boolean favorite;
+    private Integer totalEvaluation;
     private String deviceToken;
 }
