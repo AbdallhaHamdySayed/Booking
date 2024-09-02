@@ -174,7 +174,9 @@ public class PaymentServiceImpl implements PaymentService {
         body.add("id", paymentEntity.getId());
         body.add("amount", String.valueOf(amount));
         body.add("phone", phone);
-        body.add("email", email);
+        if (email != null) {
+            body.add("email", email);
+        }
         body.add("backend_url", "https://api.ihjezly.com/payment/back-end-url");
         body.add("custom_ref", paymentEntity.getCustom_ref());
 

@@ -18,7 +18,7 @@ public class Paymentcontroller {
     public ResponseEntity<?> initiatePayment(
             @RequestParam Double amount,
             @RequestParam String phone,
-            @RequestParam String email) {
+            @RequestParam(required = false) String email) {
 
         return paymentService.initialPayment(amount, phone, email);
     }
