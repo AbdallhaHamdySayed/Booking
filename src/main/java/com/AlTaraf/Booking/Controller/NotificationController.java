@@ -55,25 +55,26 @@ public class NotificationController {
 
     @PostMapping("/Send")
     public ResponseEntity<?> sendPushNotification(@RequestBody PushNotificationRequest request) {
-        try {
-            User user = userRepository.findByUserId(request.getUserId());
-            for (Role role : user.getRoles()) {
-                Notifications notification = notificationMapper.dtoToEntity(request);
-                notification.setUser(user);
-                notification.setRole(role);
-                notificationRepository.save(notification);
-
-                notificationService.sendPushMessage(request.getTitle(), request.getBody(), user.getId());
-            }
-
-            notificationService.sendPushMessage(request.getTitle(), request.getBody(), request.getUserId());
-
-            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200,"Push notification sent successfully!"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500,"Failed to send push notification."));
-        }
+//        try {
+//            User user = userRepository.findByUserId(request.getUserId());
+//            for (Role role : user.getRoles()) {
+//                Notifications notification = notificationMapper.dtoToEntity(request);
+//                notification.setUser(user);
+//                notification.setRole(role);
+//                notificationRepository.save(notification);
+//
+//                notificationService.sendPushMessage(request.getTitle(), request.getBody(), user.getId());
+//            }
+//
+//            notificationService.sendPushMessage(request.getTitle(), request.getBody(), request.getUserId());
+//
+//            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200,"Push notification sent successfully!"));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500,"Failed to send push notification."));
+//        }
+        return null;
     }
 
     @PostMapping("/Send-For-Guest-One-User")
