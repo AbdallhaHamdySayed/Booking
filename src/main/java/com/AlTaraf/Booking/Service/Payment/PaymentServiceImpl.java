@@ -142,7 +142,8 @@ public class PaymentServiceImpl implements PaymentService {
             }
         } catch (HttpClientErrorException.NotFound e) {
             // Handle 404 Not Found error
-            String errorMessage = "Invalid_Custom_Ref.message";
+            System.out.println("Exception: " + e);
+            String errorMessage = "Payment_Failed.message";
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         } catch (Exception e) {
             messagingTemplate.convertAndSend("/topic/payment", "Payment failed for user " + userId);
