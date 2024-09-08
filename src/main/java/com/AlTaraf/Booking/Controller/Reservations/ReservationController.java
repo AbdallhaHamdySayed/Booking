@@ -3,10 +3,12 @@ package com.AlTaraf.Booking.Controller.Reservations;
 import com.AlTaraf.Booking.Dto.Notifications.PushNotificationRequest;
 import com.AlTaraf.Booking.Entity.Evaluation.Evaluation;
 import com.AlTaraf.Booking.Entity.Reservation.Reservations;
+import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
+import com.AlTaraf.Booking.Exception.InsufficientFundsException;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationGetByIdMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationRequestMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationStatusMapper;
@@ -17,6 +19,7 @@ import com.AlTaraf.Booking.Payload.response.Reservation.ReservationStatus;
 import com.AlTaraf.Booking.Repository.Evaluation.EvaluationRepository;
 import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
 import com.AlTaraf.Booking.Repository.unit.statusUnit.StatusRepository;
+import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.Reservation.ReservationService;
 import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Service.unit.RoomDetails.RoomDetailsService;
@@ -57,19 +60,19 @@ public class ReservationController {
     UnitService unitService;
 
     @Autowired
-    private RoomDetailsService roomDetailsService;
+    RoomDetailsService roomDetailsService;
 
     @Autowired
-    private RoomDetailsForAvailableAreaService roomDetailsForAvailableAreaService;
+    RoomDetailsForAvailableAreaService roomDetailsForAvailableAreaService;
 
     @Autowired
-    private AvailableAreaService availableAreaService;
+    AvailableAreaService availableAreaService;
 
     @Autowired
-    private EvaluationRepository evaluationRepository;
+    EvaluationRepository evaluationRepository;
 
     @Autowired
-    private ReservationStatusMapper reservationStatusMapper;
+    ReservationStatusMapper reservationStatusMapper;
 
     @Autowired
     ReservationRepository reservationRepository;
@@ -81,7 +84,10 @@ public class ReservationController {
     NotificationService notificationService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
+
+    @Autowired
+    UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
@@ -139,6 +145,14 @@ public class ReservationController {
             System.out.println("Reservation Price: " + reservationsToSave.getPrice());
 
             Long userId = reservationRequestDto.getUserId();
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+            if (user.getWallet() < reservationsToSave.getCommision()) {
+                ApiResponse response = new ApiResponse(400, messageSource.getMessage("Failed_Add_Reservation.message", null, LocaleContextHolder.getLocale()));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
 
             // Save the unit in the database
             reservationService.saveReservation(userId,reservationsToSave);

@@ -82,12 +82,7 @@ public class ReservationServiceImpl implements ReservationService {
 //    TotalTransactions totalTransactions;
 
     @Override
-    public Reservations saveReservation(Long userId, Reservations reservations) throws InsufficientFundsException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-        if (user.getWallet() < reservations.getCommision()) {
-            throw new InsufficientFundsException("Failed_Add_Reservation.message");
-        }
+    public Reservations saveReservation(Long userId, Reservations reservations) {
         return reservationRepository.save(reservations);
     }
 
