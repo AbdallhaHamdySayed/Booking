@@ -24,7 +24,7 @@ public class SubFeatureController {
     SubFeatureService subFeatureService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @GetMapping("/get-Sub-Feature")
     public ResponseEntity<?> getAllSubFeature(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {

@@ -123,9 +123,6 @@ public class UnitServiceImpl implements UnitService {
     TechnicalSupportUnitRepository technicalSupportUnitRepository;
 
     @Autowired
-    TechnicalSupportRepository technicalSupportRepository;
-
-    @Autowired
     NotificationService notificationService;
 
     @Autowired
@@ -143,28 +140,12 @@ public class UnitServiceImpl implements UnitService {
 
 
     @Override
-    public Page<UnitDtoFavorite> getUnitsByHotelClassificationNames(List<String> hotelClassificationNames, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Unit> unitsPage = unitRepository.findByHotelClassification_NameIn(hotelClassificationNames, pageRequest);
-
-        return unitsPage.map(unitFavoriteMapper::toUnitFavoriteDto);
-    }
-
-    @Override
     public Page<UnitDtoFavorite> getUnitByEvaluationInOrderByEvaluationScoreDesc(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
         Page<Unit> units = unitRepository.findByEvaluationInOrderByEvaluationScoreDesc(pageRequest);
 
         return units.map(unitFavoriteMapper::toUnitFavoriteDto);
-    }
-
-    @Override
-    public Page<UnitDtoFavorite> getFavoriteUnitsForUser(Long userId, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Unit> favoriteUnitsPage = unitRepository.findByUser_IdAndFavorite(userId, true, pageRequest);
-
-        return favoriteUnitsPage.map(unitFavoriteMapper::toUnitFavoriteDto);
     }
 
     @Override
@@ -193,6 +174,7 @@ public class UnitServiceImpl implements UnitService {
 
         return units.isEmpty() ? null : units.get(0);
     }
+
     @Override
     public Page<UnitDtoFavorite> getUnitsByAccommodationTypeName(Long accommodationTypeId, int page, int size, Sort sort) {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
@@ -214,60 +196,6 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public void deleteUnit(Long id) {
         unitRepository.deleteById(id);
-    }
-
-    @Override
-    public void updateImageDataUnit(Long unitId, Long userId) {
-        // Fetch the Unit by ID
-        Unit unit = unitRepository.findById(unitId).orElse(null);
-
-        if (unit != null) {
-            // Retrieve associated ImageData entities
-            List<FileForUnit> fileForUnitList = fileForUnitRepository.findByUserIdAndUnitIsNull(userId);
-
-            // Update the unit for each ImageData entity
-            for (FileForUnit fileForUnit : fileForUnitList) {
-                fileForUnit.setUnit(unit);
-                fileForUnitRepository.save(fileForUnit);
-            }
-        }
-        else {
-            // Handle the case when the Unit with the specified ID is not found
-            throw new EntityNotFoundException("Unit not found with ID: " + unitId);
-        }
-
-    }
-
-    @Override
-    public void updateImageDataAds( Long adsId, Long userId) {
-
-        // Fetch the Ads by ID
-        Ads ads = adsRepository.findById(adsId).orElse(null);
-//        Unit unit = unitRepository.findById(unitId).orElse(null);
-
-        if (ads != null) {
-            // Retrieve associated FileForAds entities
-            List<FileForAds> fileForAdsList = fileForAdsRepository.findByUserIdAndAdsIsNull(userId);
-
-            // Update the unit for each ImageData entity
-            for (FileForAds fileForAds : fileForAdsList) {
-                System.out.println("Name Image: "+ fileForAds.getName());
-                fileForAds.setAds(ads);//                imageData.setUnit(unit);
-
-                fileForAdsRepository.save(fileForAds);
-            }
-        }
-        else {
-            // Handle the case when the Unit with the specified ID is not found
-            throw new EntityNotFoundException("Unit not found with ID: " + adsId);
-        }
-    }
-
-
-    @Override
-    public Page<UnitDtoFavorite> getAllUnitDtoFavorites(Pageable pageable) {
-        Page<Unit> unitPage = unitRepository.findAll(pageable);
-        return unitPage.map(unitFavoriteMapper::toUnitFavoriteDto);
     }
 
     @Override
@@ -364,10 +292,6 @@ public class UnitServiceImpl implements UnitService {
         if (regionId != null) {
             spec = spec.and(UnitSpecifications.byRegion(regionId));
         }
-
-//        if (basicFeaturesIds != null && !basicFeaturesIds.isEmpty()) {
-//            spec = spec.and(UnitSpecifications.byBasicFeaturesIds(basicFeaturesIds));
-//        }
 
         if (availablePeriodsId != null) {
             spec = spec.and(UnitSpecifications.byAvailablePeriod(availablePeriodsId));
@@ -497,14 +421,12 @@ public class UnitServiceImpl implements UnitService {
 
         if ( statusUnitId == 2) {
             System.out.println("statusUnitId");
-//            PushNotificationRequest notificationRequest = new PushNotificationRequest("رسالة من الادمن",  unit.getNameUnit()+ "تم قبول طلب اضافة وحدة ",unit.getUser().getId());
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_accepted_units.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit(), unit.getUser().getId());
             notificationService.processNotification(notificationRequest);
         } else if ( statusUnitId == 3) {
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_rejected_units.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit(), unit.getUser().getId());
             notificationService.processNotification(notificationRequest);
         }
-
     }
 
     @Override
@@ -550,7 +472,6 @@ public class UnitServiceImpl implements UnitService {
 
             unit.incrementTotalEvaluation();
 
-            // Save the unit
             unitRepository.save(unit);
         }
     }

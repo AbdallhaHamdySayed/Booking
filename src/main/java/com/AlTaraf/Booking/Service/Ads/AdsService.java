@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AdsService {
-    List<adsForSliderResponseDto> getAdsByStatusUnitId(Long statusUnitId);
     List<PackageAds> getAllPackageAds();
     Ads createAds(Ads ads);
 
@@ -25,10 +24,6 @@ public interface AdsService {
     void updateStatusForAds(Long adsId, Long statusUnitId) throws IOException, InterruptedException;
 
     Ads findByUnitId(Long unitId);
-
-//    Page<Ads> findAllAds(Pageable pageable);
-
-    Page<Ads> findAllByStatusUnitId(Long statusUnitId, Pageable pageable);
 
     CounterAds getCountAds();
 

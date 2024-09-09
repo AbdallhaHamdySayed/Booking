@@ -18,10 +18,7 @@ public interface UnitService {
 
     Unit saveUnit( Unit unit);
 
-    Page<UnitDtoFavorite> getUnitsByHotelClassificationNames(List<String> hotelClassificationNames, int page, int size);
-
     Page<UnitDtoFavorite> getUnitByEvaluationInOrderByEvaluationScoreDesc(int page, int size);
-    Page<UnitDtoFavorite> getFavoriteUnitsForUser(Long userId, int page, int size);
     Unit getUnitById(Long id);
 
     List<UnitDtoFavorite> getNewlyAdded();
@@ -31,11 +28,6 @@ public interface UnitService {
 
     void deleteUnit(Long id);
 
-    void updateImageDataUnit( Long unitId, Long userId);
-
-    void updateImageDataAds( Long adsId, Long userId);
-
-    Page<UnitDtoFavorite> getAllUnitDtoFavorites(Pageable pageable);
     List<Unit> getAllUnitForMap();
     Page<Unit> getAllUnit(Pageable pageable);
 
@@ -82,8 +74,6 @@ public interface UnitService {
 
     @Transactional
     void deleteUnitWithDependencies(Long id);
-
-    Unit getUnitById(Long unitId, Sort sort);
 
     Page<Unit> getUnitsByUnitTypeIdForDashboard(Long unitTypeId, Pageable pageable);
 

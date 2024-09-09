@@ -30,28 +30,6 @@ public class CityServiceImpl implements CityService {
     @Autowired
     CityMapper cityMapper;
 
-    @Transactional
-    public City saveCityWithRegions(saveCityDto saveCityDto) {
-        City city = new City();
-        city.setCityName(saveCityDto.getCityName());
-        city.setArabicCityName(saveCityDto.getArabicCityName());
-//        List<RegionDto> regions = cityDto.getRegions();
-//        if (regions != null && !regions.isEmpty()) {
-//            regions.forEach(region -> {
-//                region.setCity(city);
-//                city.getRegions().add(region);
-//            });
-//        }
-
-        return cityRepository.save(city);
-    }
-
-    @Override
-    public Optional<City> getCityById(Long cityId) {
-        return cityRepository.findById(cityId);
-    }
-
-
     @Override
     public CityDto createCity(CityDto cityDto) {
         City city = new City();
@@ -63,7 +41,7 @@ public class CityServiceImpl implements CityService {
             Region region = new Region();
             region.setRegionName(regionDto.getRegionName());
             region.setRegionArabicName(regionDto.getRegionArabicName());
-            region.setCity(city); // Associate region with city
+            region.setCity(city);
             regions.add(region);
         }
 
@@ -74,55 +52,19 @@ public class CityServiceImpl implements CityService {
         return new CityDto(savedCity);
     }
 
-//    @Transactional
-//    public Region addRegionToCity(Long cityId, RegionDto regionDto) {
-//        // Fetch the city
-//        City city = cityRepository.findById(cityId)
-//                .orElseThrow(() -> new EntityNotFoundException("City not found with id: " + cityId));
-//
-//        // Use the mapper to convert RegionDto to Region
-//        Region newRegion = RegionMapper.INSTANCE.dtoToEntity(regionDto);
-//
-//        // Associate the region with the city
-//        newRegion.setCity(city);
-//        city.getRegions().add(newRegion);
-//
-//        // Save the updated city (which includes the new region)
-//        cityRepository.save(city);
-//
-//        // Return the added region
-//        return newRegion;
-//    }
 
     @Transactional
     public Region updateRegionInCity(Long cityId, Long regionId, RegionDto RegionDto) {
-        // Fetch the city
         City city = cityRepository.findById(cityId)
                 .orElseThrow(() -> new EntityNotFoundException("City not found with id: " + cityId));
 
-        // Fetch the region within the city
         Region region = regionRepository.findByIdAndCityId(regionId, cityId)
                 .orElseThrow(() -> new EntityNotFoundException("Region not found with id: " + regionId));
 
-        // Use the mapper to update properties of the region
         Region updatedRegion = RegionMapper.INSTANCE.updateDtoToEntity(RegionDto, region);
 
-        // Save the updated region
         return regionRepository.save(updatedRegion);
     }
-//    @Override
-//    public CityDto saveCity(CityDto cityDto) {
-//        City city = cityMapper.cityDTOToCity(cityDto);
-//        City savedCity = cityRepository.save(city);
-//        return cityMapper.cityToCityDTO(savedCity);
-//    }
-
-
-//    @Override
-//    public CityDto getCityByName(String cityName) {
-//        Optional<City> optionalCity = cityRepository.findByCity(cityName);
-//        return optionalCity.map(cityMapper::cityToCityDTO).orElse(null);
-//    }
 
     @Override
     public List<CityDto> getAllCities() {
@@ -145,27 +87,4 @@ public class CityServiceImpl implements CityService {
         return cityRepository.findById(id);
     }
 
-//    @Override
-//    public CityDto updateCity(Long id, CityDto cityDto) {
-//        City existingCity = cityRepository.findById(id).orElse(null);
-//
-//        if (existingCity != null) {
-//            existingCity.setCity(cityDto.getCityName());
-//            City updatedCity = cityRepository.save(existingCity);
-//            return cityMapper.cityToCityDTO(updatedCity);
-//        }
-//
-//        return null; // Or throw an exception if needed
-//    }
-
-//    @Override
-//    public void deleteCity(Long id) {
-//        cityRepository.deleteById(id);
-//    }
-//
-//    @Override
-//    public CityDto getCityById(Long id) {
-//        Optional<City> cityOptional = cityRepository.findById(id);
-//        return cityOptional.map(cityMapper::cityToCityDTO).orElse(null);
-//    }
 }

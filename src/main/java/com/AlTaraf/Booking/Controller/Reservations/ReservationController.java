@@ -8,7 +8,6 @@ import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
-import com.AlTaraf.Booking.Exception.InsufficientFundsException;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationGetByIdMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationRequestMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationStatusMapper;
@@ -25,7 +24,6 @@ import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Service.unit.RoomDetails.RoomDetailsService;
 import com.AlTaraf.Booking.Service.unit.RoomDetailsForAvailableArea.RoomDetailsForAvailableAreaService;
 import com.AlTaraf.Booking.Service.unit.UnitService;
-import com.AlTaraf.Booking.Service.unit.availableArea.AvailableAreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -64,9 +62,6 @@ public class ReservationController {
 
     @Autowired
     RoomDetailsForAvailableAreaService roomDetailsForAvailableAreaService;
-
-    @Autowired
-    AvailableAreaService availableAreaService;
 
     @Autowired
     EvaluationRepository evaluationRepository;

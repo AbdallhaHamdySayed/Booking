@@ -23,16 +23,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OtpServiceImpl implements OtpService {
 
     @Value("${sms.api.url}")
-    private String smsApiUrl;
+    String smsApiUrl;
 
     @Value("${sms.api.token}")
-    private String smsApiToken;
+    String smsApiToken;
 
     @Value("${whats.api.url}")
-    private String whatsApiUrl;
+    String whatsApiUrl;
 
     @Value("${whats.api.token}")
-    private String whatsApiToken;
+    String whatsApiToken;
 
     private final Map<String, Integer> otpStore = new ConcurrentHashMap<>();
     private final MessageSource messageSource;
@@ -64,14 +64,9 @@ public class OtpServiceImpl implements OtpService {
 
         Integer storedOtp = otpStore.get(recipient);
         if (storedOtp != null && storedOtp.equals(otp)) {
-
             Optional<User> user = userRepository.findByPhone(recipient);
-
             user.get().setIsActive(true);
-
-            // userService.sav
             userRepository.save(user.get());
-
             ApiResponse response = new ApiResponse(200, messageSource.getMessage("otp_valid.message", null, locale));
             return ResponseEntity.ok(response);
         } else {
@@ -96,7 +91,7 @@ public class OtpServiceImpl implements OtpService {
     public ResponseEntity<?> sendOtp(String recipient, String acceptLanguageHeader) {
 
 
-        Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
+        Locale locale = LocaleContextHolder.getLocale();
 
         if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
             try {
@@ -105,7 +100,6 @@ public class OtpServiceImpl implements OtpService {
                     locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
                 }
             } catch (IllegalArgumentException e) {
-                // Handle the exception if needed
                 System.out.println("IllegalArgumentException: " + e);
             }
         }

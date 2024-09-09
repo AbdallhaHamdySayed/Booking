@@ -19,10 +19,10 @@ import java.util.Locale;
 public class StatusUnitController {
 
     @Autowired
-    private StatusUnitService statusUnitService;
+    StatusUnitService statusUnitService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @Autowired
     UnitService unitService;

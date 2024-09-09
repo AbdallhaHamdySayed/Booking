@@ -18,10 +18,10 @@ import java.util.List;
 public class OpenAPIConfig {
 
     @Value("${bezkoder.openapi.dev-url}")
-    private String devUrl;
+    String devUrl;
 
     @Value("${bezkoder.openapi.prod-url}")
-    private String prodUrl;
+    String prodUrl;
 
     @Bean
     public OpenAPI myOpenAPI() {

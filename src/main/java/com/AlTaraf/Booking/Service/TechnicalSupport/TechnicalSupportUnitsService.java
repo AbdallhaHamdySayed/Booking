@@ -1,6 +1,5 @@
 package com.AlTaraf.Booking.Service.TechnicalSupport;
 
-import com.AlTaraf.Booking.Entity.TechnicalSupport.TechnicalSupport;
 import com.AlTaraf.Booking.Entity.TechnicalSupport.TechnicalSupportForUnits;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

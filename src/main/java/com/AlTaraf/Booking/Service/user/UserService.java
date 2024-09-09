@@ -21,8 +21,6 @@ public interface UserService {
 
     User registerUser(UserRegisterDto userRegisterDto);
 
-    boolean isDuplicatePhoneNumber( String phone);
-
     User getUserById(Long id);
 
     void resetPasswordByPhone(String phone, PasswordResetDto passwordResetDto);

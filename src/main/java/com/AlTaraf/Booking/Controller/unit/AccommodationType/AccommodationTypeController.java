@@ -24,7 +24,7 @@ public class AccommodationTypeController {
     AccommodationTypeService accommodationTypeService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @GetMapping("/get-Accommodation-Type")
     public ResponseEntity<?> getAccommodationType(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {

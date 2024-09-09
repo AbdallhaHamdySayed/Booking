@@ -59,7 +59,7 @@ public class PaymentServiceImpl implements PaymentService {
     String apiShopTransaction;
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    SimpMessagingTemplate messagingTemplate;
 
     @Override
     public ResponseEntity<?> sendTransactionRequest(Long userId, String customRef) {
@@ -77,7 +77,6 @@ public class PaymentServiceImpl implements PaymentService {
             body.add("store_id", payment.getId());
             body.add("custom_ref", customRef);
             HttpEntity<MultiValueMap<String, String>> httpRequest = new HttpEntity<>(body, headers);
-            //System.out.println("user Id: " + userId);
 
             User user = userRepository.findByUserId(userId);
             payment.setUser(user);
@@ -89,17 +88,10 @@ public class PaymentServiceImpl implements PaymentService {
 
             if (transactionResponseDTO != null && transactionResponseDTO.getData() != null) {
                 Double amount = Double.parseDouble(transactionResponseDTO.getData().getAmount());
-                // System.out.println("gateway_name: " + transactionResponseDTO.getData().getGateway_name());
-                // System.out.println("gateway: " + transactionResponseDTO.getData().getGateway());
-                // System.out.println("custom_ref: " + transactionResponseDTO.getData().getCustom_ref());
-                // System.out.println("owner_phone: " + transactionResponseDTO.getData().getOwner_phone());
-                // System.out.println("amount: " + amount);
-                // System.out.println("user id: " + user.getId());
 
                 Transactions transactions = transactionsRepository.findById(3L).orElse(null);
 
                 TransactionsDetail transactionsDetail = new TransactionsDetail();
-//                transactionsDetail.setId(UUID.fromString(transactionResponseDTO.getData().getCustom_ref()));
                 transactionsDetail.setCustomRef(transactionResponseDTO.getData().getCustom_ref());
                 transactionsDetail.setTransactions(transactions);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -132,7 +124,6 @@ public class PaymentServiceImpl implements PaymentService {
                 messagingTemplate.convertAndSend("/topic/payment", response.getBody());
 
                 return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-//            }
             } else {
                 messagingTemplate.convertAndSend("/topic/payment", response.getBody());
                 System.out.println("else Transaction Payment: ");
@@ -189,15 +180,12 @@ public class PaymentServiceImpl implements PaymentService {
         ResponseEntity<String> response = restTemplate.postForEntity(apiShopUrl, httpRequest, String.class);
 
         try {
-            // Parse the JSON response
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            // Extract custom_ref and URL fields
             String customRef = rootNode.path("custom_ref").asText();
             String url = rootNode.path("url").asText();
 
-            // Create and return the response DTO
             PaymentResponse paymentResponse = new PaymentResponse(customRef, url);
 
             User user = userRepository.findByPhoneForUser(phone);

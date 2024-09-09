@@ -14,11 +14,7 @@ import java.util.List;
 public interface ReservationService {
     Reservations saveReservation(Long userId, Reservations reservations) throws InsufficientFundsException;
 
-    Reservations getReservationById(Long id); // Add this method to get a reservation by ID
-
-    List<Reservations> getReservationsForUserAndStatus(Long userId, String statusUnitName);
-
-    List<Reservations> findReservationByUnitId(Long unitId);
+    Reservations getReservationById(Long id);
 
     Unit findUnitByReservationId(Long reservationId);
 
@@ -29,8 +25,6 @@ public interface ReservationService {
     RoomAvailable getRoomAvailableByReservations(Long reservationId);
 
     Page<Reservations> getReservationForUserAndStatus(Long userId, Long statusUnitId , Pageable pageable);
-
-    void changeStatusUnitId(Long reservationId, Long newStatusUnitId);
 
     void deleteUnit(Long id);
 

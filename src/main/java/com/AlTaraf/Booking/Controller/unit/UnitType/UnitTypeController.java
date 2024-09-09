@@ -23,7 +23,7 @@ public class UnitTypeController {
     UnitTypeService unitTypeService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @GetMapping("/get-Unit-Type")
     public ResponseEntity<?> getAllUnitType(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {

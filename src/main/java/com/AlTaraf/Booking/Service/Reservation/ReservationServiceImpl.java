@@ -13,11 +13,8 @@ import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
-import com.AlTaraf.Booking.Exception.InsufficientFundsException;
-import com.AlTaraf.Booking.Mapper.Transactions.TotalTransactionsMapper;
 import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateHallsRepository;
-import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TotalTransactionsRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TransactionsDetailRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TransactionsRepository;
@@ -49,9 +46,6 @@ public class ReservationServiceImpl implements ReservationService {
     RoomDetailsForAvailableAreaRepository roomDetailsForAvailableAreaRepository;
 
     @Autowired
-    ReserveDateRepository reserveDateRepository;
-
-    @Autowired
     ReserveDateHallsRepository reserveDateHallsRepository;
 
     @Autowired
@@ -59,9 +53,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    TotalTransactionsMapper totalTransactionsMapper;
 
     @Autowired
     TotalTransactionsRepository totalTransactionsRepository;
@@ -75,12 +66,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Autowired
     WalletRepository walletRepository;
 
-//    @Autowired
-//    TotalTransactionsDto totalTransactionsDto;
-
-//    @Autowired
-//    TotalTransactions totalTransactions;
-
     @Override
     public Reservations saveReservation(Long userId, Reservations reservations) {
         return reservationRepository.save(reservations);
@@ -89,16 +74,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservations getReservationById(Long id) {
         return reservationRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<Reservations> getReservationsForUserAndStatus(Long userId, String statusUnitName) {
-        return reservationRepository.findAllReservationsByUserIdAndStatusUnitName(userId, statusUnitName);
-    }
-
-    @Override
-    public List<Reservations> findReservationByUnitId(Long unitId) {
-        return reservationRepository.findByUnitId(unitId);
     }
 
     @Override
@@ -129,13 +104,6 @@ public class ReservationServiceImpl implements ReservationService {
             AvailableArea availableArea = getAvailableAreaByReservations(reservationId);
             RoomDetailsForAvailableArea roomDetailsForAvailableArea = roomDetailsForAvailableAreaRepository.findByUnitIdAndAvailableAreaId(unit.getId(), availableArea.getId());
 
-//            List<ReserveDate> reserveDate = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableArea.getId(), unit.getId());
-
-//            for (ReserveDate date : reserveDate ) {
-//                System.out.println("set True");
-//                date.setReserve(true);
-//            }
-
 
             int numberRoom = roomDetailsForAvailableArea.getRoomNumber();
             if (numberRoom > 0) {
@@ -149,13 +117,6 @@ public class ReservationServiceImpl implements ReservationService {
 
             RoomAvailable roomAvailable = getRoomAvailableByReservations(reservationId);
             RoomDetails roomDetails = roomDetailsRepository.findRoomDetailsByUnitIdAndRoomAvailableId(unit.getId(), roomAvailable.getId());
-
-//            List<ReserveDate> reserveDate = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableArea.getId(), unit.getId());
-
-//            for (ReserveDate date : reserveDate ) {
-//                System.out.println("set True");
-//                date.setReserve(true);
-//            }
 
 
             int numberRoom = roomDetails.getRoomNumber();
@@ -189,7 +150,6 @@ public class ReservationServiceImpl implements ReservationService {
             totalTransactions.setTotalReservationsTransactions(totalReservationsTransactions);
             totalTransactions.setTotalTransactions(totalTransactionsNumber);
 
-//            totalTransactionsMapper.toEntity(totalTransactionsDto);
             totalTransactionsRepository.save(totalTransactions);
 
             Transactions transactions = transactionsRepository.findById(1L).orElse(null);
@@ -224,11 +184,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Page<Reservations> getReservationForUserAndStatus(Long userId, Long statusUnitId , Pageable pageable) {
         return reservationRepository.findByUserIdAndStatusUnitId(userId, statusUnitId, pageable);
-    }
-
-    @Override
-    public void changeStatusUnitId(Long reservationId, Long newStatusUnitId) {
-
     }
 
     @Override

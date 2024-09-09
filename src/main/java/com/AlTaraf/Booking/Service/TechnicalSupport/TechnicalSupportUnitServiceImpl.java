@@ -1,8 +1,6 @@
 package com.AlTaraf.Booking.Service.TechnicalSupport;
 
-import com.AlTaraf.Booking.Entity.TechnicalSupport.TechnicalSupport;
 import com.AlTaraf.Booking.Entity.TechnicalSupport.TechnicalSupportForUnits;
-import com.AlTaraf.Booking.Repository.technicalSupport.TechnicalSupportRepository;
 import com.AlTaraf.Booking.Repository.technicalSupport.TechnicalSupportUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

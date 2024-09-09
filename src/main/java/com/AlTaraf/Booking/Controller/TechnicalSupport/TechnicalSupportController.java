@@ -9,7 +9,6 @@ import com.AlTaraf.Booking.Payload.request.TechnicalSupport.TechnicalSupportUnit
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
 import com.AlTaraf.Booking.Service.TechnicalSupport.TechnicalSupportService;
 import com.AlTaraf.Booking.Service.TechnicalSupport.TechnicalSupportUnitsService;
-import com.AlTaraf.Booking.Service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -33,10 +32,7 @@ public class TechnicalSupportController {
     TechnicalSupportUnitsService technicalSupportUnitsService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @PostMapping("/submit")
     public ResponseEntity<?> submitTechnicalSupport( @RequestBody TechnicalSupportRequest technicalSupportRequest,

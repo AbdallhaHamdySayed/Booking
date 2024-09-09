@@ -17,13 +17,13 @@ import java.util.List;
 public class TransactionService {
 
     @Autowired
-    private TransactionsDetailRepository transactionsDetailRepository;
+    TransactionsDetailRepository transactionsDetailRepository;
 
     @Autowired
     TransactionDetailsMapper transactionDetailsMapper;
 
     @Autowired
-    private TotalTransactionsRepository totalTransactionsRepository;
+    TotalTransactionsRepository totalTransactionsRepository;
 
     public List<TotalTransactions> getAllTotalTransactions() {
         return totalTransactionsRepository.findAll();

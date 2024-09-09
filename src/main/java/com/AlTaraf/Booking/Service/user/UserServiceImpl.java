@@ -108,10 +108,6 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.existsByEmail(email);
     }
-    @Override
-    public boolean isDuplicatePhoneNumber(String phone) {
-        return userRepository.isDuplicatePhoneNumber(phone);
-    }
 
     @Override
     public Boolean existsByPhone(String phone) {
@@ -130,11 +126,9 @@ public class UserServiceImpl implements UserService {
 
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
-            // User with the same phone number exists, update roles if necessary
             Set<String> strRoles = userRegisterDto.getRoles();
             Set<Role> newRoles = new HashSet<>();
 
-            // Convert role names to Role entities
             if (strRoles != null) {
                 strRoles.forEach(roleName -> {
                     Role role = roleRepository.findByName(ERole.valueOf(roleName))
@@ -143,7 +137,6 @@ public class UserServiceImpl implements UserService {
                 });
             }
 
-            // Check if there are new roles to add
             boolean rolesChanged = false;
             for (Role newRole : newRoles) {
                 if (!existingUser.getRoles().contains(newRole)) {
@@ -152,16 +145,12 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-            // If roles are updated, save the user entity
             if (rolesChanged) {
                 return userRepository.save(existingUser);
             } else {
-                // If roles are not changed, return the existing user
                 return existingUser;
             }
         } else {
-            // User does not exist, proceed with registration
-            // Your existing registration code goes here
             Set<String> strRoles = userRegisterDto.getRoles();
             Set<Role> roles = new HashSet<>();
 
@@ -198,23 +187,16 @@ public class UserServiceImpl implements UserService {
                 });
             }
 
-            // Check if the city exists
             CityDtoSample DtoSample = userRegisterDto.getCity();
             City city = cityMapper.cityDTOSampleToCity(DtoSample);
-//            if (city == null) {
-//                throw new RuntimeException("City " + DtoSample.getCityName() + " not found");
-//            }
-
-            // Map UserRegisterDto to User entity
             User user = new User();
             user.setUsername(userRegisterDto.getName());
             user.setEmail(userRegisterDto.getEmail());
             user.setPassword(encoder.encode(userRegisterDto.getPassword()));
-            user.setPhone(phone); // Use the provided phone number
+            user.setPhone(phone);
             user.setCity(city);
             user.setRoles(roles);
 
-            // Save the user entity
             return userRepository.save(user);
         }
     }
@@ -227,30 +209,22 @@ public class UserServiceImpl implements UserService {
     }
 
     public void resetPasswordByPhone(String phone, PasswordResetDto passwordResetDto) {
-        // Retrieve the user from the database using phone number
         User user = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Update the password
         user.setPassword(encoder.encode(passwordResetDto.getNewPassword()));
 
-        // Save the updated user
         userRepository.save(user);
     }
 
     @Override
     public void updateUser(User user) {
-        // You might want to perform additional validation or business logic here
         userRepository.save(user);
     }
 
 
     public Optional<User> findByPhone(String phone) {
         return userRepository.findByPhone(phone);
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 
 
@@ -365,6 +339,5 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             deleteUserAndAssociatedEntities(user.getId());
         }
-//        userRepository.deleteUsersWithIsActiveNull();
     }
 }

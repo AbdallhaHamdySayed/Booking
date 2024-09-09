@@ -12,11 +12,9 @@ import com.AlTaraf.Booking.Payload.response.*;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Security.jwt.JwtUtils;
 import com.AlTaraf.Booking.Security.service.UserDetailsImpl;
-import com.AlTaraf.Booking.Service.cityAndRegion.CityService;
 import com.AlTaraf.Booking.Service.user.UserService;
 import com.AlTaraf.Booking.Service.user.otp.OtpService;
 import jakarta.validation.Valid;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,12 +24,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import org.slf4j.Logger;
 import java.util.stream.Collectors;
 
 @RestController

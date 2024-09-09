@@ -36,10 +36,6 @@ public class UnitSpecifications {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("region").get("id"), regionId);
     }
 
-//    public static Specification<Unit> byHotelClassificationId(Long hotelClassificationId) {
-//        return (root, query, criteriaBuilder) ->
-//                criteriaBuilder.equal(root.get("hotelClassification").get("id"), hotelClassificationId);
-//    }
 
     public static Specification<Unit> byHotelClassificationIds(Set<Long> hotelClassificationId) {
         return (root, query, criteriaBuilder) ->
@@ -77,9 +73,6 @@ public class UnitSpecifications {
         return (root, query, criteriaBuilder) -> criteriaBuilder.isMember(availablePeriodId, root.get("availablePeriodsHallsSet").get("id"));
     }
 
-//    public static Specification<Unit> byNewPriceHall(int newPriceHall) {
-//        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("newPriceHall"), newPriceHall);
-//    }
 
     public static Specification<Unit> byCapacityHalls(int capacityHalls) {
         return (root, query, criteriaBuilder) ->

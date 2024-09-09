@@ -3,12 +3,10 @@ package com.AlTaraf.Booking.Controller.unit.favorite;
 import com.AlTaraf.Booking.Dto.Unit.UnitDtoFavorite;
 import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.unit.Unit;
-import com.AlTaraf.Booking.Mapper.Unit.UnitFavoriteMapper;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
 import com.AlTaraf.Booking.Repository.unit.UnitRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.UserFavoriteUnit.UserFavoriteUnitService;
-import com.AlTaraf.Booking.Service.unit.UnitService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,23 +26,16 @@ import java.util.Locale;
 public class favoriteController {
 
     @Autowired
-    UnitService unitService;
+    UserFavoriteUnitService userFavoriteUnitService;
 
     @Autowired
-    private UnitFavoriteMapper unitFavoriteMapper;
+    UserRepository userRepository;
 
     @Autowired
-    private UserFavoriteUnitService userFavoriteUnitService;
-
-
-    @Autowired
-    private UserRepository userRepository;
+    UnitRepository unitRepository;
 
     @Autowired
-    private UnitRepository unitRepository;
-
-    @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
 
     @PostMapping("/user/{userId}/favoriteUnit/{unitId}")

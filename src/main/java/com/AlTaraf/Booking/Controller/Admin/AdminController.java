@@ -30,14 +30,8 @@ import com.AlTaraf.Booking.Payload.response.Unit.UnitGeneralResponseDto;
 import com.AlTaraf.Booking.Repository.Ads.AdsRepository;
 import com.AlTaraf.Booking.Repository.Ads.PackageAdsRepository;
 import com.AlTaraf.Booking.Repository.NotificationRepository;
-import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
-import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateHallsRepository;
-import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRepository;
-import com.AlTaraf.Booking.Repository.UserFavoriteUnit.UserFavoriteUnitRepository;
 import com.AlTaraf.Booking.Repository.technicalSupport.TechnicalSupportRepository;
 import com.AlTaraf.Booking.Repository.technicalSupport.TechnicalSupportUnitRepository;
-import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsForAvailableAreaRepository;
-import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.Ads.AdsService;
 import com.AlTaraf.Booking.Service.Reservation.ReservationService;
@@ -78,67 +72,40 @@ public class AdminController {
     UnitService unitService;
 
     @Autowired
-    private UnitFavoriteMapper unitFavoriteMapper;
+    UnitGeneralResponseMapper unitGeneralResponseMapper;
 
     @Autowired
-    EventHallsMapper eventHallsMapper;
+    AdsService adsService;
 
     @Autowired
-    UnitResidenciesResponseMapper unitResidenciesResponseMapper;
+    ReservationService reservationService;
 
     @Autowired
-    private UnitGeneralResponseMapper unitGeneralResponseMapper;
+    AdsRepository adsRepository;
 
     @Autowired
-    private AdsService adsService;
+    UnitDashboardMapper unitDashboard;
 
     @Autowired
-    private ReservationService reservationService;
-
-    @Autowired
-    private ReservationRepository reservationRepository;
-
-    @Autowired
-    private AdsRepository adsRepository;
-
-    @Autowired
-    private ReserveDateRepository reserveDateRepository;
-
-    @Autowired
-    private ReserveDateHallsRepository reserveDateHallsRepository;
-
-    @Autowired
-    private UnitDashboardMapper unitDashboard;
-
-    @Autowired
-    private UserFavoriteUnitRepository userFavoriteUnitRepository;
-
-    @Autowired
-    private RoomDetailsForAvailableAreaRepository roomDetailsForAvailableAreaRepository;
-
-    @Autowired
-    private RoomDetailsRepository roomDetailsRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
     UserDashboardMapper userDashboardMapper;
 
     @Autowired
-    private PackageAdsRepository packageAdsRepository;
+    PackageAdsRepository packageAdsRepository;
 
     @Autowired
-    private TechnicalSupportRepository technicalSupportRepository;
+    TechnicalSupportRepository technicalSupportRepository;
 
     @Autowired
-    private TechnicalSupportUnitRepository technicalSupportUnitRepository;
+    TechnicalSupportUnitRepository technicalSupportUnitRepository;
 
     @Autowired
-    private TechnicalSupportMapper technicalSupportMapper;
+    TechnicalSupportMapper technicalSupportMapper;
 
     @Autowired
-    private TechnicalSupportUnitsMapper technicalSupportUnitsMapper;
+    TechnicalSupportUnitsMapper technicalSupportUnitsMapper;
 
     @Autowired
     AdsStatusMapper adsStatusMapper;

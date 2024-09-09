@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface FileStorageService {
-    void storeForUnit(MultipartFile file, Long userId, MultipartFile video) throws IOException;
     void storeForUnit(Long userId, MultipartFile video) throws IOException;
     void storeForUnit(MultipartFile file, Long userId) throws IOException;
     FileForAds storeForAds(MultipartFile file, Long userId, Long unitId) throws IOException;

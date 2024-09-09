@@ -1,7 +1,6 @@
 package com.AlTaraf.Booking.Controller.Calender;
 
 import com.AlTaraf.Booking.Dto.calender.ReserveDateHallsDeleteDto;
-import com.AlTaraf.Booking.Dto.calender.ReserveDateHallsDto;
 import com.AlTaraf.Booking.Dto.calender.ReserveDateHallsRequest;
 import com.AlTaraf.Booking.Entity.Calender.Halls.ReserveDateHalls;
 import com.AlTaraf.Booking.Entity.Calender.ReserveDate;

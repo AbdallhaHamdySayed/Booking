@@ -24,7 +24,7 @@ public class HotelClassificationController {
     HotelClassificationService hotelClassificationService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @GetMapping("/get-All-Hotel-Classifications")
     public ResponseEntity<?> getAllHotelClassifications(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {

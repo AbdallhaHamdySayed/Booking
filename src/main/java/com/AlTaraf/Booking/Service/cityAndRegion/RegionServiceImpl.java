@@ -17,16 +17,15 @@ import java.util.stream.Collectors;
 public class RegionServiceImpl implements RegionService {
 
     @Autowired
-    private RegionRepository regionRepository;
+    RegionRepository regionRepository;
 
     @Autowired
-    private CityRepository cityRepository;
+    CityRepository cityRepository;
 
     @Override
     public List<RegionDto> getRegionsByCityId(Long cityId) {
         List<Region> regions = regionRepository.findByCityId(cityId);
 
-        // Use the mapper to convert entities to DTOs
         return regions.stream()
                 .map(RegionMapper.INSTANCE::entityToDto)
                 .collect(Collectors.toList());
@@ -48,7 +47,6 @@ public class RegionServiceImpl implements RegionService {
             region.setCity(city);
             regionRepository.save(region);
 
-//            city.getRegions().add(region);
             cityRepository.save(city);
 
             return new RegionDto(region);

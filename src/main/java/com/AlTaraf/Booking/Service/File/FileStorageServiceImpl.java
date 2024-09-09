@@ -51,49 +51,6 @@ public class FileStorageServiceImpl implements FileStorageService{
     AdsRepository adsRepository;
 
     @Override
-    public void storeForUnit(MultipartFile file, Long userId, MultipartFile video) throws IOException {
-
-        String fileNameImage = StringUtils.cleanPath(file.getOriginalFilename());
-        String fileNameVideo = StringUtils.cleanPath(video.getOriginalFilename());
-
-        FileForUnit fileForUnitImage = new FileForUnit(fileNameImage, file.getContentType(), file.getBytes());
-        FileForUnit fileForUnitVideo = new FileForUnit(fileNameVideo, video.getContentType(), video.getBytes());
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        fileForUnitImage.setUser(user);
-        fileForUnitVideo.setUser(user);
-
-         fileForUnitRepository.save(fileForUnitImage);
-         fileForUnitRepository.save(fileForUnitVideo);
-
-        String fileDownloadImageUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
-                .path("/files-for-unit/")
-                .path(fileForUnitImage.getId())
-                .toUriString();
-
-        String fileDownloadVideoUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
-                .path("/files-for-unit/")
-                .path(fileForUnitVideo.getId())
-                .toUriString();
-
-
-        fileForUnitVideo.setFileVideoUrl(fileDownloadVideoUri);
-
-
-        fileForUnitImage.setFileImageUrl(fileDownloadImageUri);
-
-        fileForUnitRepository.save(fileForUnitImage);
-        fileForUnitRepository.save(fileForUnitVideo);
-
-    }
-
-    @Override
     public void storeForUnit(Long userId, MultipartFile video) throws IOException {
 
         String fileNameVideo = StringUtils.cleanPath(video.getOriginalFilename());

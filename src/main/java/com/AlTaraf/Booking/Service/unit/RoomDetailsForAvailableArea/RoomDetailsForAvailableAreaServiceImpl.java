@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 public class RoomDetailsForAvailableAreaServiceImpl implements RoomDetailsForAvailableAreaService {
 
     @Autowired
-    private RoomDetailsForAvailableAreaRepository roomDetailsForAvailableAreaRepository;
+    RoomDetailsForAvailableAreaRepository roomDetailsForAvailableAreaRepository;
 
     @Autowired
-    private UnitRepository unitRepository;
+    UnitRepository unitRepository;
 
     @Autowired
-    private AvailableAreaRepository availableAreaRepository;
+    AvailableAreaRepository availableAreaRepository;
 
     @Override
     public void addRoomDetails(Long unitId, Long roomAvailableId, RoomDetailsForAvailableArea roomDetailsForAvailableArea) {
@@ -33,16 +33,7 @@ public class RoomDetailsForAvailableAreaServiceImpl implements RoomDetailsForAva
         roomDetailsForAvailableArea.setAvailableArea(availableArea);
 
         if (unit.getPrice() == 0 ) {
-
             unit.setPrice(roomDetailsForAvailableArea.getNewPrice());
-
-//            if (roomDetailsForAvailableArea.getNewPrice() < roomDetailsForAvailableArea.getOldPrice()) {
-//                unit.setPrice(roomDetailsForAvailableArea.getNewPrice());
-//                System.out.println("roomDetailsForAvailableArea real Price: " + unit.getPrice());
-//            } else {
-//                unit.setPrice(roomDetailsForAvailableArea.getOldPrice());
-//                System.out.println("roomDetailsForAvailableArea real Old Price: " + unit.getPrice());
-//            }
         }
 
         roomDetailsForAvailableAreaRepository.save(roomDetailsForAvailableArea);

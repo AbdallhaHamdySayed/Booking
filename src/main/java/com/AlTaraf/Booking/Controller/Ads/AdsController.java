@@ -12,7 +12,6 @@ import com.AlTaraf.Booking.Exception.InsufficientFundsException;
 import com.AlTaraf.Booking.Mapper.Ads.AdsMapper;
 import com.AlTaraf.Booking.Mapper.Ads.AdsStatusMapper;
 import com.AlTaraf.Booking.Mapper.Unit.UnitFavoriteMapper;
-import com.AlTaraf.Booking.Mapper.Unit.UnitGeneralResponseMapper;
 import com.AlTaraf.Booking.Payload.request.Ads.AdsRequestDto;
 import com.AlTaraf.Booking.Payload.request.Ads.AdsResponseStatusDto;
 import com.AlTaraf.Booking.Payload.response.Ads.adsForSliderResponseDto;
@@ -23,7 +22,6 @@ import com.AlTaraf.Booking.Repository.Wallet.WalletRepository;
 import com.AlTaraf.Booking.Repository.unit.statusUnit.StatusRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.Ads.AdsService;
-import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Service.unit.UnitService;
 import com.AlTaraf.Booking.Service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;

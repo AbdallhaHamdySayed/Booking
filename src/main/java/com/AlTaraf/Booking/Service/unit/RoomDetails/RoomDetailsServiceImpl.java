@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 public class RoomDetailsServiceImpl implements RoomDetailsService{
 
     @Autowired
-    private RoomDetailsRepository roomDetailsRepository;
+    RoomDetailsRepository roomDetailsRepository;
 
     @Autowired
-    private UnitRepository unitRepository;
+    UnitRepository unitRepository;
 
     @Autowired
-    private RoomAvailableRepository roomAvailableRepository;
+    RoomAvailableRepository roomAvailableRepository;
 
     @Override
     public void addRoomDetails(Long unitId, Long roomAvailableId, RoomDetails roomDetails) {
@@ -33,16 +33,7 @@ public class RoomDetailsServiceImpl implements RoomDetailsService{
         roomDetails.setRoomAvailable(roomAvailable);
 
         if (unit.getPrice() == 0 ) {
-
             unit.setPrice(roomDetails.getNewPrice());
-
-//            if (roomDetails.getNewPrice() < roomDetails.getOldPrice()) {
-//                unit.setPrice(roomDetails.getNewPrice());
-//                System.out.println("roomDetails real Price: " + unit.getPrice());
-//            } else {
-//                unit.setPrice(roomDetails.getNewPrice());
-//                System.out.println("roomDetails real Old Price: " + unit.getPrice());
-//            }
         }
 
         roomDetailsRepository.save(roomDetails);

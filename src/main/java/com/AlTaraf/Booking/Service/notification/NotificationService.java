@@ -3,7 +3,6 @@ package com.AlTaraf.Booking.Service.notification;
 import com.AlTaraf.Booking.Dto.Notifications.PushNotificationRequest;
 import com.AlTaraf.Booking.Entity.Role.Role;
 import com.AlTaraf.Booking.Entity.User.User;
-import com.AlTaraf.Booking.Entity.enums.ERole;
 import com.AlTaraf.Booking.Mapper.Notification.NotificationMapper;
 import com.AlTaraf.Booking.Repository.NotificationRepository;
 import com.AlTaraf.Booking.Repository.role.RoleRepository;
@@ -26,7 +25,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 public class NotificationService {
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
     NotificationRepository notificationRepository;
@@ -37,7 +36,6 @@ public class NotificationService {
     @Autowired
     RoleRepository roleRepository;
 
-//    private final String SERVER_KEY = "AAAA22Rv9Jk:APA91bEcJoOKJXEr2-fdzu3aE9RbLFseLRhF4tWj1tLNpg-uqu5R6o1pjHfjMyMo888W9bFsGniaW59wpf1-X8MeUarL4tzwZF4nl-qi8xh2zgPn3RijNogAbFo00hoabzarS5Qwfsxe";
     private final String SERVER_KEY = "AAAAhedicPc:APA91bGAf6fu3fMrWlMZtW1vmILgLmbHz6Ot5xmmiUEdjq13GuhRHIkHSALL6g-hLOIhnqZ-Odj6_E6v9dduMNJqovCDx10v8Z2K9EcVuxNblYsGY2TkP_TsvS5sXrCvFMWLO7yTvYWZ";
     private final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
 
@@ -47,7 +45,6 @@ public class NotificationService {
         User user = userRepository.findByUserId(userId);
 
 
-//        assert user != null;
         String jsonPayload = createJsonPayload(title, body, user.getDeviceToken());
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -79,20 +76,8 @@ public class NotificationService {
                 + "}";
     }
 
-    public Page<Notifications> getNotificationsByUserId(Long userId, Pageable pageable) {
-        return notificationRepository.findByUserIdAndRoleIdIsNull(userId, pageable);
-    }
-
     public Page<Notifications> findAllByUserIdAndRoleId(Long userId, Long roleId, Pageable pageable) {
         return notificationRepository.findAllByUserIdAndRoleId(userId, roleId, pageable);
-    }
-
-    public Page<Notifications> findAllByRoleIdAndUserIdIsNull( Long roleId, Pageable pageable) {
-        return notificationRepository.findAllByRoleId( roleId, pageable);
-    }
-
-    public Page<Notifications> findAllByRoleIdIsNullAndUserIdIsNull(Pageable pageable) {
-        return notificationRepository.findAllByRoleIdIsNullAndUserIdIsNull(pageable);
     }
 
     public void processNotification(PushNotificationRequest request) throws IOException, InterruptedException {
@@ -102,7 +87,6 @@ public class NotificationService {
         notification.setRole(role);
         notificationRepository.save(notification);
 
-//        User user = userRepository.findByRolesNameAndUserId(ERole.ROLE_GUEST, request.getUserId());
         if (request.getUserId() != null) {
             sendPushMessage(request.getTitle(), request.getBody(), request.getUserId());
         }
@@ -115,7 +99,6 @@ public class NotificationService {
         notification.setRole(role);
         notificationRepository.save(notification);
 
-//        User user = userRepository.findByRolesNameAndUserId(ERole.ROLE_GUEST, request.getUserId());
         if (request.getUserId() != null) {
             sendPushMessage(request.getTitle(), request.getBody(), request.getUserId());
         }

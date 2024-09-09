@@ -24,7 +24,7 @@ public class getAllFeatureController {
     FeatureService featureService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @GetMapping("/get-All-Feature")
     public ResponseEntity<?> getAllFeature(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {

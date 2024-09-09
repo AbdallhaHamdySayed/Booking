@@ -23,7 +23,7 @@ public class AvailableAreaController {
     AvailableAreaService availableAreaService;
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     @GetMapping("/get-Available-Area")
     public ResponseEntity<?> getAllAvailableArea(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
