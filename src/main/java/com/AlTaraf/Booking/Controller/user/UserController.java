@@ -94,11 +94,9 @@ public class UserController {
                 .map(ERole::valueOf)
                 .collect(Collectors.toSet());
 
+        boolean existsByPhoneNumber= userService.existsByPhone(userRegisterDto.getPhoneNumber());
 
-        boolean existsByEmailAndRolesOrPhoneNumberAndRoles = userService.existsByEmailAndRolesOrPhoneNumberAndRoles(userRegisterDto.getPhoneNumber(), roles);
-
-
-        if (existsByEmailAndRolesOrPhoneNumberAndRoles) {
+        if (existsByPhoneNumber) {
             CheckApiResponse response = new CheckApiResponse(409, messageSource.getMessage("authentication.message", null, LocaleContextHolder.getLocale()), false);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(response);
