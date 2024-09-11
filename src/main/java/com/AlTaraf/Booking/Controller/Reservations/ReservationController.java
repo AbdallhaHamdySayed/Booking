@@ -331,19 +331,6 @@ public class ReservationController {
 
     }
 
-//    @DeleteMapping("Delete/Reservation/{id}")
-//    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
-//
-//        try {
-//            reservationService.updateStatusForReservation(id, 4L);
-//            reservationService.deleteUnit(id);
-//            ApiResponse response = new ApiResponse(200, "Reservation_Deleted_Successfully.message!");
-//            return ResponseEntity.status(HttpStatus.OK).body(response);
-//        } catch (Exception e) {
-//            ApiResponse response = new ApiResponse(404, "Not_found.message");
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-//        }
-//    }
 
     @GetMapping("/get-lesser-arrival-date")
     public ResponseEntity<?> getUserReservationsLesserArrivalDate( @RequestParam(defaultValue = "0") int page,
@@ -372,8 +359,5 @@ public class ReservationController {
         return new ResponseEntity<>(reservationRequestDtoList, HttpStatus.OK);
 
     }
-
-
-
 
 }
