@@ -16,7 +16,6 @@ import java.util.List;
 public class ReservationStatus {
     private Long reservationId;
     private String imagePath;
-    private String videoPaths;
     private Long unitId;
     private String unitName;
     private CityDtoSample cityDto;

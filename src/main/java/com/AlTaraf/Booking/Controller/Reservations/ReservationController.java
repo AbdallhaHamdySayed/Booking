@@ -332,7 +332,7 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/get-lesser-arrival-date")
+    @GetMapping("/get-current-reservations")
     public ResponseEntity<?> getUserReservationsLesserArrivalDate( @RequestParam(defaultValue = "0") int page,
                                                                     @RequestParam(defaultValue = "2") int size,
                                                                     @RequestParam(name = "userId", required = false) Long userId) {
@@ -346,7 +346,7 @@ public class ReservationController {
         return new ResponseEntity<>(reservationRequestDtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/get-greater-arrival-date")
+    @GetMapping("/get-previously-reservations")
     public ResponseEntity<?> getUserReservationsGreaterArrivalDate(@RequestParam(defaultValue = "0") int page,
                                                                     @RequestParam(defaultValue = "2") int size,
                                                                     @RequestParam(name = "userId", required = false) Long userId) {
