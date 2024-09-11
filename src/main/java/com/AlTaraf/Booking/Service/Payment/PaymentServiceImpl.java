@@ -163,10 +163,6 @@ public class PaymentServiceImpl implements PaymentService {
         paymentEntity.setEmail(email);
         paymentEntity.setCustom_ref(paymentEntity.getCustom_ref());
 
-        System.out.println("paymentEntity getId(): " + paymentEntity.getId());
-        System.out.println("id: " + paymentEntity.getId());
-        System.out.println("custom_ref: " + paymentEntity.getCustom_ref());
-
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("id", paymentEntity.getId());
         body.add("amount", String.valueOf(amount));
@@ -217,8 +213,6 @@ public class PaymentServiceImpl implements PaymentService {
         payemntRepository.save(paymentEntity);
 
         sendTransactionRequest(user.getId(), paymentDto.getCustom_ref());
-
-        System.out.println("test");
 
         return null;
     }
