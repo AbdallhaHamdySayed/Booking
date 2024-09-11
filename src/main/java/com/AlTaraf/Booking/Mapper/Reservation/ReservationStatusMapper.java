@@ -7,15 +7,14 @@ import com.AlTaraf.Booking.Payload.response.Reservation.ReservationStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ReservationStatusMapper {
     @Mapping(source = "id", target = "reservationId")
     @Mapping(source = "user.deviceToken", target = "deviceToken")
-    @Mapping(target = "imagePaths", expression = "java(extractFilePaths(reservation.getUnit().getFileForUnits()))")
-//    @Mapping(target = "videoPaths", expression = "java(extractFirstFileVideoPath(reservation.getUnit().getFileForUnits()))")
+    @Mapping(target = "imagePath", expression = "java(extractFilePaths(reservation.getUnit().getFileForUnits()))")
     @Mapping(source = "unit.id", target = "unitId")
     @Mapping(source = "unit.nameUnit", target = "unitName")
     @Mapping(source = "unit.city", target = "cityDto")
@@ -28,17 +27,16 @@ public interface ReservationStatusMapper {
 
     List<ReservationStatus> toReservationStatusDtoList(List<Reservations> reservationsList);
 
-    public default List<String> extractFilePaths(List<FileForUnit> fileForUnits) {
+    default String extractFilePaths(List<FileForUnit> fileForUnits) {
+        if (fileForUnits == null || fileForUnits.isEmpty()) {
+            return null; // or return a default value if preferred
+        }
         return fileForUnits.stream()
+                .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
+                        .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
-                .collect(Collectors.toList());
+                .findFirst()
+                .orElse(null);
     }
-
-//    default String extractFirstFileVideoPath(List<FileForUnit> fileForUnits) {
-//        if (fileForUnits == null || fileForUnits.isEmpty()) {
-//            return null; // or return a default value if preferred
-//        }
-//        return fileForUnits.get(0).getFileVideoUrl();
-//    }
 
 }

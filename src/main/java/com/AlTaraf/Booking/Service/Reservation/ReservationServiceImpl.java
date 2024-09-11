@@ -214,5 +214,21 @@ public class ReservationServiceImpl implements ReservationService {
     public List<Reservations> findReservationsByDepartureDateBeforeAndUserIdAndNotEvaluating(LocalDate date, Long userId){
         return reservationRepository.findReservationsByDepartureDateBeforeAndUserIdAndNotEvaluating(date, userId);
     }
+
+    @Override
+    public Page<Reservations> getUserReservationsLesserArrivalDate(Long userId, Pageable pageable) {
+
+        LocalDate currentDate = LocalDate.now();
+        return reservationRepository.findUserReservationsWithStatusAndLesserArrivalDate(userId, currentDate, pageable);
+    }
+
+    @Override
+    public Page<Reservations> getUserReservationsGreaterArrivalDate(Long userId, Pageable pageable) {
+
+        LocalDate currentDate = LocalDate.now();
+        return reservationRepository.findUserReservationsWithStatusAndGreaterArrivalDate(userId, currentDate, pageable);
+    }
+
+
 }
 

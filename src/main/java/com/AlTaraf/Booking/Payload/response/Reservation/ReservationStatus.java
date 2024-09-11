@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReservationStatus {
     private Long reservationId;
-    private List<String> imagePaths;
+    private String imagePath;
     private String videoPaths;
     private Long unitId;
     private String unitName;

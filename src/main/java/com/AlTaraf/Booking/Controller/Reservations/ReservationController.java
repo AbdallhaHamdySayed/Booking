@@ -345,4 +345,35 @@ public class ReservationController {
 //        }
 //    }
 
+    @GetMapping("/get-lesser-arrival-date")
+    public ResponseEntity<?> getUserReservationsLesserArrivalDate( @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "2") int size,
+                                                                    @RequestParam(name = "userId", required = false) Long userId) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Reservations> reservations = reservationService.getUserReservationsLesserArrivalDate(userId, pageable);
+
+        List<ReservationStatus> reservationRequestDtoList = reservationStatusMapper.toReservationStatusDtoList(reservations.getContent());
+
+        return new ResponseEntity<>(reservationRequestDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-greater-arrival-date")
+    public ResponseEntity<?> getUserReservationsGreaterArrivalDate(@RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "2") int size,
+                                                                    @RequestParam(name = "userId", required = false) Long userId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Reservations> reservations = reservationService.getUserReservationsGreaterArrivalDate(userId, pageable);
+
+        List<ReservationStatus> reservationRequestDtoList = reservationStatusMapper.toReservationStatusDtoList(reservations.getContent());
+
+        return new ResponseEntity<>(reservationRequestDtoList, HttpStatus.OK);
+
+    }
+
+
+
+
 }

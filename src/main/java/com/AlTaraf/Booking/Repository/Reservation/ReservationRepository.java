@@ -47,4 +47,16 @@ public interface ReservationRepository extends JpaRepository<Reservations, Long>
 
     @Query("SELECT r FROM Reservations r WHERE r.departureDate <= :date AND r.user.id = :userId AND r.isEvaluating IS NULL")
     List<Reservations> findReservationsByDepartureDateBeforeAndUserIdAndNotEvaluating(@Param("date") LocalDate date, @Param("userId") Long userId);
+
+    @Query("SELECT r FROM Reservations r WHERE r.user.id = :userId AND r.dateOfArrival >= :currentDate AND r.statusUnit.id = 2")
+    Page<Reservations> findUserReservationsWithStatusAndLesserArrivalDate(
+            @Param("userId") Long userId,
+            @Param("currentDate") LocalDate currentDate,
+            Pageable pageable);
+
+    @Query("SELECT r FROM Reservations r WHERE r.user.id = :userId AND r.dateOfArrival < :currentDate AND r.statusUnit.id = 2")
+    Page<Reservations> findUserReservationsWithStatusAndGreaterArrivalDate(
+            @Param("userId") Long userId,
+            @Param("currentDate") LocalDate currentDate,
+            Pageable pageable);
 }

@@ -35,4 +35,8 @@ public interface ReservationService {
     void setCommissionForAllReservations(Double commission);
 
     List<Reservations> findReservationsByDepartureDateBeforeAndUserIdAndNotEvaluating(LocalDate date, Long userId);
+
+    Page<Reservations> getUserReservationsLesserArrivalDate(Long userId, Pageable pageable);
+
+    Page<Reservations> getUserReservationsGreaterArrivalDate(Long userId, Pageable pageable);
 }
