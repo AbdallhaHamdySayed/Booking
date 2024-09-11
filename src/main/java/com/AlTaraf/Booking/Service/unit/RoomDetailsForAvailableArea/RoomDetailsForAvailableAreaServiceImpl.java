@@ -36,6 +36,10 @@ public class RoomDetailsForAvailableAreaServiceImpl implements RoomDetailsForAva
             unit.setPrice(roomDetailsForAvailableArea.getNewPrice());
         }
 
+        if (unit.getOldPrice() == 0) {
+            unit.setOldPrice(roomDetailsForAvailableArea.getOldPrice());
+        }
+
         roomDetailsForAvailableAreaRepository.save(roomDetailsForAvailableArea);
     }
 
