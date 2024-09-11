@@ -351,19 +351,7 @@ public class Unit extends Auditable<String> {
         }
     }
 
-    private boolean checkFavorite() {
-        if (securityContext != null && securityContext.getAuthentication() != null) {
-            Object principal = securityContext.getAuthentication().getPrincipal();
-            if (principal instanceof UserDetails) {
-                Optional<User> currentUserOptional = userRepository.findByUsername(((UserDetails) principal).getUsername());
-                if (currentUserOptional.isPresent()) {
-                    User currentUser = currentUserOptional.get();
-                    return userFavoriteUnitRepository.existsByUserAndUnit(currentUser, this);
-                }
-            }
-        }
-        return false;
-    }
+
 
     public void incrementTotalEvaluation() {
         if (this.totalEvaluation == null) {
