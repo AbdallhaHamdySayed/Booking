@@ -49,6 +49,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     UserRepository userRepository;
 
+    @Value("${api.shop.store_id}")
+    String apiShopStoreId;
+
     @Value("${api.shop.url}")
     String apiShopUrl;
 
@@ -154,11 +157,13 @@ public class PaymentServiceImpl implements PaymentService {
         headers.set("X-RateLimit-Remaining", "29");
 
         Payment paymentEntity = new Payment();
+        paymentEntity.setId(apiShopStoreId);
         paymentEntity.setAmount(amount);
         paymentEntity.setPhone(phone);
         paymentEntity.setEmail(email);
         paymentEntity.setCustom_ref(paymentEntity.getCustom_ref());
 
+        System.out.println("paymentEntity getId(): " + paymentEntity.getId());
         System.out.println("id: " + paymentEntity.getId());
         System.out.println("custom_ref: " + paymentEntity.getCustom_ref());
 
