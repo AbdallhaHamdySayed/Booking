@@ -53,22 +53,6 @@ public class Reservations extends Auditable<String> {
     @JoinColumn(name = "EVALUATION_ID")
     private Evaluation evaluation;
 
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(
-//            name = "reservation_room_available",
-//            joinColumns = @JoinColumn(name = "RESERVATION_ID"),
-//            inverseJoinColumns = @JoinColumn(name = "ROOM_AVAILABLE_ID")
-//    )
-//    private Set<RoomAvailable> roomAvailableSet = new HashSet<>();
-//
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(
-//            name = "reservation_available_area",
-//            joinColumns = @JoinColumn(name = "RESERVATION_ID"),
-//            inverseJoinColumns = @JoinColumn(name = "AVAILABLE_AREA_ID"))
-//    private Set<AvailableArea> availableAreaSet = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "ROOM_AVAILABLE_ID")
     private RoomAvailable roomAvailable;
@@ -103,13 +87,6 @@ public class Reservations extends Auditable<String> {
             joinColumns = @JoinColumn(name = "RESERVATION_ID"),
             inverseJoinColumns = @JoinColumn(name = "available_periods_id"))
     private Set<AvailablePeriods> availablePeriodsHallsSet = new HashSet<>();
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(
-//            name = "reservation_Room_Details",
-//            joinColumns = @JoinColumn(name = "RESERVATION_ID"),
-//            inverseJoinColumns = @JoinColumn(name = "ROOM_DETAILS_ID"))
-//    private Set<RoomDetails> roomDetailsSet = new HashSet<>();
 
     @Column(name = "ADULTS_ALLOWED")
     private int adultsAllowed;
