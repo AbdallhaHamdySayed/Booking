@@ -9,7 +9,6 @@ import org.mapstruct.Mappings;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface UnitFavoriteMapper {
@@ -37,9 +36,6 @@ public interface UnitFavoriteMapper {
 
     List<UnitDtoFavorite> toUnitFavoriteDtoList(List<Unit> units);
 
-    // Define a method to extract file paths from ImageData entities
-
-    // Define a method to extract the first file path from FileForUnit entities
     default String extractFirstFileImagePath(List<FileForUnit> fileForUnits) {
         if (fileForUnits == null || fileForUnits.isEmpty()) {
             return null; // or return a default value if preferred

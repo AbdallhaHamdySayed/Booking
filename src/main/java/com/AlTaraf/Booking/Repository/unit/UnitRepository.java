@@ -15,35 +15,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificationExecutor<Unit> {
 
-    Page<Unit> findByFavoriteTrue(Pageable pageable);
-
-    Page<Unit> findByHotelClassification_NameIn(List<String> hotelClassificationNames, Pageable pageable);
-
     @Query("SELECT u FROM Unit u JOIN u.evaluation e WHERE u.statusUnit.id = 2 ORDER BY e.score DESC")
     Page<Unit> findByEvaluationInOrderByEvaluationScoreDesc(Pageable pageable);
 
-//    @Query("SELECT u FROM Unit u WHERE u.statusUnit.id = 2 AND u.createdDate BETWEEN :startOfDay AND :endOfDay")
-@Query(value = "SELECT * FROM unit WHERE STATUS_ID = 2 ORDER BY unit_id DESC LIMIT 5", nativeQuery = true)
-List<Unit> findByNewlyAdded();
-
-    Page<Unit> findByStatusUnit_Name(String name, Pageable pageable);
+    @Query(value = "SELECT * FROM unit WHERE STATUS_ID = 2 ORDER BY unit_id DESC LIMIT 5", nativeQuery = true)
+    List<Unit> findByNewlyAdded();
 
     @Query("SELECT u FROM Unit u WHERE u.accommodationType.id = :accommodationTypeId AND u.statusUnit.id = 2")
     Page<Unit> findByAccommodationType_Id(Long accommodationTypeId, Pageable pageable);
 
-//    Page<Unit> findByNameUnitContainingIgnoreCase(String nameUnit, Pageable pageable);
-
-    List<Unit> findAllByUserIdAndStatusUnitName(Long userId, String statusUnitName);
     @Query("SELECT u FROM Unit u WHERE u.user.id = :userId AND u.statusUnit.id = :statusUnitId")
     Page<Unit> findAllByUserIdAndStatusUnitId(Long userId, Long statusUnitId, Pageable pageable);
-
-    Page<Unit> findByUser_IdAndFavorite(Long userId, boolean favorite, Pageable pageable);
 
     @Query("SELECT u FROM Unit u WHERE u.city = :city AND u.statusUnit.id = 2")
     Page<Unit> findByCity(City city, Pageable pageable);
@@ -67,10 +54,6 @@ List<Unit> findByNewlyAdded();
 
     List<Unit> findAll(Specification<Unit> spec);
 
-    @Query("SELECT u FROM Unit u JOIN u.roomAvailableSet ra WHERE ra = :roomAvailable")
-    List<Unit> findByRoomAvailable(@Param("roomAvailable") RoomAvailable roomAvailable);
-
-
     @Query("SELECT u FROM Unit u WHERE LOWER(u.nameUnit) LIKE LOWER(concat('%', :nameUnit, '%')) AND u.unitType.id = :unitTypeId AND u.statusUnit.id = 2")
     Page<Unit> findByNameUnitAndUnitType(@Param("nameUnit") String nameUnit, @Param("unitTypeId") Long unitTypeId, Pageable pageable );
 
@@ -82,8 +65,6 @@ List<Unit> findByNewlyAdded();
 
     @Query("SELECT u FROM Unit u WHERE u.nameUnit = :nameUnit AND u.unitType.id = :unitTypeId")
     List<Unit> findByNameUnitAndUnitTypeForMap(@Param("nameUnit") String nameUnit, @Param("unitTypeId") Long unitTypeId );
-
-//    Page<Unit> findByRoomAvailableSet_NameContainingIgnoreCase(String roomAvailableName, Pageable pageable);
 
     @Query("SELECT u FROM Unit u JOIN u.roomAvailableSet ra WHERE LOWER(ra.arabicName) LIKE LOWER(concat('%', :roomAvailableName, '%')) AND u.statusUnit.id = 2")
     Page<Unit> findByRoomAvailableName(@Param("roomAvailableName") String roomAvailableName, Pageable pageable);

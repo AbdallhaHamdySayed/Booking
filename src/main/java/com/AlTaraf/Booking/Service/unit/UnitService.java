@@ -18,10 +18,10 @@ public interface UnitService {
 
     Unit saveUnit( Unit unit);
 
-    Page<UnitDtoFavorite> getUnitByEvaluationInOrderByEvaluationScoreDesc(int page, int size);
+    Page<UnitDtoFavorite> getUnitByEvaluationInOrderByEvaluationScoreDesc(Long userId, int page, int size);
     Unit getUnitById(Long id);
 
-    List<UnitDtoFavorite> getNewlyAdded();
+    List<UnitDtoFavorite> getNewlyAdded(Long userId);
 
     Page<UnitDtoFavorite> getUnitsByAccommodationTypeName(Long accommodationTypeId, int page, int size, Sort sort);
     Page<UnitDashboard> getUnitsByAccommodationTypeNameDashboard(Long accommodationTypeId, int page, int size);

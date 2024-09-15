@@ -54,8 +54,6 @@ import com.AlTaraf.Booking.Service.unit.RoomDetails.RoomDetailsService;
 import com.AlTaraf.Booking.Service.unit.RoomDetailsForAvailableArea.RoomDetailsForAvailableAreaService;
 import com.AlTaraf.Booking.Service.unit.UnitService;
 import com.AlTaraf.Booking.Service.unit.availableArea.AvailableAreaService;
-import com.AlTaraf.Booking.Service.unit.feature.FeatureService;
-import com.AlTaraf.Booking.Service.unit.statusUnit.StatusUnitService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -393,8 +391,9 @@ public class UnitController {
         }
     }
 
-    @GetMapping("/get-units-by-evaluation")
+    @GetMapping("/get-units-by-evaluation/{userId}")
     public ResponseEntity<?> getUnitsByEvaluationNames(
+            @PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "2") int size,
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
@@ -415,7 +414,7 @@ public class UnitController {
                 }
             }
 
-            Page<UnitDtoFavorite> units = unitService.getUnitByEvaluationInOrderByEvaluationScoreDesc(page, size);
+            Page<UnitDtoFavorite> units = unitService.getUnitByEvaluationInOrderByEvaluationScoreDesc(userId, page, size);
 
             if (!units.isEmpty()) {
                 return new ResponseEntity<>(units, HttpStatus.OK);
@@ -425,14 +424,14 @@ public class UnitController {
             }
         } catch (Exception e) {
             logger.error("Error occurred while processing get-units-by-evaluation request", e);
-            System.out.println("Error Message : " + e);
             ApiResponse response = new ApiResponse(500, messageSource.getMessage("internal_server_error.message", null, LocaleContextHolder.getLocale()));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    @GetMapping("/newly-added")
-    public ResponseEntity<?> getUnitsAddedLastMonth(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+    @GetMapping("/newly-added/{userId}")
+    public ResponseEntity<?> getUnitsAddedLastMonth(@PathVariable Long userId,
+                                                    @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
 
         try {
 
@@ -450,7 +449,7 @@ public class UnitController {
                 }
             }
 
-            List<UnitDtoFavorite> units = unitService.getNewlyAdded();
+            List<UnitDtoFavorite> units = unitService.getNewlyAdded(userId);  // return Last 5 units newly added
 
             if (!units.isEmpty()) {
                 return new ResponseEntity<>(units, HttpStatus.OK);
@@ -460,7 +459,6 @@ public class UnitController {
             }
         }  catch (Exception e) {
             System.out.println("Error occurred while processing get-units-by-evaluation request: " + e);
-            System.out.println("Error Message : " + e);
             ApiResponse response = new ApiResponse(500, messageSource.getMessage("internal_server_error.message", null, LocaleContextHolder.getLocale()) + " " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }

@@ -9,8 +9,6 @@ import com.AlTaraf.Booking.Entity.Calender.ReserveDate;
 import com.AlTaraf.Booking.Entity.Calender.ReserveDateRoomDetails;
 import com.AlTaraf.Booking.Entity.Calender.ReserveDateUnit;
 import com.AlTaraf.Booking.Entity.Evaluation.Evaluation;
-import com.AlTaraf.Booking.Entity.File.FileForAds;
-import com.AlTaraf.Booking.Entity.File.FileForUnit;
 import com.AlTaraf.Booking.Entity.Reservation.Reservations;
 import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.cityAndregion.City;
@@ -29,7 +27,6 @@ import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRepositor
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateUnitRepository;
 import com.AlTaraf.Booking.Repository.UserFavoriteUnit.UserFavoriteUnitRepository;
-import com.AlTaraf.Booking.Repository.technicalSupport.TechnicalSupportRepository;
 import com.AlTaraf.Booking.Repository.technicalSupport.TechnicalSupportUnitRepository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsForAvailableAreaRepository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsRepository;
@@ -37,6 +34,7 @@ import com.AlTaraf.Booking.Repository.unit.UnitRepository;
 import com.AlTaraf.Booking.Repository.unit.statusUnit.StatusRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.Ads.AdsService;
+import com.AlTaraf.Booking.Service.UserFavoriteUnit.UserFavoriteUnitService;
 import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Specifications.UnitSpecifications;
 import jakarta.persistence.EntityNotFoundException;
@@ -128,6 +126,9 @@ public class UnitServiceImpl implements UnitService {
     @Autowired
     MessageSource messageSource;
 
+    @Autowired
+    UserFavoriteUnitService userFavoriteUnitService;
+
     public Unit saveUnit(Unit unit) {
         try {
             return unitRepository.save(unit);
@@ -140,39 +141,40 @@ public class UnitServiceImpl implements UnitService {
 
 
     @Override
-    public Page<UnitDtoFavorite> getUnitByEvaluationInOrderByEvaluationScoreDesc(int page, int size) {
+    public Page<UnitDtoFavorite> getUnitByEvaluationInOrderByEvaluationScoreDesc(Long userId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
         Page<Unit> units = unitRepository.findByEvaluationInOrderByEvaluationScoreDesc(pageRequest);
+
+        for (Unit unit : units.getContent()) {
+            if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unit.getId())){
+                assert  unit.getId() != null;
+                unit.setFavorite(true);
+            }
+        }
 
         return units.map(unitFavoriteMapper::toUnitFavoriteDto);
     }
 
     @Override
-    public List<UnitDtoFavorite> getNewlyAdded() {
-
-
+    public List<UnitDtoFavorite> getNewlyAdded(Long userId) {
 
         List<Unit> units = unitRepository.findByNewlyAdded();
 
+        for (Unit unitDtoFavorite : units) {
+            if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitDtoFavorite.getId())){
+                assert unitDtoFavorite.getId() != null;
+                unitDtoFavorite.setFavorite(true);
+            }
+        }
 
         return units.stream()
-                .map(unitFavoriteMapper::toUnitFavoriteDto)
-                .collect(Collectors.toList());
+            .map(unitFavoriteMapper::toUnitFavoriteDto)
+            .collect(Collectors.toList());
     }
 
     public Unit getUnitById(Long id) {
         return unitRepository.findById(id).orElse(null);
-    }
-
-    public Unit getUnitById(Long unitId, Sort sort) {
-        List<Unit> units = unitRepository.findById(unitId)
-                .map(Collections::singletonList)
-                .orElse(Collections.emptyList());
-
-        units.sort(Comparator.comparing(Unit::getId)); // Sort the list by unit ID
-
-        return units.isEmpty() ? null : units.get(0);
     }
 
     @Override
