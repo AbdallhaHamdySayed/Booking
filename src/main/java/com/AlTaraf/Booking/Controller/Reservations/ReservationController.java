@@ -1,6 +1,8 @@
 package com.AlTaraf.Booking.Controller.Reservations;
 
+import com.AlTaraf.Booking.Dto.Comment.CommentRequest;
 import com.AlTaraf.Booking.Dto.Notifications.PushNotificationRequest;
+import com.AlTaraf.Booking.Entity.Comment;
 import com.AlTaraf.Booking.Entity.Evaluation.Evaluation;
 import com.AlTaraf.Booking.Entity.Reservation.Reservations;
 import com.AlTaraf.Booking.Entity.User.User;
@@ -8,6 +10,7 @@ import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
+import com.AlTaraf.Booking.Mapper.Comment.CommentMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationGetByIdMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationRequestMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationStatusMapper;
@@ -19,6 +22,7 @@ import com.AlTaraf.Booking.Repository.Evaluation.EvaluationRepository;
 import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
 import com.AlTaraf.Booking.Repository.unit.statusUnit.StatusRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
+import com.AlTaraf.Booking.Service.Comment.CommentService;
 import com.AlTaraf.Booking.Service.Reservation.ReservationService;
 import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Service.unit.RoomDetails.RoomDetailsService;
@@ -83,6 +87,12 @@ public class ReservationController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CommentMapper commentMapper;
+
+    @Autowired
+    CommentService commentService;
 
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
@@ -254,6 +264,7 @@ public class ReservationController {
     @PatchMapping("/{reservationId}/set-evaluation")
     public ResponseEntity<?> setEvaluation(@PathVariable Long reservationId,
                                            @RequestParam Long evaluationId,
+                                           @RequestBody String content,
                                            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
 
         Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
@@ -289,6 +300,15 @@ public class ReservationController {
     existingReservation.setIsEvaluating(true);
 
     unitService.updateEvaluationsForUnits(unit.getId());
+
+    CommentRequest commentRequest = new CommentRequest();
+    commentRequest.setUnitId(unit.getId());
+    commentRequest.setUserId(userId);
+    commentRequest.setContent(content);
+
+    Comment commentToSave = commentMapper.toComment(commentRequest);
+
+    commentService.saveComment(commentToSave);
 
     try {
         // Save the updated Reservation
