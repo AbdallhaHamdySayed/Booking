@@ -4,6 +4,7 @@ import com.AlTaraf.Booking.Dto.Unit.FeatureForHalls.FeatureForHallsDto;
 import com.AlTaraf.Booking.Dto.Unit.availablePeriodsHalls.AvailablePeriodsDto;
 import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.CityDtoSample;
 import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.RegionDto;
+import com.AlTaraf.Booking.Entity.Comment;
 import com.AlTaraf.Booking.Entity.unit.accommodationType.AccommodationType;
 import com.AlTaraf.Booking.Entity.unit.availableArea.AvailableArea;
 import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea;
@@ -31,6 +32,7 @@ public class UnitGeneralResponseDto {
     private Long unitId;
     private UnitType unitType;
     private List<String> imagePaths;
+    private List<Comment> comments;
     private String videoPaths;
     private String nameUnit;
     private String description;

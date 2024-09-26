@@ -3,6 +3,7 @@ package com.AlTaraf.Booking.Mapper.Unit;
 import com.AlTaraf.Booking.Dto.Image.FileForUnitDTO;
 import com.AlTaraf.Booking.Dto.Unit.FeatureForHalls.FeatureForHallsDto;
 import com.AlTaraf.Booking.Dto.Unit.availablePeriodsHalls.AvailablePeriodsDto;
+import com.AlTaraf.Booking.Entity.Comment;
 import com.AlTaraf.Booking.Entity.File.FileForUnit;
 import com.AlTaraf.Booking.Entity.unit.AvailablePeriods.AvailablePeriods;
 import com.AlTaraf.Booking.Entity.unit.Unit;
@@ -24,6 +25,7 @@ public interface UnitGeneralResponseMapper {
     @Mapping(source = "unitType", target = "unitType")
     @Mapping(source = "user.deviceToken", target = "deviceToken")
     @Mapping(target = "imagePaths", expression = "java(extractFileImagePaths(unit.getFileForUnits()))")
+    @Mapping(target = "comments", expression = "java(extractComment(unit.getComments()))")
     @Mapping(target = "videoPaths", expression = "java(extractFirstFileVideoPath(unit.getFileForUnits()))")
     @Mapping(source = "nameUnit", target = "nameUnit")
     @Mapping(source = "description", target = "description")
@@ -91,6 +93,16 @@ public interface UnitGeneralResponseMapper {
                 .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
                         .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
+                .collect(Collectors.toList());
+    }
+
+    default List<Comment> extractComment(List<Comment> comments) {
+        if (comments == null) {
+            return Collections.emptyList();
+        }
+        return comments.stream()
+                .sorted(Comparator.comparing(Comment::getCreatedDate)
+                        .thenComparing(Comment::getCreatedTime))
                 .collect(Collectors.toList());
     }
 

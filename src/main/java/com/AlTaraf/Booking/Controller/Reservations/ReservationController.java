@@ -286,6 +286,8 @@ public class ReservationController {
 
     Long userId = existingReservation.getUser().getId();
 
+    User user = userRepository.findById(userId).orElse(null);
+
     if (existingReservation == null) {
         return ResponseEntity.notFound().build();
     }
@@ -303,7 +305,14 @@ public class ReservationController {
 
     CommentRequest commentRequest = new CommentRequest();
     commentRequest.setUnitId(unit.getId());
-    commentRequest.setUserId(userId);
+        assert user != null;
+        commentRequest.setUserName(user.getUsername());
+        if (user.getFileForProfile() != null) {
+            commentRequest.setFileDownloadUri(user.getFileForProfile().getFileDownloadUri());
+        } else {
+            commentRequest.setFileDownloadUri(null); // or some default value, if needed
+        }
+        commentRequest.setPhoneNumber(user.getPhone());
     commentRequest.setContent(content);
 
     Comment commentToSave = commentMapper.toComment(commentRequest);

@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.Entity.unit;
 
+import com.AlTaraf.Booking.Entity.Comment;
 import com.AlTaraf.Booking.Entity.Evaluation.Evaluation;
 import com.AlTaraf.Booking.Entity.File.FileForUnit;
 import com.AlTaraf.Booking.Entity.User.User;
@@ -212,6 +213,10 @@ public class Unit extends Auditable<String> {
 
     @Column(name = "TOTAL_EVALUATION")
     private Integer totalEvaluation = 0; // Total number of evaluations
+
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments;
 
     public Unit() {
         this.statusUnit = new StatusUnit();
