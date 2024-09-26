@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 public interface CommentMapper {
 
     @Mapping(source = "content", target = "content")
-    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "userName", target = "userName")
+    @Mapping(source = "phoneNumber", target = "phoneUser")
+    @Mapping(source = "fileDownloadUri", target = "fileDownloadUri")
     @Mapping(source = "unitId", target = "unit.id")
     Comment toComment(CommentRequest commentRequest);
 

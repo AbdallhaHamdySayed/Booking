@@ -3,10 +3,14 @@ package com.AlTaraf.Booking.Entity;
 
 import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.unit.Unit;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Table(name = "COMMENTS")
 @Entity
@@ -25,9 +29,22 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "UNIT_ID")
+    @JsonBackReference
     private Unit unit;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
+    private String phoneUser;
+
+    private String userName;
+
+    private String fileDownloadUri;
+
+    private LocalDate createdDate;
+
+    private LocalTime createdTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDate.now();
+        this.createdTime = LocalTime.now();
+    }
 }

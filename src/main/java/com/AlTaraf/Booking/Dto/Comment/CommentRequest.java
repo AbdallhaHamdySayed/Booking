@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentRequest {
     private String content;
-    private Long userId;
+    private String userName;
+    private String fileDownloadUri;
+    private String phoneNumber;
     private Long unitId;
 }
