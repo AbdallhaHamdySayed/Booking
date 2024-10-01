@@ -192,7 +192,12 @@ public class PaymentServiceImpl implements PaymentService {
             User user = userRepository.findByPhoneForUser(phone);
             paymentEntity.setUser(user);
 
-            sendTransactionRequest(user.getId(), customRef);
+            System.out.println("Initial Payment by phone User Id: " + user.getId());
+            payemntRepository.save(paymentEntity);
+
+            System.out.println("Initial Payment User Id: " + paymentEntity.getUser().getId());
+
+//            sendTransactionRequest(user.getId(), customRef);
 
             return new ResponseEntity<>(paymentResponse, response.getStatusCode());
 
@@ -205,10 +210,33 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ResponseEntity<?> backEndUrl(PaymentDto paymentDto) {
 
+        System.out.println("-------------------------");
+        System.out.println("Test Backend API");
+        System.out.println("-------------------------");
+
         Payment paymentEntity = payemntRepository.findByCustomRef(paymentDto.getCustom_ref());
+
+        System.out.println("-------------------------");
+        System.out.println("paymentDto.getCustom_ref():  " + paymentDto.getCustom_ref());
+        System.out.println("-------------------------");
+
         paymentEntity.setPayment_method(paymentDto.getPayment_method());
 
-        User user = userRepository.findByPhoneForUser(paymentDto.getCustomer_phone());
+        System.out.println("-------------------------");
+        System.out.println("payment get payment method: " + paymentEntity.getPayment_method());
+        System.out.println("-------------------------");
+
+        System.out.println("-------------------------");
+        System.out.println("paymentDto.getCustomer_phone():  " + paymentDto.getCustomer_phone());
+        System.out.println("-------------------------");
+
+        String phoneNumberWithoutPlus = paymentDto.getCustomer_phone().replace("+", "");
+
+
+        User user = userRepository.findByPhoneForUser(phoneNumberWithoutPlus);
+        System.out.println("-------------------------");
+        System.out.println("user Id: " + user.getId());
+
         paymentEntity.setUser(user);
         payemntRepository.save(paymentEntity);
 
@@ -216,4 +244,5 @@ public class PaymentServiceImpl implements PaymentService {
 
         return null;
     }
+
 }

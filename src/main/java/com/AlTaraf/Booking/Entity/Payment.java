@@ -1,19 +1,24 @@
 package com.AlTaraf.Booking.Entity;
 
 import com.AlTaraf.Booking.Entity.User.User;
+import com.AlTaraf.Booking.Entity.common.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "PAYMENT")
 @Data
 @AllArgsConstructor
-public class Payment {
+public class Payment extends Auditable<String> {
 
     @Id
     @NotNull
