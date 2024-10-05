@@ -21,15 +21,12 @@ import com.AlTaraf.Booking.Entity.unit.subFeature.SubFeature;
 import com.AlTaraf.Booking.Entity.unit.typesOfApartments.TypeOfApartment;
 import com.AlTaraf.Booking.Entity.unit.typesOfEventHalls.TypesOfEventHalls;
 import com.AlTaraf.Booking.Entity.unit.unitType.UnitType;
-import com.AlTaraf.Booking.Repository.UserFavoriteUnit.UserFavoriteUnitRepository;
-import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.context.SecurityContext;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -130,7 +127,7 @@ public class Unit extends Auditable<String> {
     private StatusUnit statusUnit;
 
     // قاعات المناسبات البداية
-    private int capacityHalls;
+    private Integer capacityHalls = 0;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -196,15 +193,6 @@ public class Unit extends Auditable<String> {
     @JoinColumn(name = "EVALUATION_ID")
     private Evaluation evaluation;
 
-    @Transient
-    private UserFavoriteUnitRepository userFavoriteUnitRepository;
-
-    @Transient
-    private UserRepository userRepository;
-
-    @Transient
-    private SecurityContext securityContext;
-
     @Column(name = "ADULTS_ALLOWED")
     private Integer adultsAllowed = 0;
 
@@ -218,12 +206,19 @@ public class Unit extends Auditable<String> {
     @JsonManagedReference
     private List<Comment> comments;
 
+    @Column(name = "room_available_count")
+    private Integer roomAvailableCount;
+
+    @Column(name = "PeriodsCount")
+    private Long periodCount;
+    
     public Unit() {
         this.statusUnit = new StatusUnit();
         this.statusUnit.setId(1L);
         this.favorite = false;
         this.dateOfArrival = LocalDate.now(); // Set dateOfArrival to the current date
         this.departureDate = LocalDate.now().plusDays(30); // Set departureDate to 30 days after dateOfArrival
+        this.roomAvailableCount = 0;
     }
 
 

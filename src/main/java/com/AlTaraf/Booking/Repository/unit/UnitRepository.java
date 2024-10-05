@@ -3,7 +3,6 @@ package com.AlTaraf.Booking.Repository.unit;
 import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.cityAndregion.City;
 import com.AlTaraf.Booking.Entity.unit.Unit;
-import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,7 +14,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificationExecutor<Unit> {
@@ -103,4 +104,79 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
     long countByAccommodationTypeIdFive();
     @Query("SELECT COUNT(u) FROM Unit u WHERE u.accommodationType.id = 6")
     long countByAccommodationTypeIdSix();
+
+
+    @Query("SELECT u FROM Unit u WHERE " +
+            "(:cityId IS NULL OR u.city.id = :cityId) AND " +
+            "(:regionId IS NULL OR u.region.id = :regionId) AND " +
+            "(:unitTypeId IS NULL OR u.unitType.id = :unitTypeId) AND " +
+            "(:typesOfEventHallsId IS NULL OR u.typesOfEventHalls.id = :typesOfEventHallsId) AND " +
+            "(:availablePeriodsHallsSetId IS NULL OR :availablePeriodsHallsSetId IN (SELECT aph.id FROM u.availablePeriodsHallsSet aph)) AND " +
+            "(:accommodationTypeIds IS NULL OR u.accommodationType.id IN :accommodationTypeIds) AND " +
+            "(:hotelClassificationIds IS NULL OR u.hotelClassification.id IN :hotelClassificationIds) AND " +
+            "(:basicFeaturesSetIds IS NULL OR EXISTS (SELECT 1 FROM u.basicFeaturesSet bf WHERE bf.id IN :basicFeaturesSetIds)) AND " +
+            "(:featuresHallsSetIds IS NULL OR EXISTS (SELECT 1 FROM u.featuresHallsSet fh WHERE fh.id IN :featuresHallsSetIds)) AND " +
+            "(:subFeaturesSetIds IS NULL OR EXISTS (SELECT 1 FROM u.subFeaturesSet sf WHERE sf.id IN :subFeaturesSetIds)) AND " +
+            "(:evaluationIds IS NULL OR u.evaluation.id IN :evaluationIds) AND " +
+            "(:minCapacityHalls IS NULL OR u.capacityHalls >= :minCapacityHalls) AND " +
+            "(:maxCapacityHalls IS NULL OR u.capacityHalls <= :maxCapacityHalls) AND " +
+            "(:minAdultsAllowed IS NULL OR u.adultsAllowed >= :minAdultsAllowed) AND " +
+            "(:maxAdultsAllowed IS NULL OR u.adultsAllowed <= :maxAdultsAllowed) AND " +
+            "(:minChildrenAllowed IS NULL OR u.childrenAllowed >= :minChildrenAllowed) AND " +
+            "(:maxChildrenAllowed IS NULL OR u.childrenAllowed <= :maxChildrenAllowed) AND " +
+            "(:priceMin IS NULL OR u.price >= :priceMin) AND " +
+            "(:priceMax IS NULL OR u.price <= :priceMax) AND " +
+            "u.dateOfArrival >= :dateOfArrival " +
+            "AND u.departureDate <= :departureDate " +
+            "AND u.id NOT IN (SELECT r.unit.id FROM ReserveDateHalls r " +
+            "JOIN r.dateInfoList d " +
+            "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
+            "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) " +
+            "AND u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
+            "JOIN rdu.dateInfoList d WHERE d.date BETWEEN :dateOfArrival AND :departureDate) AND " +
+            "u.statusUnit.id = 2")
+    Page<Unit> findFilteringTwo(@Param("cityId") Long cityId,
+                                @Param("regionId") Long regionId,
+                                @Param("unitTypeId") Long unitTypeId,
+                                @Param("typesOfEventHallsId") Long typesOfEventHallsId,
+                                @Param("availablePeriodsHallsSetId") Long availablePeriodsHallsSetId,
+                                @Param("accommodationTypeIds") Set<Long> accommodationTypeIds,
+                                @Param("hotelClassificationIds") Set<Long> hotelClassificationIds,
+                                @Param("basicFeaturesSetIds") Set<Long> basicFeaturesSetIds,
+                                @Param("featuresHallsSetIds") Set<Long> featuresHallsSetIds,
+                                @Param("subFeaturesSetIds") Set<Long> subFeaturesSetIds,
+                                @Param("evaluationIds") Set<Long> evaluationIds,
+                                @Param("minCapacityHalls") Integer minCapacityHalls,
+                                @Param("maxCapacityHalls") Integer maxCapacityHalls,
+                                @Param("minAdultsAllowed") Integer minAdultsAllowed,
+                                @Param("maxAdultsAllowed") Integer maxAdultsAllowed,
+                                @Param("minChildrenAllowed") Integer minChildrenAllowed,
+                                @Param("maxChildrenAllowed") Integer maxChildrenAllowed,
+                                @Param("priceMin") Integer priceMin,
+                                @Param("priceMax") Integer priceMax,
+                                @Param("dateOfArrival") LocalDate dateOfArrival,
+                                @Param("departureDate") LocalDate departureDate,
+                                Pageable pageable);
+
+
+    @Query("SELECT u FROM Unit u " +
+            "WHERE u.dateOfArrival >= :dateOfArrival " +
+            "AND u.departureDate <= :departureDate " +
+            "AND u.id NOT IN (SELECT r.unit.id FROM ReserveDateHalls r " +
+            "JOIN r.dateInfoList d " +
+            "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
+            "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) " +
+            "AND u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
+            "JOIN rdu.dateInfoList d WHERE d.date BETWEEN :dateOfArrival AND :departureDate)")
+    List<Unit> findAvailableUnitsByDateRange(@Param("dateOfArrival") LocalDate dateOfArrival,
+                                             @Param("departureDate") LocalDate departureDate);
+
+
+    @Query(value = "SELECT COUNT(unit_id) FROM available_periods_unit_halls WHERE unit_id = :unitId", nativeQuery = true)
+    Long countUnitOccurrences(@Param("unitId") Long unitId);
+
+//    @Query("SELECT CASE WHEN COUNT(u.id) = 2 THEN true ELSE false END " +
+//            "FROM Unit u JOIN u.availablePeriodsHallsSet ap " +
+//            "WHERE u.id = :unitId")
+//    Boolean isCountOfUnitEqualToTwo(@Param("unitId") Long unitId);
 }

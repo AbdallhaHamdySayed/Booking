@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "DATE_INFO_HALLS")
@@ -20,7 +20,7 @@ public class DateInfoHalls {
     private Long id;
 
     @Column(name = "DATE")
-    private Date date;
+    private LocalDate date;
 
     @Column(name = "IS_EVENING")
     private boolean isEvening;

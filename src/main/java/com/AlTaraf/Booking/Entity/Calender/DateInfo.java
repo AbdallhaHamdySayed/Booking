@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "DATE_INFO")
@@ -20,8 +20,7 @@ public class DateInfo {
     private Long id;
 
     @Column(name = "DATE")
-    private Date date;
-
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "RESERVE_DATE_ID")
