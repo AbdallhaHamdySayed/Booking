@@ -151,6 +151,10 @@ public class ReservationController {
 
             Long userId = reservationRequestDto.getUserId();
 
+            Unit unit = unitService.getUnitById(reservationRequestDto.getUnitId());
+
+            Long userIdLessor = unit.getUser().getId();
+
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
@@ -168,6 +172,10 @@ public class ReservationController {
 //            PushNotificationRequest notificationRequest = new PushNotificationRequest("رسالة من النظام",LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_units.message", null, LocaleContextHolder.getLocale()) + " " + savedUnit.getNameUnit()"تم قبول طلب اضافة وحدة ",userId);
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_reservation.message", null, LocaleContextHolder.getLocale()) + " " + reservationsToSave.getUnit().getNameUnit(),userId);
             notificationService.processNotificationForGuest(notificationRequest);
+
+
+            PushNotificationRequest notificationRequest2 = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_reservation_request.message", null, LocaleContextHolder.getLocale()) + " " + reservationsToSave.getUnit().getNameUnit(),userIdLessor);
+            notificationService.processNotification(notificationRequest2);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(200, messageSource.getMessage("Successful_Reservation.message", null, LocaleContextHolder.getLocale())) );
         } catch (Exception e) {
