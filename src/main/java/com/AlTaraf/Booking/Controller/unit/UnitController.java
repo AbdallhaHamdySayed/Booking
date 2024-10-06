@@ -38,7 +38,6 @@ import com.AlTaraf.Booking.Payload.response.Unit.EventHallsResponse;
 import com.AlTaraf.Booking.Payload.response.Unit.UnitGeneralResponseDto;
 import com.AlTaraf.Booking.Payload.response.Unit.UnitResidenciesResponseDto;
 import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
-import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRepository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsForAvailableAreaRepository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.unit.UnitRepository;
@@ -203,10 +202,16 @@ public class UnitController {
                 unitToSave.setLoungeOldPrice(0);
             }
 
+            if (unitToSave.getCapacityHalls() == null) {
+                unitToSave.setCapacityHalls(0);
+            }
+
             unitToSave.calculatePrice();
             unitToSave.calculateOldPrice();
 
             Unit savedUnit = unitService.saveUnit(unitToSave);
+
+            savedUnit.setPeriodCount(unitRepository.countUnitOccurrences(savedUnit.getId()));
 
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_units.message", null, LocaleContextHolder.getLocale()) + " " + savedUnit.getNameUnit(),unitRequestDto.getUserId());
             notificationService.processNotification(notificationRequest);
@@ -378,6 +383,12 @@ public class UnitController {
 
             // Save the updated unit in the database
             Unit updatedUnit = unitService.saveUnit(unitToUpdate);
+
+            updatedUnit.setPeriodCount(unitRepository.countUnitOccurrences(updatedUnit.getId()));
+
+            System.out.println("updatedUnit.getPeriodCount(): " + updatedUnit.getPeriodCount());
+
+            unitService.saveUnit(unitToUpdate);
 
             // Return a success response with the updated unitId in the body
             return ResponseEntity.ok( messageSource.getMessage("unit_updated.message", null, LocaleContextHolder.getLocale())
@@ -866,9 +877,9 @@ public class UnitController {
     }
 
     @GetMapping("By-Id-General/{id}/{userId}")
-    public ResponseEntity<?> getUnitById(@PathVariable Long id,
-                                         @PathVariable Long userId,
-                                         @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+    public ResponseEntity<?> getUnitByIdAndUserId(@PathVariable Long id,
+                                                  @PathVariable Long userId,
+                                                  @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
         try {
 
             Locale locale = LocaleContextHolder.getLocale();
@@ -893,6 +904,35 @@ public class UnitController {
                 assert unitForFavorite != null;
                 unitForFavorite.setFavorite(true);
             }
+
+            UnitGeneralResponseDto responseDto = unitGeneralResponseMapper.toResponseDto(unit);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            System.out.println("Error Message : " + e);
+            ApiResponse response = new ApiResponse(500, messageSource.getMessage("internal_server_error.message", null, LocaleContextHolder.getLocale()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("By-Id-General/{id}")
+    public ResponseEntity<?> getUnitById(@PathVariable Long id,
+                                         @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+        try {
+
+            Locale locale = LocaleContextHolder.getLocale();
+
+            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+                try {
+                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                    if (!languageRanges.isEmpty()) {
+                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException: " + e);
+                }
+            }
+
+            Unit unit = unitService.getUnitById(id);
 
             UnitGeneralResponseDto responseDto = unitGeneralResponseMapper.toResponseDto(unit);
             return ResponseEntity.ok(responseDto);
@@ -968,7 +1008,7 @@ public class UnitController {
             return unitsPage.map(unit -> unitFavoriteMapper.toUnitFavoriteDto(unit));
     }
 
-    @GetMapping("/Filtering/{userId}")
+    @GetMapping("/Filtering-without-filter/{userId}")
     public ResponseEntity<?> filterUnits(
             @RequestParam(required = false) Long cityId,
             @RequestParam(required = false) Long regionId,
@@ -1033,6 +1073,95 @@ public class UnitController {
                 }
             }
             List<UnitDtoFavorite>  unitFavoriteDtoList = unitFavoriteMapper.toUnitFavoriteDtoList(units);
+            return ResponseEntity.ok(unitFavoriteDtoList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse(204, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));
+        }
+    }
+
+    @GetMapping("/Filtering/{userId}")
+    public ResponseEntity<?> getFilterUnits(
+            @RequestParam(required = false) Long cityId,
+            @RequestParam(required = false) Long regionId,
+            @RequestParam(required = false) Long unitTypeId,
+            @RequestParam(required = false) Long hallsTypeId,
+            @RequestParam(required = false) Long availablePeriodsHallsId,
+            @RequestParam(required = false) Set<Long> accommodationTypeIds,
+            @RequestParam(required = false) Set<Long> hotelClassificationIds,
+            @RequestParam(required = false) Set<Long> basicFeaturesIds,
+            @RequestParam(required = false) Set<Long> featuresHallsIds,
+            @RequestParam(required = false) Set<Long> subFeaturesIds,
+            @RequestParam(required = false) Set<Long> evaluationIds,
+            @RequestParam(required = false) Integer minCapacityHalls,
+            @RequestParam(required = false) Integer maxCapacityHalls,
+            @RequestParam(required = false) Integer minAdultsAllowed,
+            @RequestParam(required = false) Integer maxAdultsAllowed,
+            @RequestParam(required = false) Integer minChildrenAllowed,
+            @RequestParam(required = false) Integer maxChildrenAllowed,
+            @RequestParam(required = false) Integer priceMin,
+            @RequestParam(required = false) Integer priceMax,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfArrival,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+            @RequestParam(required = false) String sortDirectionByPrice,
+            @RequestParam(required = false) String sortDirectionByEvaluationId,
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+
+        try {
+            Locale locale = LocaleContextHolder.getLocale();
+
+            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+                try {
+                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                    if (!languageRanges.isEmpty()) {
+                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException: " + e);
+                }
+            }
+
+            Sort sort = Sort.unsorted();
+
+            if (sortDirectionByPrice != null) {
+                sort = getSortByPrice(sortDirectionByPrice);
+            }
+
+            if (sortDirectionByEvaluationId != null) {
+                sort = sort.and(getSortByEvaluationId(sortDirectionByEvaluationId));
+            }
+
+
+            Pageable pageable = PageRequest.of(page, size, sort);
+
+            Page<Unit> unitsPage = unitService.getFiltering(cityId, regionId, unitTypeId, hallsTypeId, availablePeriodsHallsId,
+                    accommodationTypeIds, hotelClassificationIds, basicFeaturesIds, featuresHallsIds, subFeaturesIds,
+                    evaluationIds,
+                    minCapacityHalls, maxCapacityHalls,
+                    minAdultsAllowed, maxAdultsAllowed,
+                    minChildrenAllowed, maxChildrenAllowed,
+                    priceMin, priceMax,
+                    dateOfArrival, departureDate, pageable);
+
+
+
+            for (Unit unit: unitsPage.getContent()){
+                Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
+
+//                if (unit.getId() == 41) {
+//                    Boolean count = unitRepository.isCountOfUnitEqualToTwo(unit.getId());
+//                    System.out.println("count: " + count);
+//                }
+
+                if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitForFavorite.getId())){
+                    unitForFavorite.setFavorite(true);
+                }
+            }
+            List<UnitDtoFavorite>  unitFavoriteDtoList = unitFavoriteMapper.toUnitFavoriteDtoList(unitsPage.getContent());
             return ResponseEntity.ok(unitFavoriteDtoList);
 
         } catch (Exception e) {
@@ -1240,4 +1369,13 @@ public class UnitController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
+    @GetMapping("/filter-dates")
+    public ResponseEntity<?> filterByDates(@RequestParam("dateOfArrival") LocalDate dateOfArrival,
+                                           @RequestParam("departureDate") LocalDate departureDate) {
+        List<Unit> units = unitService.getUnitFilterDates(dateOfArrival, departureDate);
+//        return ResponseEntity.status(HttpStatus.OK).body(units);
+        return null;
+    }
+
 }
