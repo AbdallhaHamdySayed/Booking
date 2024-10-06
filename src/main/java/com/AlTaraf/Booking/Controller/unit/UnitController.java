@@ -206,6 +206,10 @@ public class UnitController {
                 unitToSave.setCapacityHalls(0);
             }
 
+            if (unitToSave.getOldPrice() == null) {
+                unitToSave.setOldPrice(0);
+            }
+
             unitToSave.calculatePrice();
             unitToSave.calculateOldPrice();
 
