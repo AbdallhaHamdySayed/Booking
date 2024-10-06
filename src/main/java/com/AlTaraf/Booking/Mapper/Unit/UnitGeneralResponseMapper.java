@@ -1,6 +1,5 @@
 package com.AlTaraf.Booking.Mapper.Unit;
 
-import com.AlTaraf.Booking.Dto.Image.FileForUnitDTO;
 import com.AlTaraf.Booking.Dto.Unit.FeatureForHalls.FeatureForHallsDto;
 import com.AlTaraf.Booking.Dto.Unit.availablePeriodsHalls.AvailablePeriodsDto;
 import com.AlTaraf.Booking.Entity.Comment;
@@ -13,10 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -86,13 +82,14 @@ public interface UnitGeneralResponseMapper {
     }
 
     default List<String> extractFileImagePaths(List<FileForUnit> fileForUnits) {
-        if (fileForUnits == null) {
+        if (fileForUnits == null || fileForUnits.isEmpty()) {
             return Collections.emptyList();
         }
         return fileForUnits.stream()
                 .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
                         .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
+                .filter(Objects::nonNull) // To ensure no null file paths are included
                 .collect(Collectors.toList());
     }
 
