@@ -10,6 +10,7 @@ import org.mapstruct.Mappings;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -34,13 +35,14 @@ public interface UnitMapper {
 
     // Define a method to extract file paths from ImageData entities
     default List<String> extractFileImagePaths(List<FileForUnit> fileForUnits) {
-        if (fileForUnits == null) {
+        if (fileForUnits == null || fileForUnits.isEmpty()) {
             return Collections.emptyList();
         }
         return fileForUnits.stream()
                 .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
                         .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
+                .filter(Objects::nonNull) // To ensure no null file paths are included
                 .collect(Collectors.toList());
     }
 
