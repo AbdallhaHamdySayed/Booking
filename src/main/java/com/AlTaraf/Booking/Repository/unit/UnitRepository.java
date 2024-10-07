@@ -126,12 +126,13 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
             "(:maxChildrenAllowed IS NULL OR u.childrenAllowed <= :maxChildrenAllowed) AND " +
             "(:priceMin IS NULL OR u.price >= :priceMin) AND " +
             "(:priceMax IS NULL OR u.price <= :priceMax) AND " +
-            "u.dateOfArrival >= :dateOfArrival " +
-            "AND u.departureDate <= :departureDate " +
+            " u.dateOfArrival <= :departureDate " +
+            "AND u.departureDate >= :dateOfArrival " +
             "AND u.id NOT IN (SELECT r.unit.id FROM ReserveDateHalls r " +
             "JOIN r.dateInfoList d " +
             "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
             "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) " +
+            "AND (u.accommodationType.id NOT IN (1, 2, 5) OR u.roomAvailableCount > 0) " +
             "AND u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
             "JOIN rdu.dateInfoList d WHERE d.date BETWEEN :dateOfArrival AND :departureDate) AND " +
             "u.statusUnit.id = 2")
@@ -160,21 +161,30 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
 
 
     @Query("SELECT u FROM Unit u " +
-            "WHERE u.dateOfArrival >= :dateOfArrival " +
-            "AND u.departureDate <= :departureDate " +
+            "WHERE u.dateOfArrival <= :departureDate " +
+            "AND u.departureDate >= :dateOfArrival " +
             "AND u.id NOT IN (SELECT r.unit.id FROM ReserveDateHalls r " +
             "JOIN r.dateInfoList d " +
             "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
             "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) " +
+            "AND (u.accommodationType.id NOT IN (1, 2, 5) OR u.roomAvailableCount > 0) " +
+            "AND u.roomAvailableCount > 0 " +
             "AND u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
             "JOIN rdu.dateInfoList d WHERE d.date BETWEEN :dateOfArrival AND :departureDate)")
     List<Unit> findAvailableUnitsByDateRange(@Param("dateOfArrival") LocalDate dateOfArrival,
                                              @Param("departureDate") LocalDate departureDate);
 
 
+
     @Query(value = "SELECT COUNT(unit_id) FROM available_periods_unit_halls WHERE unit_id = :unitId", nativeQuery = true)
     Long countUnitOccurrences(@Param("unitId") Long unitId);
 
+
+    @Query(value = "SELECT COUNT(unit_id) FROM unit_available_area WHERE unit_id = :unitId", nativeQuery = true)
+    Integer countUnitAvailableAreaCount(@Param("unitId") Long unitId);
+
+    @Query(value = "SELECT COUNT(unit_id) FROM unit_room_available WHERE unit_id = :unitId", nativeQuery = true)
+    Integer countUnitRoomAvailableCount(@Param("unitId") Long unitId);
 //    @Query("SELECT CASE WHEN COUNT(u.id) = 2 THEN true ELSE false END " +
 //            "FROM Unit u JOIN u.availablePeriodsHallsSet ap " +
 //            "WHERE u.id = :unitId")
