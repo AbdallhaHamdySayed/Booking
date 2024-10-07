@@ -111,6 +111,15 @@ public class ReservationServiceImpl implements ReservationService {
                 roomDetailsForAvailableArea.setRoomNumber(numberRoom);
             }
 
+            if (numberRoom == 0) {
+
+                Integer roomAvailableCount = unit.getRoomAvailableCount();
+                roomAvailableCount--;
+                unit.setRoomAvailableCount(roomAvailableCount);
+
+                System.out.println("roomAvailableCount: " + roomAvailableCount);
+
+            }
         }
 
         if ( statusUnitId.equals(2L) && getRoomAvailableByReservations(reservationId) != null ) {
@@ -123,6 +132,15 @@ public class ReservationServiceImpl implements ReservationService {
             if (numberRoom > 0) {
                 numberRoom--;
                 roomDetails.setRoomNumber(numberRoom);
+            }
+
+            if (numberRoom == 0) {
+
+                Integer roomAvailableCount = unit.getRoomAvailableCount();
+                roomAvailableCount--;
+                unit.setRoomAvailableCount(roomAvailableCount);
+
+                System.out.println("roomAvailableCount: " + roomAvailableCount);
             }
 
         }
