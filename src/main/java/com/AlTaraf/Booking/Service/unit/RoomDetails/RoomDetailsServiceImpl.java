@@ -29,18 +29,37 @@ public class RoomDetailsServiceImpl implements RoomDetailsService{
         RoomAvailable roomAvailable = roomAvailableRepository.findById(roomAvailableId)
                 .orElseThrow(() -> new RuntimeException("RoomAvailable not found with ID: " + roomAvailableId));
 
-        roomDetails.setUnit(unit);
-        roomDetails.setRoomAvailable(roomAvailable);
 
-        if (unit.getPrice() == 0 ) {
-            unit.setPrice(roomDetails.getNewPrice());
+        try {
+            if (unit.getRoomAvailableCount() == null) {
+                unit.setRoomAvailableCount(0);
+            }
+
+            Integer i = unit.getRoomAvailableCount();
+
+            System.out.println("i = " + i);
+
+            i++;
+
+            System.out.println("After Increment i = " + i);
+
+            unit.setRoomAvailableCount(i);
+
+            roomDetails.setUnit(unit);
+            roomDetails.setRoomAvailable(roomAvailable);
+
+            if (unit.getPrice() == 0) {
+                unit.setPrice(roomDetails.getNewPrice());
+            }
+
+            if (unit.getOldPrice() == 0) {
+                unit.setOldPrice(roomDetails.getOldPrice());
+            }
+
+            roomDetailsRepository.save(roomDetails);
+        } catch (Exception e) {
+            System.out.println("Exception Error: " + e);
         }
-
-        if (unit.getOldPrice() == 0) {
-            unit.setOldPrice(roomDetails.getOldPrice());
-        }
-
-        roomDetailsRepository.save(roomDetails);
     }
 
     @Override
