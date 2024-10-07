@@ -38,15 +38,19 @@ public interface UnitFavoriteMapper {
 
     default String extractFirstFileImagePath(List<FileForUnit> fileForUnits) {
         if (fileForUnits == null || fileForUnits.isEmpty()) {
-            return null; // or return a default value if preferred
+            return "defaultImageUrl"; // Return a default value if the list is null or empty
         }
+
         return fileForUnits.stream()
+                .filter(file -> file.getFileImageUrl() != null) // Exclude entries with null fileImageUrl
                 .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
                         .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
                 .findFirst()
-                .orElse(null); // or a default value if no element is found
+                .orElse("defaultImageUrl"); // Return a default value if no valid file is found
     }
+
+
 
 
     default String extractFirstFileVideoPath(List<FileForUnit> fileForUnits) {
