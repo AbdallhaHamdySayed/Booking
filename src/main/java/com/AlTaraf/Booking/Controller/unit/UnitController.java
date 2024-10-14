@@ -217,18 +217,21 @@ public class UnitController {
 
             savedUnit.setPeriodCount(unitRepository.countUnitOccurrences(savedUnit.getId()));
 
-            if (unitToSave.getAccommodationType().getId() == 2 || unitToSave.getAccommodationType().getId() == 5 ) {
-                 Integer availableAreaCount = unitRepository.countUnitAvailableAreaCount(savedUnit.getId());
-                 System.out.println("availableAreaCount: " + availableAreaCount);
-                 unitToSave.setRoomAvailableCount(availableAreaCount);
-                 System.out.println("unitToSave getRoomAvailableCount: " + unitToSave.getRoomAvailableCount());
-            }
 
-            if (unitToSave.getAccommodationType().getId() == 1) {
-               Integer roomAvailableCount = unitRepository.countUnitRoomAvailableCount(savedUnit.getId());
-                System.out.println("roomAvailableCount: " + roomAvailableCount);
-                unitToSave.setRoomAvailableCount(roomAvailableCount);
-                System.out.println("unitToSave getRoomAvailableCount: " + unitToSave.getRoomAvailableCount());
+            if (unitToSave.getAccommodationType() != null ) {
+                if (unitToSave.getAccommodationType().getId() == 2 || unitToSave.getAccommodationType().getId() == 5) {
+                    Integer availableAreaCount = unitRepository.countUnitAvailableAreaCount(savedUnit.getId());
+                    System.out.println("availableAreaCount: " + availableAreaCount);
+                    unitToSave.setRoomAvailableCount(availableAreaCount);
+                    System.out.println("unitToSave getRoomAvailableCount: " + unitToSave.getRoomAvailableCount());
+                }
+
+                if (unitToSave.getAccommodationType().getId() == 1) {
+                    Integer roomAvailableCount = unitRepository.countUnitRoomAvailableCount(savedUnit.getId());
+                    System.out.println("roomAvailableCount: " + roomAvailableCount);
+                    unitToSave.setRoomAvailableCount(roomAvailableCount);
+                    System.out.println("unitToSave getRoomAvailableCount: " + unitToSave.getRoomAvailableCount());
+                }
             }
 
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_units.message", null, LocaleContextHolder.getLocale()) + " " + savedUnit.getNameUnit(),unitRequestDto.getUserId());
@@ -404,18 +407,22 @@ public class UnitController {
 
             updatedUnit.setPeriodCount(unitRepository.countUnitOccurrences(updatedUnit.getId()));
 
-            if (updatedUnit.getAccommodationType().getId() == 2 || updatedUnit.getAccommodationType().getId() == 5 ) {
-                Integer availableAreaCount = unitRepository.countUnitAvailableAreaCount(updatedUnit.getId());
-                System.out.println("availableAreaCount: " + availableAreaCount);
-                updatedUnit.setRoomAvailableCount(availableAreaCount);
-                System.out.println("unitToSave getRoomAvailableCount: " + updatedUnit.getRoomAvailableCount());
-            }
+            if (updatedUnit.getAccommodationType() != null ) {
 
-            if (updatedUnit.getAccommodationType().getId() == 1) {
-                Integer roomAvailableCount = unitRepository.countUnitRoomAvailableCount(updatedUnit.getId());
-                System.out.println("roomAvailableCount: " + roomAvailableCount);
-                updatedUnit.setRoomAvailableCount(roomAvailableCount);
-                System.out.println("unitToSave getRoomAvailableCount: " + updatedUnit.getRoomAvailableCount());
+                if (updatedUnit.getAccommodationType().getId() == 2 || updatedUnit.getAccommodationType().getId() == 5) {
+                    Integer availableAreaCount = unitRepository.countUnitAvailableAreaCount(updatedUnit.getId());
+                    System.out.println("availableAreaCount: " + availableAreaCount);
+                    updatedUnit.setRoomAvailableCount(availableAreaCount);
+                    System.out.println("unitToSave getRoomAvailableCount: " + updatedUnit.getRoomAvailableCount());
+                }
+
+                if (updatedUnit.getAccommodationType().getId() == 1) {
+                    Integer roomAvailableCount = unitRepository.countUnitRoomAvailableCount(updatedUnit.getId());
+                    System.out.println("roomAvailableCount: " + roomAvailableCount);
+                    updatedUnit.setRoomAvailableCount(roomAvailableCount);
+                    System.out.println("unitToSave getRoomAvailableCount: " + updatedUnit.getRoomAvailableCount());
+                }
+
             }
             System.out.println("updatedUnit.getPeriodCount(): " + updatedUnit.getPeriodCount());
 
@@ -1347,16 +1354,18 @@ public class UnitController {
                 }
             }
 
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<Unit> unitsPage = unitService.getUnitsByUserId(userId, pageable);
+//            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            List<Unit> units = unitService.getUnitsByUserIdList(userId);
 
-            if (unitsPage == null || unitsPage.isEmpty()) {
+
+            if (units == null || units.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));
             }
 
             List<ReservationStatus> reservationRequestDtoList = new ArrayList<>();
 
-            for (Unit unit : unitsPage.getContent()) {
+            for (Unit unit : units) {
+                Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
                 Page<Reservations> reservationsPage = reservationService.getByStatusIdAndUnitId(statusId, unit.getId(), pageable);
                 reservationRequestDtoList.addAll(reservationStatusMapper.toReservationStatusDtoList(reservationsPage.getContent()));
             }
