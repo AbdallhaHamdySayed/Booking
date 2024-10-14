@@ -256,7 +256,11 @@ public class UnitServiceImpl implements UnitService {
     }
 
 
-    public Page<Unit> getUnitsByUserId(Long userId, Pageable pageable) {
+    public List<Unit> getUnitsByUserIdList(Long userId ) {
+        return unitRepository.findByUserIdList(userId);
+    }
+
+    public Page<Unit> getUnitsByUserId(Long userId, Pageable pageable ) {
         return unitRepository.findByUserId(userId, pageable);
     }
 

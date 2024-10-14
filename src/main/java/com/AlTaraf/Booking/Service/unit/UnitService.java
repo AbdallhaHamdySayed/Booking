@@ -37,7 +37,9 @@ public interface UnitService {
     Page<Unit> getUnitsByUnitTypeId(Long unitTypeId, Pageable pageable);
     List<Unit> getUnitTypeIdForMap(Long unitTypeId);
 
-    Page<Unit> getUnitsByUserId(Long userId, Pageable pageable);
+    List<Unit> getUnitsByUserIdList(Long userId );
+
+    Page<Unit> getUnitsByUserId(Long userId, Pageable pageable );
 
     List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
                                   Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
