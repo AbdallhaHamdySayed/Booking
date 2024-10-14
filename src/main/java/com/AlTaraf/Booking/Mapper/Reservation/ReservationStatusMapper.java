@@ -32,6 +32,7 @@ public interface ReservationStatusMapper {
             return null; // or return a default value if preferred
         }
         return fileForUnits.stream()
+                .filter(file -> file.getFileImageUrl() != null)
                 .sorted(Comparator.comparing(FileForUnit::getCreatedDate)
                         .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)

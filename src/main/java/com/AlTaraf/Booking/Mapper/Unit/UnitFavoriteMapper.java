@@ -38,7 +38,7 @@ public interface UnitFavoriteMapper {
 
     default String extractFirstFileImagePath(List<FileForUnit> fileForUnits) {
         if (fileForUnits == null || fileForUnits.isEmpty()) {
-            return "defaultImageUrl"; // Return a default value if the list is null or empty
+            return null; // Return a default value if the list is null or empty
         }
 
         return fileForUnits.stream()
@@ -47,7 +47,7 @@ public interface UnitFavoriteMapper {
                         .thenComparing(FileForUnit::getCreatedTime))
                 .map(FileForUnit::getFileImageUrl)
                 .findFirst()
-                .orElse("defaultImageUrl"); // Return a default value if no valid file is found
+                .orElse(null); // Return a default value if no valid file is found
     }
 
 
