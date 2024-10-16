@@ -136,7 +136,7 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
             "JOIN r.dateInfoList d " +
             "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
             "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) " +
-            "AND (u.accommodationType.id NOT IN (1, 2, 5) OR u.roomAvailableCount > 0) " +
+            "AND (u.unitType.id != 1 OR (u.unitType.id = 1 AND (u.accommodationType.id NOT IN (1, 2, 5) OR u.roomAvailableCount > 0))) " +
             "AND u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
             "JOIN rdu.dateInfoList d WHERE d.date BETWEEN :dateOfArrival AND :departureDate) AND " +
             "u.statusUnit.id = 2")
