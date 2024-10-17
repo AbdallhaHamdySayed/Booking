@@ -138,16 +138,6 @@ public class FileController {
         List<ImageUploadResponse> responses = new ArrayList<>();
 
         try {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-            PackageAds packageAds = packageAdsRepository.findById(0L).orElse(null);
-            int numberAds = user.getNumberAds();
-            if (numberAds == 0) {
-                user.setPackageAds(packageAds);
-                userRepository.save(user);
-                System.out.println("Number Ads is Zero");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("package_ads_null.message", null, LocaleContextHolder.getLocale()));
-            }
             storageService.storeForAds(file, userId, unitId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(201, messageSource.getMessage("Successful_Upload.message", null, LocaleContextHolder.getLocale()) + responses));
