@@ -64,7 +64,7 @@ public class FileStorageServiceImpl implements FileStorageService{
 
         String fileDownloadVideoUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
+//                .scheme("https") // Set the scheme to HTTPS
                 .path("/files-for-unit/")
                 .path(fileForUnitVideo.getId())
                 .toUriString();
@@ -90,7 +90,7 @@ public class FileStorageServiceImpl implements FileStorageService{
 
         String fileDownloadImageUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
+//                .scheme("https") // Set the scheme to HTTPS
                 .path("/files-for-unit/")
                 .path(fileForUnitImage.getId())
                 .toUriString();
@@ -115,7 +115,7 @@ public class FileStorageServiceImpl implements FileStorageService{
 
         String fileDownloadUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
+//                .scheme("https") // Set the scheme to HTTPS
                 .path("/file-for-ads/")
                 .path(fileForAds.getId())
                 .toUriString();
@@ -136,7 +136,7 @@ public class FileStorageServiceImpl implements FileStorageService{
 
         String fileDownloadUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
+//                .scheme("https") // Set the scheme to HTTPS
                 .path("/file-for-pdf/")
                 .path(fileForPdf.getId())
                 .toUriString();
@@ -158,7 +158,7 @@ public class FileStorageServiceImpl implements FileStorageService{
 
         String fileDownloadUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .scheme("https") // Set the scheme to HTTPS
+//                .scheme("https") // Set the scheme to HTTPS
                 .path("/file-for-profile/")
                 .path(fileForProfile.getId())
                 .toUriString();

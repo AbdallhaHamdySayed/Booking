@@ -1,17 +1,13 @@
 package com.AlTaraf.Booking.Controller.File;
 
 
-import com.AlTaraf.Booking.Entity.Ads.PackageAds;
 import com.AlTaraf.Booking.Entity.File.FileForAds;
 import com.AlTaraf.Booking.Entity.File.FileForPdf;
 import com.AlTaraf.Booking.Entity.File.FileForProfile;
 import com.AlTaraf.Booking.Entity.File.FileForUnit;
-import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
 import com.AlTaraf.Booking.Payload.response.File.FileResponseMessage;
 import com.AlTaraf.Booking.Payload.response.ImageUploadResponse;
-import com.AlTaraf.Booking.Repository.Ads.PackageAdsRepository;
-import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.File.FileStorageService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +34,6 @@ public class FileController {
 
     @Autowired
     MessageSource messageSource;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    PackageAdsRepository packageAdsRepository;
 
     @PostMapping("/upload-file-for-unit")
     public ResponseEntity<?> uploadImages(@RequestParam(value = "files", required = false) List<MultipartFile> files,
