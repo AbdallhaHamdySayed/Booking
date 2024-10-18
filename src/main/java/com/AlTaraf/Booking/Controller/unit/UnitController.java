@@ -29,6 +29,7 @@ import com.AlTaraf.Booking.Mapper.Reservation.ReservationStatusMapper;
 import com.AlTaraf.Booking.Mapper.Unit.*;
 import com.AlTaraf.Booking.Mapper.Unit.RoomDetails.RoomDetailsRequestMapper;
 import com.AlTaraf.Booking.Mapper.Unit.RoomDetails.RoomDetailsResponseMapper;
+import com.AlTaraf.Booking.Payload.request.MessageWhats;
 import com.AlTaraf.Booking.Payload.request.RoomDetails.RoomDetailsRequestDto;
 import com.AlTaraf.Booking.Payload.request.UnitRequestDto;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
@@ -45,6 +46,7 @@ import com.AlTaraf.Booking.Repository.unit.statusUnit.StatusRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.Reservation.ReservationService;
 import com.AlTaraf.Booking.Service.UserFavoriteUnit.UserFavoriteUnitService;
+import com.AlTaraf.Booking.Service.message.MessageService;
 import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Service.unit.AvailablePeriods.AvailablePeriodsService;
 import com.AlTaraf.Booking.Service.unit.FeatureForHalls.FeatureForHallsService;
@@ -77,86 +79,61 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/Api/Units")
 public class UnitController {
-
     @Autowired
     UnitService unitService;
-
     @Autowired
     FeatureForHallsService featureForHallsService;
-
     @Autowired
     AvailablePeriodsService availablePeriodsService;
-
     @Autowired
     UnitMapper unitMapper;
-
     @Autowired
     UnitRequestMapper unitRequestMapper;
-
     @Autowired
     EventHallsMapper eventHallsMapper;
-
     @Autowired
     UnitResidenciesResponseMapper unitResidenciesResponseMapper;
-
     @Autowired
     RoomDetailsRequestMapper roomDetailsRequestMapper;
-
     @Autowired
     RoomDetailsResponseMapper roomDetailsResponseMapper;
-
     @Autowired
     RoomDetailsService roomDetailsService;
-
     @Autowired
     RoomDetailsForAvailableAreaService roomDetailsForAvailableAreaService;
-
     @Autowired
     UnitGeneralResponseMapper unitGeneralResponseMapper;
-
     @Autowired
     UnitFavoriteMapper unitFavoriteMapper;
-
     @Autowired
     RoomAvailableService roomAvailableService;
-
     @Autowired
     ReservationService reservationService;
-
     @Autowired
     ReservationStatusMapper reservationStatusMapper;
-
     @Autowired
     ReservationRepository reservationRepository;
-
     @Autowired
     UnitRepository unitRepository;
-
     @Autowired
     RoomDetailsRepository roomDetailsRepository;
-
     @Autowired
     RoomDetailsForAvailableAreaRepository roomDetailsForAvailableAreaRepository;
-
     @Autowired
     UserFavoriteUnitService userFavoriteUnitService;
-
     @Autowired
     StatusRepository statusUnitRepository;
-
     @Autowired
     NotificationService notificationService;
-
     @Autowired
     UserRepository userRepository;
-
     private static final Logger logger = LoggerFactory.getLogger(UnitController.class);
-
     @Autowired
     MessageSource messageSource;
-
     @Autowired
     AvailableAreaService availableAreaService;
+    @Autowired
+    MessageService messageService;
 
     @PostMapping("/Create-Unit")
     public ResponseEntity<?> createUnit(@RequestBody UnitRequestDto unitRequestDto,
@@ -1319,7 +1296,22 @@ public class UnitController {
 
             Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
              reservationService.updateStatusForReservation(reservationId, statusUnitId);
+
             if (reservations.getStatusUnit().getId() == 2) {
+                Unit unit = unitService.getUnitById(reservations.getUnit().getId());
+                User userLessor = unit.getUser();
+
+                Long userId = reservations.getUser().getId();
+
+                User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+                System.out.println("user phone reserve: " + user.getPhone());
+
+                MessageWhats messageWhats = new MessageWhats(" الرقم الخاص بمالك العقار  " +userLessor.getPhone());
+
+                messageService.sendMessage(user.getPhone(), messageWhats);
+
                 PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()), messageSource.getMessage("notification_body_accepted_reservation_successful.message", null, LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId());
                 notificationService.processNotification(notificationRequest);
             } else if (reservations.getStatusUnit().getId() == 3) {

@@ -94,6 +94,7 @@ public class ReservationController {
     @Autowired
     CommentService commentService;
 
+
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
 
@@ -115,6 +116,11 @@ public class ReservationController {
                     System.out.println("IllegalArgumentException: " + e);
                 }
             }
+
+            Long userId = reservationRequestDto.getUserId();
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
             // Convert UnitRequestDto to Unit
             Reservations reservationsToSave = reservationRequestMapper.toReservation(reservationRequestDto);
@@ -139,24 +145,14 @@ public class ReservationController {
                 }
             }
 
-            else if (reservationRequestDto.getAvailableAreaId() == null && reservationRequestDto.getRoomAvailableId() == null) {
-
+            else {
                 Unit unit = unitService.getUnitById(reservationRequestDto.getUnitId());
-
                 reservationsToSave.setPrice(unit.getPrice());
-
             }
-
-            System.out.println("Reservation Price: " + reservationsToSave.getPrice());
-
-            Long userId = reservationRequestDto.getUserId();
 
             Unit unit = unitService.getUnitById(reservationRequestDto.getUnitId());
 
             Long userIdLessor = unit.getUser().getId();
-
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
             if (user.getWallet() < reservationsToSave.getCommision()) {
                 ApiResponse response = new ApiResponse(400, messageSource.getMessage("Failed_Add_Reservation.message", null, LocaleContextHolder.getLocale()));
