@@ -303,4 +303,15 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/{userId}/wallet")
+    public ResponseEntity<?> updateUserWallet(@PathVariable Long userId, @RequestParam(name = "wallet") Double wallet) {
+        try {
+            User updatedUser = userService.updateWallet(userId, wallet);
+            ApiResponse apiResponse = new ApiResponse(200, "تم تعديل محفظة المستخدم");
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500, "حدث خطأ ولم يتم التعديل علي محفظة المستخدم"));
+        }
+    }
+
 }

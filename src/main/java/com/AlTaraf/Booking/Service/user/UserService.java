@@ -40,5 +40,7 @@ public interface UserService {
     List<User> getAllByRolesName(ERole roleName);
 
     void deleteUsersWithIsActiveNull();
+
+    User updateWallet(Long userId, Double newWalletAmount);
 }
 

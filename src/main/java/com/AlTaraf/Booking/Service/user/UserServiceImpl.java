@@ -340,4 +340,12 @@ public class UserServiceImpl implements UserService {
             deleteUserAndAssociatedEntities(user.getId());
         }
     }
+
+    @Transactional
+    public User updateWallet(Long userId, Double newWalletAmount) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setWallet(newWalletAmount);
+        return userRepository.save(user);
+    }
 }
