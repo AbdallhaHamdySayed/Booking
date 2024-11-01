@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payment")
-public class Paymentcontroller {
+public class PaymentController {
 
     @Autowired
     PaymentService paymentService;
