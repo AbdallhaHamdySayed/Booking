@@ -1,4 +1,4 @@
-package com.AlTaraf.Booking.Controller;
+package com.AlTaraf.Booking.Controller.notification;
 
 import com.AlTaraf.Booking.Dto.Notifications.PushNotificationRequest;
 import com.AlTaraf.Booking.Dto.Notifications.PushNotificationRequestForAll;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -53,36 +52,6 @@ public class NotificationController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    @PostMapping("/Send")
-    public ResponseEntity<?> sendPushNotification(@RequestBody PushNotificationRequest request) {
-//        try {
-//            User user = userRepository.findByUserId(request.getUserId());
-//            for (Role role : user.getRoles()) {
-//                Notifications notification = notificationMapper.dtoToEntity(request);
-//                notification.setUser(user);
-//                notification.setRole(role);
-//                notificationRepository.save(notification);
-//
-//                notificationService.sendPushMessage(request.getTitle(), request.getBody(), user.getId());
-//            }
-//
-//            notificationService.sendPushMessage(request.getTitle(), request.getBody(), request.getUserId());
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200,"Push notification sent successfully!"));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500,"Failed to send push notification."));
-//        }
-        return null;
-    }
-
-    @PostMapping("/Send-For-Guest-One-User")
-    public ResponseEntity<?> sendPushNotificationforGuest(@RequestBody PushNotificationRequest request) {
-
-        return ResponseEntity.ok(null);
-    }
-
     @PostMapping("/Send-For-Guest-One-User-test")
     public ResponseEntity<?> sendPushNotificationforGuestTest(@RequestBody PushNotificationRequest request) {
         try {
@@ -101,13 +70,6 @@ public class NotificationController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500,"Failed to send push notification."));
         }
-    }
-
-    @PostMapping("/Send-For-Lessor-One-User")
-    public ResponseEntity<?> sendPushNotificationforLessor(@RequestBody PushNotificationRequest request) {
-
-        return ResponseEntity.ok(null);
-
     }
 
     @PostMapping("/Send-For-Lessor-One-User-Test")

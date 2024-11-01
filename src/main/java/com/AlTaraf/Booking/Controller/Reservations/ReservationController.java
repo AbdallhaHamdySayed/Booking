@@ -159,18 +159,19 @@ public class ReservationController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
-            // Save the unit in the database
-            reservationService.saveReservation(userId,reservationsToSave);
+            // Save the reservation in the database
+            Reservations reservation = reservationService.saveReservation(userId,reservationsToSave);
 
-            // Check if the reservation has room available or available area
+            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                    messageSource.getMessage("notification_body_reservation.message", null,
+                            LocaleContextHolder.getLocale()) + " " + unit.getNameUnit() ,userId, null, reservation.getId(), null);
 
-//            PushNotificationRequest notificationRequest = new PushNotificationRequest("رسالة من النظام","تم ارسال طلب حجز الوحدة: " + reservationsToSave.getUnit().getNameUnit(),userId);
-//            PushNotificationRequest notificationRequest = new PushNotificationRequest("رسالة من النظام",LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_units.message", null, LocaleContextHolder.getLocale()) + " " + savedUnit.getNameUnit()"تم قبول طلب اضافة وحدة ",userId);
-            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_reservation.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit() ,userId);
             notificationService.processNotificationForGuest(notificationRequest);
 
-
-            PushNotificationRequest notificationRequest2 = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_reservation_request.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit() ,userIdLessor);
+            PushNotificationRequest notificationRequest2 = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                    messageSource.getMessage("notification_body_reservation_request.message", null,
+                            LocaleContextHolder.getLocale()) + " " + unit.getNameUnit() ,userIdLessor,
+                    null, reservation.getId(), null);
             notificationService.processNotification(notificationRequest2);
 
 

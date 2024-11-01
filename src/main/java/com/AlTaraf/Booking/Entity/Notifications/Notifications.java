@@ -38,6 +38,15 @@ public class Notifications extends Auditable<String> {
     @Transient
     private Duration elapsedTime;
 
+    @Column(name = "UNIT_ID")
+    private Long unitId;
+
+    @Column(name = "RESERVATION_ID")
+    private Long reservationId;
+
+    @Column(name = "ADS_ID")
+    private Long adsId;
+
     @PostLoad
     private void calculateElapsedTime() {
         this.elapsedTime = Duration.between(

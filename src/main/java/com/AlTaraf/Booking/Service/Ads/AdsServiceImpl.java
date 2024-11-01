@@ -97,10 +97,10 @@ public class AdsServiceImpl implements AdsService {
         adsRepository.save(ads);
 
         if ( statusUnitId == 2) {
-            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_accepted_ads.message", null, LocaleContextHolder.getLocale()) + " " + ads.getUnit().getNameUnit(), ads.getUser().getId());
+            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_accepted_ads.message", null, LocaleContextHolder.getLocale()) + " " + ads.getUnit().getNameUnit(), ads.getUser().getId(),null, null, adsId);
             notificationService.processNotification(notificationRequest);
         } else if ( statusUnitId == 3) {
-            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_rejected_ads.message", null, LocaleContextHolder.getLocale()) + " " + ads.getUnit().getNameUnit(), ads.getUser().getId());
+            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_rejected_ads.message", null, LocaleContextHolder.getLocale()) + " " + ads.getUnit().getNameUnit(), ads.getUser().getId(), null, null, adsId);
             notificationService.processNotification(notificationRequest);
         }
     }

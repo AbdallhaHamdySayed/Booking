@@ -211,7 +211,7 @@ public class UnitController {
                 }
             }
 
-            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_units.message", null, LocaleContextHolder.getLocale()) + " " + savedUnit.getNameUnit(),unitRequestDto.getUserId());
+            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_units.message", null, LocaleContextHolder.getLocale()) + " " + savedUnit.getNameUnit(),unitRequestDto.getUserId(), savedUnit.getId(), null, null);
             notificationService.processNotification(notificationRequest);
 
 
@@ -1312,10 +1312,16 @@ public class UnitController {
 
                 messageService.sendMessage(user.getPhone(), messageWhats);
 
-                PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()), messageSource.getMessage("notification_body_accepted_reservation_successful.message", null, LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId());
+                PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                        messageSource.getMessage("notification_body_accepted_reservation_successful.message", null,
+                                LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId()
+                        , null, reservationId, null);
                 notificationService.processNotification(notificationRequest);
             } else if (reservations.getStatusUnit().getId() == 3) {
-                PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()), messageSource.getMessage("notification_body_rejected_updated_reservation.message", null, LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId());
+                PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                        messageSource.getMessage("notification_body_rejected_updated_reservation.message", null,
+                                LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
+                        null, reservationId, null);
                 notificationService.processNotification(notificationRequest);
             }
             return ResponseEntity.ok(new ApiResponse(200,messageSource.getMessage("status_reservation_changed_successful.message", null, LocaleContextHolder.getLocale())));

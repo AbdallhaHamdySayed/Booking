@@ -427,10 +427,10 @@ public class UnitServiceImpl implements UnitService {
 
         if ( statusUnitId == 2) {
             System.out.println("statusUnitId");
-            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_accepted_units.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit(), unit.getUser().getId());
+            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_accepted_units.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit(), unit.getUser().getId(), unit.getId(), null, null);
             notificationService.processNotification(notificationRequest);
         } else if ( statusUnitId == 3) {
-            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_rejected_units.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit(), unit.getUser().getId());
+            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_rejected_units.message", null, LocaleContextHolder.getLocale()) + " " + unit.getNameUnit(), unit.getUser().getId(), unit.getId(), null, null);
             notificationService.processNotification(notificationRequest);
         }
     }

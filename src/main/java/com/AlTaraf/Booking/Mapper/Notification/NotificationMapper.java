@@ -14,6 +14,9 @@ public interface NotificationMapper {
     @Mapping(source = "title", target = "title")
     @Mapping(source = "body", target = "body")
     @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "unitId", target = "unitId")
+    @Mapping(source = "reservationId", target = "reservationId")
+    @Mapping(source = "adsId", target = "adsId")
     Notifications dtoToEntity(PushNotificationRequest pushNotificationRequest);
 
 
@@ -24,5 +27,8 @@ public interface NotificationMapper {
     @Mapping(source = "seen", target = "seen")
     @Mapping(source = "lang", target = "lang")
     @Mapping(source = "elapsedTime", target = "elapsedTime")
+    @Mapping(source = "unitId", target = "unitId")
+    @Mapping(source = "reservationId", target = "reservationId")
+    @Mapping(source = "adsId", target = "adsId")
     PushNotificationResponse entityToDto(Notifications pushNotificationRequest);
 }
