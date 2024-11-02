@@ -348,4 +348,9 @@ public class UserServiceImpl implements UserService {
         user.setWallet(newWalletAmount);
         return userRepository.save(user);
     }
+
+    @Transactional
+    public void setActive(Long unitId) {
+         userRepository.activateUserById(unitId);
+    }
 }

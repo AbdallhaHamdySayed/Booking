@@ -42,5 +42,7 @@ public interface UserService {
     void deleteUsersWithIsActiveNull();
 
     User updateWallet(Long userId, Double newWalletAmount);
+
+    void setActive(Long unitId);
 }
 
