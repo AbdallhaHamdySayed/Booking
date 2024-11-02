@@ -90,9 +90,10 @@ public class UserController {
             }
         }
 
-        Set<ERole> roles = userRegisterDto.getRoles().stream()
+        Set<ERole> roles = new HashSet<>(userRegisterDto.getRoles().stream()
                 .map(ERole::valueOf)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
+
 
         boolean existsByPhoneNumber= userService.existsByPhone(userRegisterDto.getPhoneNumber());
 
@@ -102,8 +103,23 @@ public class UserController {
                     .body(response);
         }
 
-        userService.registerUser(userRegisterDto);
 
+        try {
+            User user = userService.registerUser(userRegisterDto);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ApiResponse(500, "User registration failed."));
+            }
+            if (userRegisterDto.getRoles().contains("ROLE_SERVICE") || userRegisterDto.getRoles().contains("ROLE_ADMIN")) {
+                user.setIsActive(true);
+                System.out.println("user getId: " + user.getId());
+                userService.setActive(user.getId());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Exception e: " + e.getMessage());
+            e.printStackTrace();
+        }
         ApiResponse response = new ApiResponse(200, messageSource.getMessage("registration.message", null, LocaleContextHolder.getLocale()));
 
         return ResponseEntity.ok(response);
@@ -133,6 +149,8 @@ public class UserController {
             }
 
         Optional<User> userForCheckActive = userService.findByPhone(loginRequest.getPhone());
+
+        userForCheckActive.get().setIsActive(true);
 
         if (userForCheckActive.isPresent()) {
             Boolean isActive = userForCheckActive.get().getIsActive();
