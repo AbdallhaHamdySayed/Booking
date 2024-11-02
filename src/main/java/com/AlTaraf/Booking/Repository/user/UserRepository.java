@@ -5,6 +5,7 @@ import com.AlTaraf.Booking.Entity.enums.ERole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,8 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.id = :userId")
     User findByUserId(@Param("userId") Long userId);
 
-    Optional<User> findByUsername(String username);
-
     Boolean existsByEmail(String email);
 
     Boolean existsByPhone(String phone);
@@ -31,17 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhone(String phone);
 
-    @Query("SELECT COUNT(u) > 1 FROM User u WHERE u.phone = :phone")
-    boolean isDuplicatePhoneNumber(@Param("phone") String phone);
-
-    @Query("SELECT COUNT(u) > 1 FROM User u WHERE u.email = :email")
-    boolean isDuplicateEmail(@Param("email") String email);
-
     @Query("SELECT u FROM User u WHERE u.phone = :phone")
     User findByPhoneForUser(@Param("phone") String phone);
-
-    User findByEmail(String email);
-
 
     @Query("SELECT COUNT(u.id) > 0 FROM User u " +
             "JOIN u.roles r " +
@@ -83,5 +73,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.isActive IS NULL")
     List<User> findAllUserIsNotActive();
+
+    @Modifying
+    @Query("UPDATE User u SET u.isActive = true WHERE u.id = :userId")
+    void activateUserById(@Param("userId") Long userId);
 }
 
