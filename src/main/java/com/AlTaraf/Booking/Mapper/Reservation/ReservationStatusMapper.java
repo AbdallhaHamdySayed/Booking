@@ -21,6 +21,8 @@ public interface ReservationStatusMapper {
     @Mapping(source = "unit.region", target = "regionDto")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "isEvaluating", target = "isEvaluating")
+    @Mapping(source = "user.userName", target = "customerName")
+    @Mapping(source = "user.phone", target = "customerPhone")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
     ReservationStatus toReservationStatusDto(Reservations reservation);

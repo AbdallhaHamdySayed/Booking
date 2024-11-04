@@ -22,6 +22,8 @@ public class ReservationStatus {
     private RegionDto regionDto;
     private int price;
     private Boolean isEvaluating;
+    private String customerName;
+    private String customerPhone;
     private LocalDate dateOfArrival;
     private LocalDate departureDate;
     private String deviceToken;
