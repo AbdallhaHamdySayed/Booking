@@ -347,18 +347,22 @@ public class UnitController {
 
             if (unitRequestDto.getChaletNewPrice() != null) {
                 unitToUpdate.setChaletNewPrice(unitRequestDto.getChaletNewPrice());
+                unitToUpdate.setPrice(unitRequestDto.getChaletNewPrice());
             }
 
             if (unitRequestDto.getChaletOldPrice() != null) {
                 unitToUpdate.setChaletOldPrice(unitRequestDto.getChaletOldPrice());
+                unitToUpdate.setOldPrice(unitRequestDto.getChaletOldPrice());
             }
 
             if (unitRequestDto.getApartmentNewPrice() != null) {
                 unitToUpdate.setApartmentNewPrice(unitRequestDto.getApartmentNewPrice());
+                unitToUpdate.setPrice(unitRequestDto.getApartmentNewPrice());
             }
 
             if (unitRequestDto.getApartmentOldPrice() != null) {
                 unitToUpdate.setApartmentOldPrice(unitRequestDto.getApartmentOldPrice());
+                unitToUpdate.setOldPrice(unitRequestDto.getApartmentOldPrice());
             }
 
             if (unitRequestDto.getChildrenAllowed() != null) {
@@ -371,10 +375,12 @@ public class UnitController {
 
             if (unitRequestDto.getLoungeNewPrice() != null) {
                 unitToUpdate.setLoungeNewPrice(unitRequestDto.getLoungeNewPrice());
+                unitToUpdate.setPrice(unitRequestDto.getLoungeNewPrice());
             }
 
             if (unitRequestDto.getLoungeOldPrice() != null) {
                 unitToUpdate.setLoungeOldPrice(unitRequestDto.getLoungeOldPrice());
+                unitToUpdate.setOldPrice(unitRequestDto.getLoungeOldPrice());
             }
 
             // Update other fields similarly...
@@ -666,6 +672,12 @@ public class UnitController {
 
                 roomDetailsRepository.save(roomDetailsForUpdate);
 
+                if ( roomDetailsForUpdate.getNewPrice() != 0 && roomDetailsForUpdate.getOldPrice() != 0) {
+                    unit.setPrice(roomDetailsForUpdate.getNewPrice());
+                    unit.setOldPrice(roomDetailsForUpdate.getOldPrice());
+                    unitService.saveUnit(unit);
+                }
+
                 RoomDetailsResponse roomDetailsResponse = new RoomDetailsResponse(roomDetailsForUpdate.getId(), messageSource.getMessage("room_details_edited_successfully.message", null, LocaleContextHolder.getLocale()));
 
                 return ResponseEntity.ok(roomDetailsResponse);
@@ -726,6 +738,13 @@ public class UnitController {
                     roomDetailsForAvailableAreaForUpdate.setAdultsAllowed(roomDetailsRequestDto.getAdultsAllowed());
                     roomDetailsForAvailableAreaForUpdate.setChildrenAllowed(roomDetailsRequestDto.getChildrenAllowed());
                     roomDetailsForAvailableAreaRepository.save(roomDetailsForAvailableAreaForUpdate);
+
+                if ( roomDetailsForAvailableAreaForUpdate.getNewPrice() != 0 && roomDetailsForAvailableAreaForUpdate.getOldPrice() != 0) {
+                    unit.setPrice(roomDetailsForAvailableAreaForUpdate.getNewPrice());
+                    unit.setOldPrice(roomDetailsForAvailableAreaForUpdate.getOldPrice());
+                    unitService.saveUnit(unit);
+                }
+
                 RoomDetailsForAvailableAreaResponse roomDetailsForAvailableAreaResponse = new RoomDetailsForAvailableAreaResponse(roomDetailsForAvailableAreaForUpdate.getId(), messageSource.getMessage("room_details_edited_successfully.message", null, LocaleContextHolder.getLocale()));
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(roomDetailsForAvailableAreaResponse);
