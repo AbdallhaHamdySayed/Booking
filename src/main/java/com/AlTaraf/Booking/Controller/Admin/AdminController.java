@@ -369,7 +369,7 @@ public class AdminController {
         } else if (roleName != null && username != null && phone == null) {
             usersPage = userRepository.findByUsernameAndRolesName(username, roleName, pageable);
         } else if (roleName == null && username == null && phone != null) {
-            usersPage = userRepository.findAllByPhone(phone, pageable);
+            usersPage = userRepository.findAllByPhoneExcludingRoles(phone, pageable);
         }
         else if (roleName == null && phone == null && username != null ) {
             usersPage = userRepository.findByUsername(username, pageable);
@@ -377,7 +377,38 @@ public class AdminController {
             usersPage = userRepository.findAllByPhoneAndRolesName(phone, roleName, pageable);
         }
         else {
-            usersPage = userRepository.findAll(pageable);
+            usersPage = userRepository.findAllExclude(pageable);
+        }
+        Page<UserDashboard> userDashboardPage = usersPage.map(userDashboardMapper::toUserDashboard);
+
+        return ResponseEntity.ok(userDashboardPage);
+    }
+
+    @GetMapping("/users-of-dashboard")
+    public ResponseEntity<Page<?>> usersOfDashboard(
+            @RequestParam(required = false) ERole roleName,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String phone,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<User> usersPage;
+        if (roleName != null && username != null && phone != null) {
+            usersPage = userRepository.findAllByRolesNameAndUsernameAndPhone(roleName, username, phone, pageable);
+        } else if (roleName != null && username == null && phone == null) {
+            usersPage = userRepository.findAllByRolesName(roleName, pageable);
+        } else if (roleName != null && username != null && phone == null) {
+            usersPage = userRepository.findByUsernameAndRolesName(username, roleName, pageable);
+        } else if (roleName == null && username == null && phone != null) {
+            usersPage = userRepository.findAllByPhoneExcludingRolesDashboard(phone, pageable);
+        }
+        else if (roleName == null && phone == null && username != null ) {
+            usersPage = userRepository.findByUsernameDashboard(username, pageable);
+        } else if (roleName != null && username == null && phone != null) {
+            usersPage = userRepository.findAllByPhoneAndRolesName(phone, roleName, pageable);
+        }
+        else {
+            usersPage = userRepository.findAllExcludeDashboard(pageable);
         }
         Page<UserDashboard> userDashboardPage = usersPage.map(userDashboardMapper::toUserDashboard);
 

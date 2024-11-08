@@ -48,11 +48,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByRolesNameAndUsernameAndPhone(
             ERole roleName, String username, String phone, Pageable pageable);
 
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username = :username AND r.name NOT IN ('ROLE_ADMIN', 'ROLE_SERVICE')")
     Page<User> findByUsername(String username, Pageable pageable);
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username = :username AND r.name NOT IN ('ROLE_GUEST', 'ROLE_LESSOR')")
+    Page<User> findByUsernameDashboard(String username, Pageable pageable);
 
     Page<User> findByUsernameAndRolesName(String username, ERole roleName, Pageable pageable);
 
-    Page<User> findAllByPhone(String phone, Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.phone = :phone AND r.name NOT IN ('ROLE_ADMIN', 'ROLE_SERVICE')")
+    Page<User> findAllByPhoneExcludingRoles(@Param("phone") String phone, Pageable pageable);
+
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.phone = :phone AND r.name NOT IN ('ROLE_GUEST', 'ROLE_LESSOR')")
+    Page<User> findAllByPhoneExcludingRolesDashboard(@Param("phone") String phone, Pageable pageable);
 
     Page<User> findAllByPhoneAndRolesName(String phone, ERole roleName, Pageable pageable);
 
@@ -77,5 +86,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.isActive = true WHERE u.id = :userId")
     void activateUserById(@Param("userId") Long userId);
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name NOT IN ('ROLE_ADMIN', 'ROLE_SERVICE')")
+    Page<User> findAllExclude( Pageable pageable);
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name NOT IN ('ROLE_GUEST', 'ROLE_LESSOR')")
+    Page<User> findAllExcludeDashboard( Pageable pageable);
+
+
 }
 
