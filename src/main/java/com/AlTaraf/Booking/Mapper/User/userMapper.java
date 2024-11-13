@@ -1,12 +1,6 @@
 package com.AlTaraf.Booking.Mapper.User;
 
 
-import com.AlTaraf.Booking.Dto.User.UserDto;
-import com.AlTaraf.Booking.Entity.User.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
-
 //@Mapper(componentModel = "spring")
 //public interface userMapper {
 //

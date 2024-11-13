@@ -2,7 +2,6 @@ package com.AlTaraf.Booking.Repository.Ads;
 
 import com.AlTaraf.Booking.Entity.Ads.Ads;
 import com.AlTaraf.Booking.Entity.User.User;
-import com.AlTaraf.Booking.Entity.unit.Unit;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,10 +31,6 @@ public interface AdsRepository extends JpaRepository<Ads, Long> {
     void deleteByUser(User user);
 
     List<Ads> findByUser(User user);
-
-
-
-//    Page<Ads> findAll(Pageable pageable);
 
     Page<Ads> findAllByStatusUnitId(Long statusUnitId, Pageable pageable);
 

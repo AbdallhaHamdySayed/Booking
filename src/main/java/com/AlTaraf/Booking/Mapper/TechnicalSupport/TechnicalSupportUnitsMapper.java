@@ -1,8 +1,6 @@
 package com.AlTaraf.Booking.Mapper.TechnicalSupport;
 
-import com.AlTaraf.Booking.Entity.TechnicalSupport.TechnicalSupport;
 import com.AlTaraf.Booking.Entity.TechnicalSupport.TechnicalSupportForUnits;
-import com.AlTaraf.Booking.Payload.response.TechnicalSupport.TechnicalSupportResponse;
 import com.AlTaraf.Booking.Payload.request.TechnicalSupport.TechnicalSupportUnitsRequest;
 import com.AlTaraf.Booking.Payload.response.TechnicalSupport.TechnicalSupportUnitsResponse;
 import org.mapstruct.Mapper;

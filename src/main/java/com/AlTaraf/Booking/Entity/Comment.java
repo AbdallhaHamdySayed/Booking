@@ -1,7 +1,6 @@
 package com.AlTaraf.Booking.Entity;
 
 
-import com.AlTaraf.Booking.Entity.User.User;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

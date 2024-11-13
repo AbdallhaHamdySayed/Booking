@@ -9,7 +9,7 @@ import com.AlTaraf.Booking.Entity.unit.availableArea.AvailableArea;
 import com.AlTaraf.Booking.Entity.unit.feature.Feature;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
-import com.AlTaraf.Booking.Entity.unit.subFeature.SubFeature;
+import com.AlTaraf.Booking.Entity.unit.subFeature.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

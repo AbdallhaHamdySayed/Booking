@@ -1,6 +1,5 @@
 package com.AlTaraf.Booking.Dto.Roles;
 
-import com.AlTaraf.Booking.Entity.enums.ERole;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

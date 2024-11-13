@@ -2,7 +2,6 @@ package com.AlTaraf.Booking.Service.cityAndRegion;
 
 import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.CityDto;
 import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.RegionDto;
-import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.saveCityDto;
 import com.AlTaraf.Booking.Entity.cityAndregion.City;
 import com.AlTaraf.Booking.Entity.cityAndregion.Region;
 import com.AlTaraf.Booking.Mapper.city.CityMapper;

@@ -1,6 +1,5 @@
 package com.AlTaraf.Booking.Payload.request.Ads;
 
-import com.AlTaraf.Booking.Dto.Image.FileForAdsDTO;
 import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.CityDtoSample;
 import com.AlTaraf.Booking.Dto.cityDtoAndRoleDto.RegionDto;
 import com.AlTaraf.Booking.Entity.Ads.PackageAds;
@@ -8,8 +7,6 @@ import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor

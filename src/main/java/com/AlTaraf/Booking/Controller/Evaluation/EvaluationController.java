@@ -1,7 +1,6 @@
 package com.AlTaraf.Booking.Controller.Evaluation;
 
 import com.AlTaraf.Booking.Entity.Evaluation.Evaluation;
-import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
 import com.AlTaraf.Booking.Service.Evaluation.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
