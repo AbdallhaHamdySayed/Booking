@@ -1,7 +1,7 @@
 -- INSERT ROLES  الادوار
 insert into roles (arabic_name, role, english_name) values ("عميل", "ROLE_GUEST", "Guest");
 insert into roles (arabic_name, role, english_name) values ("تاجر", "ROLE_LESSOR", "Lessor");
-insert into roles (arabic_name, role, english_name) values ("ادمن", "ROLE_ADMIN", "Admin");
+insert into roles (arabic_name, role, english_name) values ("أدمن", "ROLE_ADMIN", "Admin");
 insert into roles (arabic_name, role, english_name) values ("خدمة عملاء", "ROLE_SERVICE", "Customer Service");
 
 insert into transactions (arabic_name, english_name) values ("حجز", "Reservation");
@@ -13,14 +13,14 @@ insert into total_transactions (TOTAL_TRANSACTIONS, TOTAL_RESERVATIONS_TRANSACTI
 
 -- insert cities    المدن
 insert into city (arabic_name, city) values ("طرابلس","Tripoli");
-insert into city (arabic_name, city) values ("بنغازي","Benghazi");
+insert into city (arabic_name, city) values ("بنغازى","Benghazi");
 insert into city (arabic_name, city) values ("مصراتة","Misrata");
 
 -- insert Regions  المناطق
-insert into region (arabic_name, region, city_id) values ("حي الأندلس","Al-Andalus neighborhood", 1);
-insert into region (arabic_name, region, city_id) values ("الحي الإسلامي","Islamic Quarter", 1);
+insert into region (arabic_name, region, city_id) values ("حى الأندلس","Al-Andalus neighborhood", 1);
+insert into region (arabic_name, region, city_id) values ("الحى الإسلامي","Islamic Quarter", 1);
 insert into region (arabic_name, region, city_id) values ("البركة","ُEl baraka", 2);
-insert into region (arabic_name, region, city_id) values ("سيدي حسين","Sidi Hussein", 2);
+insert into region (arabic_name, region, city_id) values ("سيدى حسين","Sidi Hussein", 2);
 insert into region (arabic_name, region, city_id) values ("الرويسات","ُRuwaisat", 3);
 insert into region (arabic_name, region, city_id) values ("الرملة","Ramla", 3);
 
@@ -58,12 +58,12 @@ insert into room_available (room_available_name_arabic, room_available_name) val
 insert into room_available (room_available_name_arabic, room_available_name) values ("جناح","Suite");
 
 -- insert feature المميزات 
-insert into feature (feature_arabic_name, feature_name) values ("اطلالة علي البحر","Sea View");
-insert into feature (feature_arabic_name, feature_name) values ("اطلالة علي الجبل","Mountain view");
-insert into feature (feature_arabic_name, feature_name) values ("اطلالة علي الحديقة","Garden view");
+insert into feature (feature_arabic_name, feature_name) values ("إطلالة على البحر","Sea View");
+insert into feature (feature_arabic_name, feature_name) values ("إطلالة على الجبل","Mountain view");
+insert into feature (feature_arabic_name, feature_name) values ("إطلالة على الحديقة","Garden view");
 insert into feature (feature_arabic_name, feature_name) values ("مصعد","elevator");
-insert into feature (feature_arabic_name, feature_name) values ("انترنت","Internet");
-insert into feature (feature_arabic_name, feature_name) values ("افطار صباحي","Morning breakfast");
+insert into feature (feature_arabic_name, feature_name) values ("إنترنت","Internet");
+insert into feature (feature_arabic_name, feature_name) values ("إفطار صباحي","Morning breakfast");
 insert into feature (feature_arabic_name, feature_name) values ("شاطئ خاص","Private beach");
 insert into feature (feature_arabic_name, feature_name) values ("شاطئ خاص","Private beach");
 insert into feature (feature_arabic_name, feature_name) values ("موقف سيارة","Parking");
@@ -78,22 +78,22 @@ insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("غ�
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("توصيل واستقبال من المطار","airport pick-up and drop-off");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("ركن شواء","Grill corner");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("شاشة","screen");
-insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("كرسي مساج","chair massage");
-insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("مكان مناسب لذوي الاحتياجات الخاصة","suitable place for people with special needs");
+insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("كرسى مساج","chair massage");
+insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("مكان مناسب لذوى الاحتياجات الخاصة","suitable place for people with special needs");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("تكيف","air conditioning");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("حمام سباحة","Swimming Pool");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("بلاي ستيشن","Play Station");
-insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("أواني طبخ","Cooking utensils");
+insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("أوانى طبخ","Cooking utensils");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("مايكرويف","Microwave");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("ثلاجة","refrigerator");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("فرن","oven");
-insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("جاكوزي","Jacuzzi");
+insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("جاكوزى","Jacuzzi");
 insert into sub_feature (sub_feature_arabic_name, sub_feature_name) values ("ساونا","sauna");
 
 
 -- insert status_unit   	حالة الوحدة
 
-insert into status_unit (status_arabic_name, status_name) values ("انتظار","Pending");
+insert into status_unit (status_arabic_name, status_name) values ("إنتظار","Pending");
 insert into status_unit (status_arabic_name, status_name) values ("المقبولة","Accepted");
 insert into status_unit (status_arabic_name, status_name) values ("المرفوضة","Rejected");
 insert into status_unit (status_arabic_name, status_name) values ("الملغاة","Canceled");
