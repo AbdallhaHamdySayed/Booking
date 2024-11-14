@@ -16,6 +16,7 @@ import com.AlTaraf.Booking.Mapper.Reservation.ReservationRequestMapper;
 import com.AlTaraf.Booking.Mapper.Reservation.ReservationStatusMapper;
 import com.AlTaraf.Booking.Payload.request.Reservation.ReservationRequestDto;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
+import com.AlTaraf.Booking.Payload.response.Reservation.ReservationDashboard;
 import com.AlTaraf.Booking.Payload.response.Reservation.ReservationResponseGetId;
 import com.AlTaraf.Booking.Payload.response.Reservation.ReservationStatus;
 import com.AlTaraf.Booking.Repository.Evaluation.EvaluationRepository;
@@ -159,6 +160,8 @@ public class ReservationController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
+//            reservationsToSave.setCreatedDate(DateUtils.getCurrentDate());
+
             // Save the reservation in the database
             Reservations reservation = reservationService.saveReservation(userId,reservationsToSave);
 
@@ -228,6 +231,40 @@ public class ReservationController {
 
         if (!reservations.isEmpty()) {
             List<ReservationStatus> reservationRequestDtoList = reservationStatusMapper.toReservationStatusDtoList(reservations.getContent());
+            return new ResponseEntity<>(reservationRequestDtoList, HttpStatus.OK);
+        } else {
+            ApiResponse response = new ApiResponse(200, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale()));
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+    }
+
+    @GetMapping("/status-reservation-for-dashboard")
+    public ResponseEntity<?> reservationStatusForDashboard(
+            @RequestParam(name = "statusUnitId") Long statusUnitId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+
+        Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
+
+        if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+            try {
+                List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                if (!languageRanges.isEmpty()) {
+                    locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+                }
+            } catch (IllegalArgumentException e) {
+                // Handle the exception if needed
+                System.out.println("IllegalArgumentException: " + e);
+            }
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Reservations> reservations = reservationService.getReservationForStatus(statusUnitId, pageable);
+
+        if (!reservations.isEmpty()) {
+            List<ReservationDashboard> reservationRequestDtoList = reservationStatusMapper.toReservationDashboardDto(reservations.getContent());
             return new ResponseEntity<>(reservationRequestDtoList, HttpStatus.OK);
         } else {
             ApiResponse response = new ApiResponse(200, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale()));

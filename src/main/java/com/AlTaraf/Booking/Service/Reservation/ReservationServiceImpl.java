@@ -205,6 +205,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public Page<Reservations> getReservationForStatus(Long statusUnitId , Pageable pageable) {
+        return reservationRepository.findByStatusUnitId(statusUnitId, pageable);
+    }
+
+    @Override
     public void deleteUnit(Long id) {
         reservationRepository.deleteById(id);
     }

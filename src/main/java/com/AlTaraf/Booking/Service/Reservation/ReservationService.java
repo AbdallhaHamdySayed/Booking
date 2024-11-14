@@ -26,6 +26,8 @@ public interface ReservationService {
 
     Page<Reservations> getReservationForUserAndStatus(Long userId, Long statusUnitId , Pageable pageable);
 
+    Page<Reservations> getReservationForStatus(Long statusUnitId , Pageable pageable);
+
     void deleteUnit(Long id);
 
     Page<Reservations> findByUnitId(Long unitId, Pageable pageable);
