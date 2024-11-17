@@ -40,16 +40,7 @@ public interface ReservationGetByIdMapper {
     @Mapping(source = "price", target = "price")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
-    @Mapping(source = "createdDate", target = "createdDateFormatted", qualifiedByName = "formatDateTime")
     ReservationResponseGetId toReservationDto(Reservations reservation);
-
-    @Named("formatDateTime")
-    default String formatDateTime(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
-    }
 
     List<ReservationResponseGetId> toReservationsDtoList(List<Reservations> reservations);
 

@@ -26,5 +26,6 @@ public class ReservationDashboard {
     private String customerPhone;
     private LocalDate dateOfArrival;
     private LocalDate departureDate;
+    private String createdDateFormatted;
     private String deviceToken;
 }

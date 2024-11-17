@@ -7,7 +7,10 @@ import com.AlTaraf.Booking.Payload.response.Reservation.ReservationDashboard;
 import com.AlTaraf.Booking.Payload.response.Reservation.ReservationStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,10 +46,19 @@ public interface ReservationStatusMapper {
     @Mapping(source = "clientPhone", target = "customerPhone")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "createdDate", target = "createdDateFormatted", qualifiedByName = "formatDateTime")
     ReservationDashboard toReservationDashboardDto(Reservations reservation);
 
     List<ReservationStatus> toReservationStatusDtoList(List<Reservations> reservationsList);
     List<ReservationDashboard> toReservationDashboardDto(List<Reservations> reservationsList);
+
+    @Named("formatDateTime")
+    default String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        return dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
+    }
 
     default String extractFilePaths(List<FileForUnit> fileForUnits) {
         if (fileForUnits == null || fileForUnits.isEmpty()) {
