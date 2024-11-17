@@ -2,7 +2,7 @@ package com.AlTaraf.Booking.Entity.Reservation;
 
 import com.AlTaraf.Booking.Entity.Evaluation.Evaluation;
 import com.AlTaraf.Booking.Entity.User.User;
-import com.AlTaraf.Booking.Entity.common.Auditable;
+import com.AlTaraf.Booking.Entity.base.BaseAuditEntity;
 import com.AlTaraf.Booking.Entity.unit.AvailablePeriods.AvailablePeriods;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.availableArea.AvailableArea;
@@ -14,19 +14,17 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "Reservation")
 @Setter
 @Getter
 @AllArgsConstructor
-public class Reservations extends Auditable<String> {
+public class Reservations extends BaseAuditEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
