@@ -11,6 +11,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -26,9 +28,7 @@ public interface ReservationGetByIdMapper {
     @Mapping(source = "unit.unitType", target = "unitType")
     @Mapping(source = "unit.accommodationType", target = "accommodationType")
     @Mapping(source = "user.id", target = "userId")
-//    @Mapping(source = "roomAvailable", target = "roomAvailable", qualifiedByName = "mapToRoomAvailable")
     @Mapping(source = "roomAvailable", target = "roomAvailable")
-//    @Mapping(source = "availableArea", target = "availableArea", qualifiedByName = "mapToAvailableArea")
     @Mapping(source = "availableArea", target = "availableArea")
     @Mapping(source = "basicFeaturesSet", target = "basicFeatures")
     @Mapping(source = "subFeaturesSet", target = "subFeatures")
@@ -40,7 +40,16 @@ public interface ReservationGetByIdMapper {
     @Mapping(source = "price", target = "price")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "createdDate", target = "createdDateFormatted", qualifiedByName = "formatDateTime")
     ReservationResponseGetId toReservationDto(Reservations reservation);
+
+    @Named("formatDateTime")
+    default String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        return dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
+    }
 
     List<ReservationResponseGetId> toReservationsDtoList(List<Reservations> reservations);
 

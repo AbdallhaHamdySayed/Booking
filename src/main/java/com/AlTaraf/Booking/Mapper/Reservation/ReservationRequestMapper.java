@@ -11,7 +11,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,18 +24,11 @@ public interface ReservationRequestMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "roomAvailableId", target = "roomAvailable", qualifiedByName = "mapToRoomAvailable")
     @Mapping(source = "availableAreaId", target = "availableArea", qualifiedByName = "mapToAvailableArea")
-//    @Mapping(source = "basicFeaturesIds", target = "basicFeaturesSet", qualifiedByName = "basicFeaturesIdsToEntities")
-//    @Mapping(source = "subFeaturesIds", target = "subFeaturesSet", qualifiedByName = "subFeaturesIdsToEntities")
     @Mapping(source = "capacityHalls", target = "capacityHalls")
     @Mapping(source = "availablePeriodsHallsIds", target = "availablePeriodsHallsSet", qualifiedByName = "availablePeriodsHallsIdsToEntities")
-//    @Mapping(source = "adultsAllowed", target = "adultsAllowed")
-//    @Mapping(source = "childrenAllowed", target = "childrenAllowed")
-//    @Mapping(source = "evaluationId", target = "evaluation.id")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
     Reservations toReservation(ReservationRequestDto reservationRequestDto);
-
-    List<ReservationRequestDto> toReservationsList(List<Reservations> reservationsList);
 
     @Named("mapToAvailableArea")
     static AvailableArea mapToAvailableArea(Long availableAreaId) {
@@ -47,33 +39,6 @@ public interface ReservationRequestMapper {
         availableArea.setId(availableAreaId);
         return availableArea;
     }
-//    @Named("basicFeaturesIdsToEntities")
-//    static Set<Feature> basicFeaturesIdsToEntities(Set<Long> basicFeaturesIds) {
-//        if (basicFeaturesIds == null) {
-//            return Collections.emptySet();
-//        }
-//        return basicFeaturesIds.stream()
-//                .map(id -> {
-//                    Feature feature = new Feature();
-//                    feature.setId(id);
-//                    return feature;
-//                })
-//                .collect(Collectors.toSet());
-//    }
-
-//    @Named("subFeaturesIdsToEntities")
-//    static Set<SubFeature> subFeaturesIdsToEntities(Set<Long> subFeaturesIds) {
-//        if (subFeaturesIds == null) {
-//            return Collections.emptySet();
-//        }
-//        return subFeaturesIds.stream()
-//                .map(id -> {
-//                    SubFeature subFeature = new SubFeature();
-//                    subFeature.setId(id);
-//                    return subFeature;
-//                })
-//                .collect(Collectors.toSet());
-//    }
 
     @Named("availablePeriodsHallsIdsToEntities")
     static Set<AvailablePeriods> availablePeriodsHallsToEntities(Set<Long> availablePeriodsHallsIds) {
@@ -98,7 +63,5 @@ public interface ReservationRequestMapper {
         roomAvailable.setId(roomAvailableId);
         return roomAvailable;
     }
-
-
 
 }
