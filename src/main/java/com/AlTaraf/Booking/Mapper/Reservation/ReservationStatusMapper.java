@@ -22,8 +22,8 @@ public interface ReservationStatusMapper {
     @Mapping(source = "unit.region", target = "regionDto")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "isEvaluating", target = "isEvaluating")
-    @Mapping(source = "user.username", target = "customerName")
-    @Mapping(source = "user.phone", target = "customerPhone")
+    @Mapping(source = "clientName", target = "customerName")
+    @Mapping(source = "clientPhone", target = "customerPhone")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
     ReservationStatus toReservationStatusDto(Reservations reservation);
@@ -39,8 +39,8 @@ public interface ReservationStatusMapper {
     @Mapping(source = "isEvaluating", target = "isEvaluating")
     @Mapping(source = "unit.user.username", target = "traderName")
     @Mapping(source = "unit.user.phone", target = "traderPhone")
-    @Mapping(source = "user.username", target = "customerName")
-    @Mapping(source = "user.phone", target = "customerPhone")
+    @Mapping(source = "clientName", target = "customerName")
+    @Mapping(source = "clientPhone", target = "customerPhone")
     @Mapping(source = "dateOfArrival", target = "dateOfArrival")
     @Mapping(source = "departureDate", target = "departureDate")
     ReservationDashboard toReservationDashboardDto(Reservations reservation);

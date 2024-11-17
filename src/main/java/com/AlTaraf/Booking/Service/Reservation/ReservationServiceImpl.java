@@ -67,7 +67,7 @@ public class ReservationServiceImpl implements ReservationService {
     WalletRepository walletRepository;
 
     @Override
-    public Reservations saveReservation(Long userId, Reservations reservations) {
+    public Reservations saveReservation(Reservations reservations) {
         return reservationRepository.save(reservations);
     }
 

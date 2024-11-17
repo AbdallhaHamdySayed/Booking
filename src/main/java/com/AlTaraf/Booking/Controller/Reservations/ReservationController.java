@@ -119,12 +119,15 @@ public class ReservationController {
             }
 
             Long userId = reservationRequestDto.getUserId();
+            System.out.println("userId: " + userId);
 
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
+            System.out.println("Here");
             // Convert UnitRequestDto to Unit
             Reservations reservationsToSave = reservationRequestMapper.toReservation(reservationRequestDto);
+
 
             if (reservationRequestDto.getRoomAvailableId() != null) {
                 RoomDetails roomDetails = roomDetailsService.getRoomDetailsByUnitIdAndRoomAvailableId(reservationRequestDto.getUnitId(), reservationRequestDto.getRoomAvailableId());
@@ -163,7 +166,7 @@ public class ReservationController {
 //            reservationsToSave.setCreatedDate(DateUtils.getCurrentDate());
 
             // Save the reservation in the database
-            Reservations reservation = reservationService.saveReservation(userId,reservationsToSave);
+            Reservations reservation = reservationService.saveReservation(reservationsToSave);
 
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
                     messageSource.getMessage("notification_body_reservation.message", null,
@@ -365,7 +368,7 @@ public class ReservationController {
 
     try {
         // Save the updated Reservation
-        reservationService.saveReservation(userId, existingReservation);
+        reservationService.saveReservation(existingReservation);
         return ResponseEntity.ok().body(messageSource.getMessage("Evaluation_Set_Successfully.message", null, LocaleContextHolder.getLocale()));
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageSource.getMessage("Evaluation_Set_Failed.message", null, LocaleContextHolder.getLocale()));

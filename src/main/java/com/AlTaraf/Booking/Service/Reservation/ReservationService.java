@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ReservationService {
-    Reservations saveReservation(Long userId, Reservations reservations) throws InsufficientFundsException;
+    Reservations saveReservation(Reservations reservations) throws InsufficientFundsException;
 
     Reservations getReservationById(Long id);
 
