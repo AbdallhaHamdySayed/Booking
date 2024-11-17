@@ -106,6 +106,7 @@ public class WebSecurityConfig {
                             .requestMatchers("/payment/back-end-url").permitAll()
                             .requestMatchers("/ws-payment/**").permitAll()
                             .requestMatchers("/test.html").permitAll()
+                            .requestMatchers("//api/users/active/**").permitAll()
 
 
 

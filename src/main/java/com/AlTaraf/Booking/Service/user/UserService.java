@@ -43,6 +43,8 @@ public interface UserService {
 
     User updateWallet(Long userId, Double newWalletAmount);
 
+    User updateActive(Long userId);
+
     void setActive(Long unitId);
 }
 

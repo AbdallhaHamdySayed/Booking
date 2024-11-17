@@ -350,6 +350,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    @Override
+    public User updateActive(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setIsActive(true);
+        return userRepository.save(user);
+    }
+
+    @Transactional
     public void setActive(Long unitId) {
          userRepository.activateUserById(unitId);
     }

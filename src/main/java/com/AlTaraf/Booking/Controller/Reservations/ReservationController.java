@@ -132,6 +132,7 @@ public class ReservationController {
             if (reservationRequestDto.getRoomAvailableId() != null) {
                 RoomDetails roomDetails = roomDetailsService.getRoomDetailsByUnitIdAndRoomAvailableId(reservationRequestDto.getUnitId(), reservationRequestDto.getRoomAvailableId());
                 System.out.println(roomDetails.getId() + "price: " + roomDetails.getNewPrice());
+                System.out.println("condition 1");
                 if (roomDetails != null) {
                     // Update the price based on room details
                     reservationsToSave.setPrice(roomDetails.getNewPrice());
@@ -143,6 +144,7 @@ public class ReservationController {
                 RoomDetailsForAvailableArea roomDetailsForAvailableArea = roomDetailsForAvailableAreaService.getRoomDetailsByUnitIdAndAvailableAreaId(reservationsToSave.getUnit().getId(), reservationsToSave.getAvailableArea().getId());
                 if (roomDetailsForAvailableArea.getId() != null) {
                     // Update the price based on available area details
+                    System.out.println("condition 2");
                     System.out.println("roomDetailsForAvailableArea.getNewPrice(): "+roomDetailsForAvailableArea.getNewPrice());
                     System.out.println("roomDetailsForAvailableArea.getOldPrice(): "+ roomDetailsForAvailableArea.getOldPrice());
                     reservationsToSave.setPrice(roomDetailsForAvailableArea.getNewPrice());

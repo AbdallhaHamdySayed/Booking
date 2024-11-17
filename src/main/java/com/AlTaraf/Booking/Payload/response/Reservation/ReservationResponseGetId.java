@@ -38,4 +38,5 @@ public class ReservationResponseGetId {
     private int price;
     private LocalDate dateOfArrival;
     private LocalDate departureDate;
+    private String createdDateFormatted;
 }
