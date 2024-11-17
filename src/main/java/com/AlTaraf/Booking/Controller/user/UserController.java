@@ -332,4 +332,15 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/active/{userId}")
+    public ResponseEntity<?> updateUserActive(@PathVariable Long userId) {
+        try {
+            User updatedUser = userService.updateActive(userId);
+            ApiResponse apiResponse = new ApiResponse(200, "تم تعديل محفظة المستخدم");
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500, "حدث خطأ ولم يتم التعديل علي محفظة المستخدم"));
+        }
+    }
+
 }
