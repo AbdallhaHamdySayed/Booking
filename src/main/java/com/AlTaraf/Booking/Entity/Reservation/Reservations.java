@@ -24,12 +24,10 @@ import java.util.Set;
 @Setter
 @Getter
 @AllArgsConstructor
+@AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "RESERVATION_ID"))
+})
 public class Reservations extends BaseAuditEntity<Integer> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RESERVATION_ID")
-    private Long id;
 
     @Column(name = "CLIENT_NAME")
     private String clientName;
