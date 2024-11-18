@@ -2,6 +2,7 @@ package com.AlTaraf.Booking.Entity.Ads;
 
 import com.AlTaraf.Booking.Entity.File.FileForAds;
 import com.AlTaraf.Booking.Entity.User.User;
+import com.AlTaraf.Booking.Entity.base.BaseAuditEntity;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
 import jakarta.persistence.*;
@@ -13,12 +14,10 @@ import lombok.Data;
 @Table(name = "ADS")
 @Data
 @AllArgsConstructor
-public class Ads {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ADS_ID")
-    private Long id;
+@AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "ADS_ID"))
+})
+public class Ads extends BaseAuditEntity<Integer> {
 
     @OneToOne(mappedBy = "ads", cascade = CascadeType.ALL,  orphanRemoval = true)
     @JoinColumn(name = "FILE_FOR_ADS_ID")

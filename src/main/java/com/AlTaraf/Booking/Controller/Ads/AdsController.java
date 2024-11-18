@@ -237,8 +237,8 @@ public class AdsController {
         }
     }
 
-    @DeleteMapping("delete/ads/{id}")
-    public ResponseEntity<?> deleteAds(@PathVariable Long id,
+    @DeleteMapping("rejected/ads/{id}")
+    public ResponseEntity<?> cancelAds(@PathVariable Long id,
                                        @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
 
 
@@ -264,6 +264,34 @@ public class AdsController {
 
         adsRepository.save(ads);
 
+
+        ApiResponse response = new ApiResponse(200, messageSource.getMessage("ads_rejected.message", null, LocaleContextHolder.getLocale()));
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+    @DeleteMapping("delete/ads/{id}")
+    public ResponseEntity<?> deleteAds(@PathVariable Long id,
+                                       @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+
+
+        Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
+
+        if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+            try {
+                List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                if (!languageRanges.isEmpty()) {
+                    locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+                }
+            } catch (IllegalArgumentException e) {
+                // Handle the exception if needed
+                System.out.println("IllegalArgumentException: " + e);
+            }
+        }
+
+        Ads ads = adsRepository.findById(id).orElse(null);
+
+        adsRepository.delete(ads);
 
         ApiResponse response = new ApiResponse(200, messageSource.getMessage("ads_deleted.message", null, LocaleContextHolder.getLocale()));
         return ResponseEntity.status(HttpStatus.OK).body(response);
