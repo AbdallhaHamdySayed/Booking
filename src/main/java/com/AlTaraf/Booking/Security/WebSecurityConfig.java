@@ -101,12 +101,14 @@ public class WebSecurityConfig {
                             .requestMatchers("/WhatsApp/**").permitAll()
                             .requestMatchers("/Notification/**").permitAll()
                             .requestMatchers("/Api/Units/By-Id-General/**").permitAll()
+                            .requestMatchers("/Api/Units/Change/Status/Units/**").permitAll()
                             .requestMatchers("/api/admin/change/status/units/**").permitAll()
                             .requestMatchers("/api/cities/**").permitAll()
                             .requestMatchers("/payment/back-end-url").permitAll()
                             .requestMatchers("/ws-payment/**").permitAll()
                             .requestMatchers("/test.html").permitAll()
-                            .requestMatchers("//api/users/active/**").permitAll()
+                            .requestMatchers("/api/users/active/**").permitAll()
+                            .requestMatchers("/api/reservations/status-reservation-for-dashboard").permitAll()
 
 
 
