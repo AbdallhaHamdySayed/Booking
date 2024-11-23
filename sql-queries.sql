@@ -26,7 +26,7 @@ insert into region (arabic_name, region, city_id) values ("الرملة","Ramla"
 
 -- insert unit_type نوع الوحدة
 
-insert into unit_type (type_arabic_name, type_name) values ("اقامات","Residencies");
+insert into unit_type (type_arabic_name, type_name) values ("إقامات","Residencies");
 insert into unit_type (type_arabic_name, type_name) values ("قاعات مناسبات","Event Halls");
 
 -- insert accommodation_type   نوع الاقامة
@@ -36,7 +36,7 @@ insert into accommodation_type  (accommodation_arabic_name, accommodation_name) 
 insert into accommodation_type  (accommodation_arabic_name, accommodation_name) values ("شقة خارجية","External Apartment");
 insert into accommodation_type  (accommodation_arabic_name, accommodation_name) values ("شالية","Chalet");
 insert into accommodation_type  (accommodation_arabic_name, accommodation_name) values ("منتجع","Resort");
-insert into accommodation_type  (accommodation_arabic_name, accommodation_name) values ("استراحة","Lounge");
+insert into accommodation_type  (accommodation_arabic_name, accommodation_name) values ("إستراحة","Lounge");
 
 insert into types_event_halls  (types_event_halls_arabic_name, types_event_halls_name) values ("قاعة مناسبات","Event hall");
 insert into types_event_halls  (types_event_halls_arabic_name, types_event_halls_name) values ("فلل مناسبات","Occasion villas");
@@ -118,15 +118,15 @@ insert into package_ads (ads_arabic_name, ads_name, number_ads, price) values ("
 insert into package_ads (ads_arabic_name, ads_name, number_ads, price) values ("الماسية", "Diamond", 15, 200);
 
 -- insert available_area        الغرف المتاحة للشقق والشقق الخارجية والمنتجعات
-insert into available_area (available_area_name_arabic, available_area_name) values ("استوديو","studio");
+insert into available_area (available_area_name_arabic, available_area_name) values ("إستوديو","studio");
 insert into available_area (available_area_name_arabic, available_area_name) values ("غرفتين","two rooms");
 insert into available_area (available_area_name_arabic, available_area_name) values ("ثلاث غرف","three rooms");
 
-insert into types_apartment (types_apartment_arabic_name, types_apartment_name) values ("استوديو","studio");
+insert into types_apartment (types_apartment_arabic_name, types_apartment_name) values ("إستوديو","studio");
 insert into types_apartment (types_apartment_arabic_name, types_apartment_name) values ("غرفتين","two rooms");
 insert into types_apartment (types_apartment_arabic_name, types_apartment_name) values ("ثلاث غرف","three rooms");
 
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("+ممتاز: 9", "Excellent: 9+", 9);
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("+جيد جدا: 8", "Very Good: 8+", 8);
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("+جيد: 7", "Good: 7+", 7);
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("+مرضي: 6", "Acceptable: 6+", 6);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("ممتاز", "Excellent: 9+", 9);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("جيد جدا", "Very Good: 8+", 8);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("جيد", "Good: 7+", 7);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("مرضي", "Acceptable: 6+", 6);
