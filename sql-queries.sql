@@ -126,7 +126,7 @@ insert into types_apartment (types_apartment_arabic_name, types_apartment_name) 
 insert into types_apartment (types_apartment_arabic_name, types_apartment_name) values ("غرفتين","two rooms");
 insert into types_apartment (types_apartment_arabic_name, types_apartment_name) values ("ثلاث غرف","three rooms");
 
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("ممتاز", "Excellent: 9+", 9);
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("جيد جدا", "Very Good: 8+", 8);
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("جيد", "Good: 7+", 7);
-insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("مرضي", "Acceptable: 6+", 6);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("ممتاز", "Excellent", 9);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("جيد جدا", "Very Good", 8);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("جيد", "Good", 7);
+insert into evaluation (evaluation_arabic_name, evaluation_name, score) values ("مرضي", "Acceptable", 6);
