@@ -409,6 +409,9 @@ public class UnitController {
             }
             System.out.println("updatedUnit.getPeriodCount(): " + updatedUnit.getPeriodCount());
 
+            StatusUnit statusUnit = statusUnitRepository.findById(1L).orElse(null);
+            updatedUnit.setStatusUnit(statusUnit);
+
             unitService.saveUnit(unitToUpdate);
 
             // Return a success response with the updated unitId in the body
@@ -1373,8 +1376,7 @@ public class UnitController {
 
 //            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
             List<Unit> units = unitService.getUnitsByUserIdList(userId);
-
-
+            
             if (units == null || units.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));
             }
@@ -1382,6 +1384,7 @@ public class UnitController {
             List<ReservationStatus> reservationRequestDtoList = new ArrayList<>();
 
             for (Unit unit : units) {
+                System.out.println("Unit Id: " + unit.getId());
                 Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
                 Page<Reservations> reservationsPage = reservationService.getByStatusIdAndUnitId(statusId, unit.getId(), pageable);
                 reservationRequestDtoList.addAll(reservationStatusMapper.toReservationStatusDtoList(reservationsPage.getContent()));
