@@ -10,6 +10,7 @@ import com.AlTaraf.Booking.Entity.unit.feature.Feature;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
 import com.AlTaraf.Booking.Entity.unit.subFeature.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -91,9 +92,11 @@ public class Reservations extends BaseAuditEntity<Integer> {
     private int price;
 
     @Column(name = "DATE_OF_ARRIVAL")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfArrival;
 
     @Column(name = "DATE_OF_DEPARTURE")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate departureDate;
 
     @Column(name = "IS_EVALUATING")
