@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.Service.Reservation;
 
+import com.AlTaraf.Booking.Entity.Calender.Halls.ReserveDateHalls;
 import com.AlTaraf.Booking.Entity.Reservation.Reservations;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.availableArea.AvailableArea;
@@ -41,4 +42,6 @@ public interface ReservationService {
     Page<Reservations> getUserReservationsLesserArrivalDate(Long userId, Pageable pageable);
 
     Page<Reservations> getUserReservationsGreaterArrivalDate(Long userId, Pageable pageable);
+
+    List<ReserveDateHalls> getByUnitId(Long unitId);
 }

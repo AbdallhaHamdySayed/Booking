@@ -28,7 +28,7 @@ public class ReserveDateHalls {
 
     @ManyToOne
     @JoinColumn(name = "UNIT_ID")
-    private Unit unit;;
+    private Unit unit;
 
     @Column(name = "RESERVE")
     private Boolean reserve;

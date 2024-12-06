@@ -252,6 +252,10 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findUserReservationsWithStatusAndGreaterArrivalDate(userId, currentDate, pageable);
     }
 
+    @Override
+    public List<ReserveDateHalls> getByUnitId(Long unitId) {
+        return reserveDateHallsRepository.findByUnitId(unitId); // Correctly reference the instance
+    }
 
 }
 
