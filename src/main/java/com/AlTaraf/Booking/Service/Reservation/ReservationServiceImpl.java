@@ -1,6 +1,8 @@
 package com.AlTaraf.Booking.Service.Reservation;
 
+import com.AlTaraf.Booking.Entity.Calender.DateInfo;
 import com.AlTaraf.Booking.Entity.Calender.Halls.ReserveDateHalls;
+import com.AlTaraf.Booking.Entity.Calender.ReserveDateUnit;
 import com.AlTaraf.Booking.Entity.Reservation.Reservations;
 import com.AlTaraf.Booking.Entity.Transactions.TotalTransactions;
 import com.AlTaraf.Booking.Entity.Transactions.Transactions;
@@ -13,8 +15,10 @@ import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
+import com.AlTaraf.Booking.Repository.DateInfoRepository;
 import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateHallsRepository;
+import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateUnitRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TotalTransactionsRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TransactionsDetailRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TransactionsRepository;
@@ -66,6 +70,12 @@ public class ReservationServiceImpl implements ReservationService {
     @Autowired
     WalletRepository walletRepository;
 
+    @Autowired
+    ReserveDateUnitRepository reserveDateUnitRepository;
+
+    @Autowired
+    DateInfoRepository dateInfoRepository;
+
     @Override
     public Reservations saveReservation(Reservations reservations) {
         return reservationRepository.save(reservations);
@@ -87,16 +97,38 @@ public class ReservationServiceImpl implements ReservationService {
         Reservations reservations = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + reservationId));
 
+        LocalDate dateOfArrival = reservations.getDateOfArrival();
+        LocalDate departureDate = reservations.getDepartureDate();
+
         Unit unit = findUnitByReservationId(reservationId);
+        List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitId(unit.getId());
 
-        if ( (unit.getUnitType().getId() == 2 || unit.getAccommodationType().getId() == 4 ||
-                unit.getAccommodationType().getId() == 6 ) && statusUnitId.equals(2L) ) {
-            List<ReserveDateHalls> reserveDateHalls = reserveDateHallsRepository.findByUnitId(unit.getId());
+        if ( (unit.getUnitType().getId() == 2 && statusUnitId.equals(2L) ) && reserveDateHallsList.size() > 0 ) {
 
-            for ( ReserveDateHalls reserve: reserveDateHalls ) {
+            for ( ReserveDateHalls reserve: reserveDateHallsList ) {
                 reserve.setReserve(true);
             }
 
+        }
+
+//        if (unit.getUnitType().getId() == 2) {
+//            DateInfoHalls dateInfoHalls = new DateInfoHalls();
+//            dateInfoHalls.setDate();
+//        }
+
+        if (statusUnitId.equals(2L) &&  ( unit.getAccommodationType().getId() == 4 || unit.getAccommodationType().getId() == 6 ||
+                unit.getAccommodationType().getId() == 3) ) {
+            ReserveDateUnit reserveDateUnit = new ReserveDateUnit();
+            reserveDateUnit.setUnit(unit);
+            reserveDateUnitRepository.save(reserveDateUnit);
+
+            for (LocalDate date = dateOfArrival; !date.isAfter(departureDate); date = date.plusDays(1)) {
+                System.out.println(date);
+                DateInfo dateInfo = new DateInfo();
+                dateInfo.setDate(date);
+                dateInfo.setReserveDateUnit(reserveDateUnit);
+                dateInfoRepository.save(dateInfo);
+            }
         }
 
         if ( statusUnitId.equals(2L) && getAvailableAreaByReservations(reservationId) != null ) {
