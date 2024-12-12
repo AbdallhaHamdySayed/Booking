@@ -17,7 +17,10 @@ public interface ReserveDateHallsRepository extends JpaRepository<ReserveDateHal
     List<ReserveDateHalls> findByUnitIdAndReserveIsTrue(@Param("unitId") Long unitId);
 
     @Query("SELECT rd FROM ReserveDateHalls rd WHERE rd.unit.id = :unitId")
-    List<ReserveDateHalls> findByUnitId(@Param("unitId") Long unitId);
+    List<ReserveDateHalls> findListByUnitId(@Param("unitId") Long unitId);
+
+    @Query("SELECT rd FROM ReserveDateHalls rd WHERE rd.unit.id = :unitId")
+    ReserveDateHalls findByUnitId(@Param("unitId") Long unitId);
 
     @Modifying
     @Transactional

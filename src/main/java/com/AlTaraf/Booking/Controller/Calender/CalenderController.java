@@ -15,6 +15,7 @@ import com.AlTaraf.Booking.Mapper.Calender.ReserveDateRoomDetailsMapper;
 import com.AlTaraf.Booking.Mapper.Calender.ReserveDateUnitMapper;
 import com.AlTaraf.Booking.Payload.request.ReserveDate.*;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
+import com.AlTaraf.Booking.Repository.DateInfoHallsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateHallsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRoomDetailsRepository;
@@ -22,6 +23,7 @@ import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateUnitRepos
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsForAvailableAreaRepository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.unit.UnitRepository;
+import com.AlTaraf.Booking.Service.Reservation.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -120,7 +122,7 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitId(reserveDateHallsDto.getUnitId());
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(reserveDateHallsDto.getUnitId());
             for (ReserveDateHalls reserveDateHalls: reserveDateHallsList) {
                 reserveDateHallsRepository.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
             }
@@ -156,7 +158,7 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitId(reserveDateHallsDeleteDto.getUnitId());
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(reserveDateHallsDeleteDto.getUnitId());
             for (ReserveDateHalls reserveDateHalls: reserveDateHallsList) {
                 reserveDateHallsRepository.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
             }
@@ -513,7 +515,7 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitId(unitId);
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(unitId);
 
             if (roomDetailsForAvailableAreaId != null) {
                 List<ReserveDate> reserveDateList = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableAreaId, unitId);

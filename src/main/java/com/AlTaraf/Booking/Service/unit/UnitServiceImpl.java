@@ -494,7 +494,7 @@ public class UnitServiceImpl implements UnitService {
             reserveDateRepository.deleteDateInfoByReserveDateId(reserveDate.getId());
         }
 
-        List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitId(id);
+        List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(id);
         for (ReserveDateHalls reserveDateHalls: reserveDateHallsList) {
             reserveDateHallsRepository.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
         }
