@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -89,11 +90,16 @@ public class AdsServiceImpl implements AdsService {
         User user = ads.getUser();
 
         Integer numberAds = user.getNumberAds();
-        numberAds--;
-        user.setNumberAds(numberAds);
+
+        if (numberAds > 0) {
+            numberAds--;
+            user.setNumberAds(numberAds);
+        }
+
         userRepository.save(user);
 
         ads.setStatusUnit(statusUnit);
+        ads.setDateAds(LocalDate.now().plusDays(30));
         adsRepository.save(ads);
 
         if ( statusUnitId == 2) {

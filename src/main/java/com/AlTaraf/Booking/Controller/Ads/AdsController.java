@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.Controller.Ads;
 
+import com.AlTaraf.Booking.Dto.Notifications.PushNotificationRequest;
 import com.AlTaraf.Booking.Dto.Unit.UnitDtoFavorite;
 import com.AlTaraf.Booking.Dto.ads.AdsResponse;
 import com.AlTaraf.Booking.Entity.Ads.Ads;
@@ -19,9 +20,11 @@ import com.AlTaraf.Booking.Payload.response.ApiResponse;
 import com.AlTaraf.Booking.Repository.Ads.AdsRepository;
 import com.AlTaraf.Booking.Repository.Ads.PackageAdsRepository;
 import com.AlTaraf.Booking.Repository.Wallet.WalletRepository;
+import com.AlTaraf.Booking.Repository.unit.UnitRepository;
 import com.AlTaraf.Booking.Repository.unit.statusUnit.StatusRepository;
 import com.AlTaraf.Booking.Repository.user.UserRepository;
 import com.AlTaraf.Booking.Service.Ads.AdsService;
+import com.AlTaraf.Booking.Service.notification.NotificationService;
 import com.AlTaraf.Booking.Service.unit.UnitService;
 import com.AlTaraf.Booking.Service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -79,6 +83,12 @@ public class AdsController {
 
     @Autowired
     WalletRepository walletRepository;
+
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    UnitRepository unitRepository;
 
     @GetMapping("/package-ads")
     public ResponseEntity<?> getAllPackageAds(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
@@ -142,7 +152,7 @@ public class AdsController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createAds(@RequestBody AdsRequestDto adsRequestDto,
-                                       @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+                                       @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) throws IOException, InterruptedException {
 
 
             Locale locale = LocaleContextHolder.getLocale();
@@ -175,27 +185,25 @@ public class AdsController {
         if (numberAds == 0) {
             user.setPackageAds(packageAds);
             userRepository.save(user);
-            System.out.println("Number Ads is Zero");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("package_ads_null.message", null, LocaleContextHolder.getLocale()));
         }
 
-            if (numberAds > 0) {
-                numberAds--;
-                user.setNumberAds(numberAds);
-            }
+        if (numberAds == 0) {
+            user.setPackageAds(packageAds);
+        }
 
-            if (numberAds == 0) {
-                user.setPackageAds(packageAds);
-            }
+        userRepository.save(user);
 
-            userRepository.save(user);
+        Ads createdAds = adsService.createAds(adsMapper.toEntity(adsRequestDto));
+        Long createdAdsId = createdAds.getId();
 
-//            PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_ads.message", null, LocaleContextHolder.getLocale()) +  " لوحدة " + existAds.getUnit().getNameUnit(),user.getId());
-//            notificationService.processNotification(notificationRequest);
-            Ads createdAds = adsService.createAds(adsMapper.toEntity(adsRequestDto));
-            Long createdAdsId = createdAds.getId();
-            AdsResponse adsResponse = new AdsResponse(createdAdsId, messageSource.getMessage("ads_created.message" , null, LocaleContextHolder.getLocale()));
-            return ResponseEntity.status(HttpStatus.OK).body(adsResponse);
+        System.out.println("name unit Id: " + createdAds.getUnit().getId());
+
+        PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),messageSource.getMessage("notification_body_ads.message", null, LocaleContextHolder.getLocale()) , user.getId(), null, null, null);
+        notificationService.processNotification(notificationRequest);
+
+        AdsResponse adsResponse = new AdsResponse(createdAdsId, messageSource.getMessage("ads_created.message" , null, LocaleContextHolder.getLocale()));
+        return ResponseEntity.status(HttpStatus.OK).body(adsResponse);
 
     }
 

@@ -2,12 +2,14 @@ package com.AlTaraf.Booking.Entity.Ads;
 
 import com.AlTaraf.Booking.Entity.File.FileForAds;
 import com.AlTaraf.Booking.Entity.User.User;
-import com.AlTaraf.Booking.Entity.base.BaseAuditEntity;
+import com.AlTaraf.Booking.Entity.base.BaseEntity;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 
 @Entity
@@ -17,7 +19,7 @@ import lombok.Data;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "ADS_ID"))
 })
-public class Ads extends BaseAuditEntity<Integer> {
+public class Ads extends BaseEntity<Integer> {
 
     @OneToOne(mappedBy = "ads", cascade = CascadeType.ALL,  orphanRemoval = true)
     @JoinColumn(name = "FILE_FOR_ADS_ID")
@@ -34,6 +36,9 @@ public class Ads extends BaseAuditEntity<Integer> {
     @ManyToOne
     @JoinColumn(name = "STATUS_ID")
     private StatusUnit statusUnit;
+
+    @Column(name = "DATE_ADS")
+    private LocalDate dateAds;
 
     public Ads() {
         this.statusUnit = new StatusUnit();

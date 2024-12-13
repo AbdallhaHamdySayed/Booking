@@ -15,7 +15,9 @@ import java.util.List;
 
 @Repository
 public interface AdsRepository extends JpaRepository<Ads, Long> {
-    List<Ads> findByStatusUnitId(Long statusUnitId);
+
+    @Query("SELECT a FROM Ads a WHERE a.statusUnit.id = 2")
+    List<Ads> findByStatusUnitId();
 
     @Query("SELECT a FROM Ads a WHERE a.user.id = :userId AND a.statusUnit.id = :statusUnitId")
     List<Ads> findAllAdsByUserIdAndStatusUnitId(@Param("userId") Long userId, @Param("statusUnitId") Long statusUnitId, Pageable pageable);
@@ -27,10 +29,6 @@ public interface AdsRepository extends JpaRepository<Ads, Long> {
     @Transactional
     @Query("DELETE FROM Ads a WHERE a.unit.id = :unitId")
     void deleteByUnitId(@Param("unitId") Long unitId);
-
-    void deleteByUser(User user);
-
-    List<Ads> findByUser(User user);
 
     Page<Ads> findAllByStatusUnitId(Long statusUnitId, Pageable pageable);
 

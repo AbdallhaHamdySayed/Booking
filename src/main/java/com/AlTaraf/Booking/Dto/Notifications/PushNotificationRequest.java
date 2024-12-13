@@ -14,4 +14,5 @@ public class PushNotificationRequest {
     private Long unitId;
     private Long reservationId;
     private Long adsId;
+
 }
