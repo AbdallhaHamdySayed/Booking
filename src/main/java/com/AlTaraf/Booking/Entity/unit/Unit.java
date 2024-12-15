@@ -217,7 +217,8 @@ public class Unit extends Auditable<String> {
         this.statusUnit.setId(1L);
         this.favorite = false;
         this.dateOfArrival = LocalDate.now(); // Set dateOfArrival to the current date
-        this.departureDate = LocalDate.now().plusDays(30); // Set departureDate to 30 days after dateOfArrival
+//        this.departureDate = LocalDate.now().plusDays(30); // Set departureDate to 30 days after dateOfArrival
+        this.departureDate = LocalDate.now().plusYears(1);
         this.roomAvailableCount = 0;
     }
 
