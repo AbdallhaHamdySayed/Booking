@@ -1,8 +1,10 @@
 package com.AlTaraf.Booking.Config;
 
 import com.AlTaraf.Booking.Entity.Ads.Ads;
+import com.AlTaraf.Booking.Entity.Calender.ReserveDateRoomDetails2;
 import com.AlTaraf.Booking.Entity.Schedule;
 import com.AlTaraf.Booking.Repository.Ads.AdsRepository;
+import com.AlTaraf.Booking.Service.ReserveDateRoomDetails2Service;
 import com.AlTaraf.Booking.Service.ScheduleService;
 import com.AlTaraf.Booking.Service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,10 @@ public class UserCleanupScheduler {
 
     @Autowired
     AdsRepository adsRepository;
+
+    @Autowired
+    ReserveDateRoomDetails2Service reserveDateRoomDetails2Service;
+
 
     @Autowired
     public UserCleanupScheduler(UserService userService) {
@@ -47,6 +53,20 @@ public class UserCleanupScheduler {
         }
         scheduleService.updateEntity(schedule);
     }
+
+//    @Scheduled(cron = "0 * * * * *")
+//    public void hotelReserveDate() {
+//        Schedule schedule = scheduleService.createEntity("HOTEL_RESERVE_DATE");
+//        List<ReserveDateRoomDetails2> reserveDateRoomDetails2List = reserveDateRoomDetails2Service.listAll();
+//        for (ReserveDateRoomDetails2 reserveDateRoomDetails2 : reserveDateRoomDetails2List) {
+//            if (reserveDateRoomDetails2.getDate().isBefore(LocalDate.now())) {
+//                System.out.println("reserveDateRoomDetails2.getUnit().getId(): " + reserveDateRoomDetails2.getUnit().getId());
+//                reserveDateRoomDetails2Service.delete(reserveDateRoomDetails2);
+//
+//            }
+//        }
+//        scheduleService.updateEntity(schedule);
+//    }
 
 
 }
