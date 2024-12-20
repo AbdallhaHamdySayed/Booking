@@ -3,6 +3,8 @@ package com.AlTaraf.Booking.Service.Reservation;
 import com.AlTaraf.Booking.Entity.Calender.DateInfo;
 import com.AlTaraf.Booking.Entity.Calender.Halls.DateInfoHalls;
 import com.AlTaraf.Booking.Entity.Calender.Halls.ReserveDateHalls;
+import com.AlTaraf.Booking.Entity.Calender.ReserveDate2;
+import com.AlTaraf.Booking.Entity.Calender.ReserveDateRoomDetails2;
 import com.AlTaraf.Booking.Entity.Calender.ReserveDateUnit;
 import com.AlTaraf.Booking.Entity.Reservation.Reservations;
 import com.AlTaraf.Booking.Entity.ReservationPeriodUnitHalls;
@@ -17,11 +19,10 @@ import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomAvailable;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
 import com.AlTaraf.Booking.Entity.unit.statusUnit.StatusUnit;
-import com.AlTaraf.Booking.Repository.DateInfoHallsRepository;
-import com.AlTaraf.Booking.Repository.DateInfoRepository;
+import com.AlTaraf.Booking.Repository.*;
 import com.AlTaraf.Booking.Repository.Reservation.ReservationRepository;
-import com.AlTaraf.Booking.Repository.ReservationPeriodUnitHallsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateHallsRepository;
+import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateUnitRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TotalTransactionsRepository;
 import com.AlTaraf.Booking.Repository.Transactions.TransactionsDetailRepository;
@@ -85,6 +86,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     ReservationPeriodUnitHallsRepository reservationPeriodUnitHallsRepository;
+
+    @Autowired
+    ReserveDateRoomDetailsRepository reserveDateRoomDetailsRepository;
+
+    @Autowired
+    ReserveDateRoomDetails2Repository reserveDateRoomDetails2Repository;
+
+    @Autowired
+    ReserveDate2Repository reserveDate2Repository;
 
     @Override
     public Reservations saveReservation(Reservations reservations) {
@@ -161,7 +171,7 @@ public class ReservationServiceImpl implements ReservationService {
                 reserveDateUnit.setUnit(unit);
                 reserveDateUnitRepository.save(reserveDateUnit);
 
-                for (LocalDate date = dateOfArrival; !date.isAfter(departureDate); date = date.plusDays(1)) {
+                for (LocalDate date = dateOfArrival; date.isBefore(departureDate); date = date.plusDays(1)) {
                     System.out.println(date);
                     DateInfo dateInfo = new DateInfo();
                     dateInfo.setDate(date);
@@ -176,20 +186,39 @@ public class ReservationServiceImpl implements ReservationService {
             RoomDetailsForAvailableArea roomDetailsForAvailableArea = roomDetailsForAvailableAreaRepository.findByUnitIdAndAvailableAreaId(unit.getId(), availableArea.getId());
 
 
-            int numberRoom = roomDetailsForAvailableArea.getRoomNumber();
-            if (numberRoom > 0) {
-                numberRoom--;
-                roomDetailsForAvailableArea.setRoomNumber(numberRoom);
+//            int numberRoom = roomDetailsForAvailableArea.getRoomNumber();
+//            if (numberRoom > 0) {
+//                numberRoom--;
+//                roomDetailsForAvailableArea.setRoomNumber(numberRoom);
+//            }
+//
+//            if (numberRoom == 0) {
+//
+//                Integer roomAvailableCount = unit.getRoomAvailableCount();
+//                roomAvailableCount--;
+//                unit.setRoomAvailableCount(roomAvailableCount);
+//
+//                System.out.println("roomAvailableCount: " + roomAvailableCount);
+//
+//            }
+
+            if (dateOfArrival.isEqual(departureDate)) {
+
+                System.out.println("date on if condition: " + dateOfArrival);
+                ReserveDate2 reserveDate2 = new ReserveDate2();
+                reserveDate2.setUnit(unit);
+                reserveDate2.setDate(dateOfArrival);
+                reserveDate2.setRoomDetailsForAvailableArea(roomDetailsForAvailableArea);
+                reserveDate2Repository.save(reserveDate2);
             }
 
-            if (numberRoom == 0) {
-
-                Integer roomAvailableCount = unit.getRoomAvailableCount();
-                roomAvailableCount--;
-                unit.setRoomAvailableCount(roomAvailableCount);
-
-                System.out.println("roomAvailableCount: " + roomAvailableCount);
-
+            for (LocalDate date = dateOfArrival; date.isBefore(departureDate); date = date.plusDays(1)) {
+                System.out.println("data on for loop: " + date);
+                ReserveDate2 reserveDate2 = new ReserveDate2();
+                reserveDate2.setUnit(unit);
+                reserveDate2.setDate(dateOfArrival);
+                reserveDate2.setRoomDetailsForAvailableArea(roomDetailsForAvailableArea);
+                reserveDate2Repository.save(reserveDate2);
             }
         }
 
@@ -198,22 +227,87 @@ public class ReservationServiceImpl implements ReservationService {
             RoomAvailable roomAvailable = getRoomAvailableByReservations(reservationId);
             RoomDetails roomDetails = roomDetailsRepository.findRoomDetailsByUnitIdAndRoomAvailableId(unit.getId(), roomAvailable.getId());
 
+            System.out.println("getRoomAvailableByReservations(reservationId");
 
-            int numberRoom = roomDetails.getRoomNumber();
-            if (numberRoom > 0) {
-                numberRoom--;
-                roomDetails.setRoomNumber(numberRoom);
+
+
+//            int numberRoom = roomDetails.getRoomNumber();
+//            if (numberRoom > 0) {
+//                numberRoom--;
+//                roomDetails.setRoomNumber(numberRoom);
+//            }
+//
+//            if (numberRoom == 0) {
+//
+//                Integer roomAvailableCount = unit.getRoomAvailableCount();
+//                roomAvailableCount--;
+//                unit.setRoomAvailableCount(roomAvailableCount);
+//
+//                System.out.println("roomAvailableCount: " + roomAvailableCount);
+//            }
+//
+//            ReserveDateRoomDetails reserveDateRoomDetails = new ReserveDateRoomDetails();
+//            reserveDateRoomDetails.setUnit(unit);
+//            reserveDateRoomDetails.setRoomDetails(roomDetails);
+//            reserveDateRoomDetailsRepository.save(reserveDateRoomDetails);
+//
+//            System.out.println("dateOfArrival: " + dateOfArrival + ", departureDate: " + departureDate);
+//            System.out.println("dateOfArrival.equals(departureDate): " + dateOfArrival.isEqual(departureDate));
+//
+//            if (dateOfArrival.compareTo(departureDate) == 0) {
+//                System.out.println("Dates are equal using compareTo.");
+//            }
+//
+//
+//            if (dateOfArrival.isEqual(departureDate)) {
+//                System.out.println("date on if condition: " + dateOfArrival);
+//                DateInfo dateInfo = new DateInfo();
+//                dateInfo.setDate(dateOfArrival);
+//                dateInfo.setReserveDateRoomDetails(reserveDateRoomDetails);
+//                dateInfoRepository.save(dateInfo);
+//            }
+//
+//            for (LocalDate date = dateOfArrival; date.isBefore(departureDate); date = date.plusDays(1)) {
+//                System.out.println("data on for loop: " + date);
+//                DateInfo dateInfo = new DateInfo();
+//                dateInfo.setDate(date);
+//                dateInfo.setReserveDateRoomDetails(reserveDateRoomDetails);
+//                dateInfoRepository.save(dateInfo);
+//            }
+
+//            int numberRoom = roomDetails.getRoomNumber();
+//            if (numberRoom > 0) {
+//                numberRoom--;
+//                roomDetails.setRoomNumber(numberRoom);
+//            }
+//
+//            if (numberRoom == 0) {
+//
+//                Integer roomAvailableCount = unit.getRoomAvailableCount();
+//                roomAvailableCount--;
+//                unit.setRoomAvailableCount(roomAvailableCount);
+//
+//                System.out.println("roomAvailableCount: " + roomAvailableCount);
+//            }
+
+            if (dateOfArrival.isEqual(departureDate)) {
+
+                System.out.println("date on if condition: " + dateOfArrival);
+                ReserveDateRoomDetails2 reserveDateRoomDetails2 = new ReserveDateRoomDetails2();
+                reserveDateRoomDetails2.setUnit(unit);
+                reserveDateRoomDetails2.setDate(dateOfArrival);
+                reserveDateRoomDetails2.setRoomDetails(roomDetails);
+                reserveDateRoomDetails2Repository.save(reserveDateRoomDetails2);
             }
 
-            if (numberRoom == 0) {
-
-                Integer roomAvailableCount = unit.getRoomAvailableCount();
-                roomAvailableCount--;
-                unit.setRoomAvailableCount(roomAvailableCount);
-
-                System.out.println("roomAvailableCount: " + roomAvailableCount);
+            for (LocalDate date = dateOfArrival; date.isBefore(departureDate); date = date.plusDays(1)) {
+                System.out.println("data on for loop: " + date);
+                ReserveDateRoomDetails2 reserveDateRoomDetails2 = new ReserveDateRoomDetails2();
+                reserveDateRoomDetails2.setUnit(unit);
+                reserveDateRoomDetails2.setDate(date);
+                reserveDateRoomDetails2.setRoomDetails(roomDetails);
+                reserveDateRoomDetails2Repository.save(reserveDateRoomDetails2);
             }
-
         }
 
         StatusUnit statusUnit = statusRepository.findById(statusUnitId)
@@ -255,6 +349,7 @@ public class ReservationServiceImpl implements ReservationService {
             Wallet wallet = new Wallet("تم حجز وحدة", "A unit has been reserved", reservations.getCommision() ,user, reservations.getUnit().getNameUnit(), "", "", false);
             walletRepository.save(wallet);
         }
+
         userRepository.save(user);
 
         reservationRepository.save(reservations);

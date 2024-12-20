@@ -31,19 +31,19 @@ public class RoomDetailsServiceImpl implements RoomDetailsService{
 
 
         try {
-            if (unit.getRoomAvailableCount() == null) {
-                unit.setRoomAvailableCount(0);
-            }
-
-            Integer i = unit.getRoomAvailableCount();
-
-            System.out.println("i = " + i);
-
-            i++;
-
-            System.out.println("After Increment i = " + i);
-
-            unit.setRoomAvailableCount(i);
+//            if (unit.getRoomAvailableCount() == null) {
+//                unit.setRoomAvailableCount(0);
+//            }
+//
+//            Integer i = unit.getRoomAvailableCount();
+//
+//            System.out.println("i = " + i);
+//
+//            i++;
+//
+//            System.out.println("After Increment i = " + i);
+//
+//            unit.setRoomAvailableCount(i);
 
             roomDetails.setUnit(unit);
             roomDetails.setRoomAvailable(roomAvailable);

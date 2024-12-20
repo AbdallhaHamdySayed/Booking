@@ -2,24 +2,21 @@ package com.AlTaraf.Booking.Controller.Calender;
 
 import com.AlTaraf.Booking.Dto.calender.ReserveDateHallsDeleteDto;
 import com.AlTaraf.Booking.Dto.calender.ReserveDateHallsRequest;
+import com.AlTaraf.Booking.Entity.Calender.*;
 import com.AlTaraf.Booking.Entity.Calender.Halls.ReserveDateHalls;
-import com.AlTaraf.Booking.Entity.Calender.ReserveDate;
-import com.AlTaraf.Booking.Entity.Calender.ReserveDateRoomDetails;
-import com.AlTaraf.Booking.Entity.Calender.ReserveDateUnit;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.availableArea.RoomDetailsForAvailableArea;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
-import com.AlTaraf.Booking.Mapper.Calender.ReserveDateHallsMapper;
-import com.AlTaraf.Booking.Mapper.Calender.ReserveDateMapper;
-import com.AlTaraf.Booking.Mapper.Calender.ReserveDateRoomDetailsMapper;
-import com.AlTaraf.Booking.Mapper.Calender.ReserveDateUnitMapper;
+import com.AlTaraf.Booking.Mapper.Calender.*;
 import com.AlTaraf.Booking.Payload.request.ReserveDate.*;
 import com.AlTaraf.Booking.Payload.response.ApiResponse;
 import com.AlTaraf.Booking.Repository.DateInfoHallsRepository;
+import com.AlTaraf.Booking.Repository.ReserveDate2Repository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateHallsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateRoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.ReserveDateRepository.ReserveDateUnitRepository;
+import com.AlTaraf.Booking.Repository.ReserveDateRoomDetails2Repository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsForAvailableAreaRepository;
 import com.AlTaraf.Booking.Repository.unit.RoomDetails.RoomDetailsRepository;
 import com.AlTaraf.Booking.Repository.unit.UnitRepository;
@@ -74,6 +71,12 @@ public class CalenderController {
 
     @Autowired
     ReserveDateRoomDetailsMapper reserveDateRoomDetailsMapper;
+
+    @Autowired
+    ReserveDateRoomDetails2Repository reserveDateRoomDetails2Repository;
+
+    @Autowired
+    ReserveDate2Repository reserveDate2Repository;
 
     @PostMapping("/reserve-date-halls")
     public ResponseEntity<?> createReserveDateForHalls(@RequestBody ReserveDateHallsRequest reserveDateHallsDto,
@@ -207,7 +210,13 @@ public class CalenderController {
                 if (roomDetails != null) {
                     roomDetails.setUnit(unit);
                 }
-                ReserveDate reserveDate = ReserveDateMapper.INSTANCE.reserveDateRequestToReserveDate(reserveDateRequest);
+//                ReserveDate reserveDate = ReserveDateMapper.INSTANCE.reserveDateRequestToReserveDate(reserveDateRequest);
+//
+//                reserveDate.setRoomDetailsForAvailableArea(roomDetailsForAvailableArea);
+//
+//                reserveDateRepository.save(reserveDate);
+
+                ReserveDate reserveDate = reserveDateMapper.INSTANCE.reserveDateRequestToReserveDate(reserveDateRequest);
 
                 reserveDate.setRoomDetailsForAvailableArea(roomDetailsForAvailableArea);
 
@@ -220,6 +229,7 @@ public class CalenderController {
 
                 Optional<RoomDetails> roomDetailsOptional = roomDetailsRepository.findById(reserveDateRequest.getRoomDetailsId());
                 roomDetails = roomDetailsOptional.orElse(null);
+
                 assert roomDetails != null;
                 System.out.println("getRoomDetailsId: " + roomDetails.getId());
 
@@ -230,6 +240,14 @@ public class CalenderController {
                 if (roomDetails != null) {
                     roomDetails.setUnit(unit);
                 }
+
+//                ReserveDateRoomDetails reserveDateRoomDetails = reserveDateRoomDetailsMapper.INSTANCE.reserveDateRequestToReserveDateRoomDetails(reserveDateRequest);
+//
+//                System.out.println("roomDetails Id : " + roomDetails.getId());
+//                System.out.println("roomDetails Unit Id : " + roomDetails.getUnit().getId());
+//                reserveDateRoomDetails.setRoomDetails(roomDetails);
+//                reserveDateRoomDetailsRepository.save(reserveDateRoomDetails);
+
 
                 ReserveDateRoomDetails reserveDateRoomDetails = reserveDateRoomDetailsMapper.INSTANCE.reserveDateRequestToReserveDateRoomDetails(reserveDateRequest);
 

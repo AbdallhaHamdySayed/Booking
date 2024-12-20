@@ -136,9 +136,24 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
             "JOIN r.dateInfoList d " +
             "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
             "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) " +
-            "AND (u.unitType.id != 1 OR (u.unitType.id = 1 AND (u.accommodationType.id NOT IN (1, 2, 5) OR u.roomAvailableCount > 0))) " +
+
+            "AND u.id NOT IN (SELECT rdrd2.unit.id FROM ReserveDateRoomDetails2 rdrd2 " +
+            "WHERE rdrd2.date BETWEEN :dateOfArrival AND :departureDate) " +
+
+            "AND u.id NOT IN (SELECT rdrd.unit.id FROM ReserveDateRoomDetails rdrd " +
+            "JOIN rdrd.dateInfoList di " +
+            "WHERE di.date BETWEEN :dateOfArrival AND :departureDate)" +
+
+            "AND u.id NOT IN (SELECT rd2.unit.id FROM ReserveDate2 rd2 " +
+            "WHERE rd2.date BETWEEN :dateOfArrival AND :departureDate) " +
+
+            "AND u.id NOT IN (SELECT rd.unit.id FROM ReserveDate rd " +
+            "JOIN rd.dateInfoList di " +
+            "WHERE di.date BETWEEN :dateOfArrival AND :departureDate)" +
+
             "AND u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
             "JOIN rdu.dateInfoList d WHERE d.date BETWEEN :dateOfArrival AND :departureDate) AND " +
+
             "u.statusUnit.id = 2")
     Page<Unit> findFilteringTwo(@Param("cityId") Long cityId,
                                 @Param("regionId") Long regionId,

@@ -1,31 +1,24 @@
 package com.AlTaraf.Booking.Entity.Calender;
 
+import com.AlTaraf.Booking.Entity.base.BaseEntity;
 import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Entity.unit.roomAvailable.RoomDetails;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "RESERVE_DATE_ROOM_DETAILS")
+@Table(name = "RESERVE_DATE_ROOM_DETAILS2")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReserveDateRoomDetails {
+public class ReserveDateRoomDetails2 extends BaseEntity<Integer> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RESERVE_DATE_ROOM_DETAILS_ID")
-    private Long id;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "RESERVE_DATE_ROOM_DETAILS_ID", referencedColumnName = "RESERVE_DATE_ROOM_DETAILS_ID")
-    @JsonManagedReference
-    private List<DateInfo> dateInfoList;
+    @Column(name = "DATE")
+    private LocalDate date;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ROOM_DETAILS_ID")

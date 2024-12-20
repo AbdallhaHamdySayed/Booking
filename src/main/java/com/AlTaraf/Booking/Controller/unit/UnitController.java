@@ -1317,7 +1317,7 @@ public class UnitController {
             }
 
             Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
-             reservationService.updateStatusForReservation(reservationId, statusUnitId);
+            reservationService.updateStatusForReservation(reservationId, statusUnitId);
 
             if (reservations.getStatusUnit().getId() == 2) {
                 Unit unit = unitService.getUnitById(reservations.getUnit().getId());
@@ -1329,17 +1329,19 @@ public class UnitController {
                         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
                 System.out.println("user phone reserve: " + user.getPhone());
-
-                MessageWhats messageWhats = new MessageWhats(" الرقم الخاص بمالك العقار  " +userLessor.getPhone());
-
-                messageService.sendMessage(user.getPhone(), messageWhats);
+//
+//                MessageWhats messageWhats = new MessageWhats(" الرقم الخاص بمالك العقار  " +userLessor.getPhone());
+//
+//                messageService.sendMessage(user.getPhone(), messageWhats);
 
                 PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
                         messageSource.getMessage("notification_body_accepted_reservation_successful.message", null,
                                 LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId()
                         , null, reservationId, null);
                 notificationService.processNotification(notificationRequest);
-            } else if (reservations.getStatusUnit().getId() == 3) {
+            }
+
+            else if (reservations.getStatusUnit().getId() == 3) {
                 PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
                         messageSource.getMessage("notification_body_rejected_updated_reservation.message", null,
                                 LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
