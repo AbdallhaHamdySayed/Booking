@@ -36,6 +36,6 @@ public class EventHallsResponse {
     private int oldPrice;
     private String evaluationName;
     private String evaluationArabicName;
-    private LocalDate dateOfArrival;
-    private LocalDate departureDate;
+    private String dateOfArrival;
+    private String departureDate;
 }

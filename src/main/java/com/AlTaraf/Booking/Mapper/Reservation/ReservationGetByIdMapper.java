@@ -11,6 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -38,8 +39,8 @@ public interface ReservationGetByIdMapper {
     @Mapping(source = "childrenAllowed", target = "childrenAllowed")
     @Mapping(source = "evaluation.id", target = "evaluationId")
     @Mapping(source = "price", target = "price")
-    @Mapping(source = "dateOfArrival", target = "dateOfArrival")
-    @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "dateOfArrival", target = "dateOfArrival", qualifiedByName = "formatDate")
+    @Mapping(source = "departureDate", target = "departureDate", qualifiedByName = "formatDate")
     ReservationResponseGetId toReservationDto(Reservations reservation);
 
     List<ReservationResponseGetId> toReservationsDtoList(List<Reservations> reservations);
@@ -126,5 +127,8 @@ public interface ReservationGetByIdMapper {
                 .collect(Collectors.toSet());
     }
 
-
+    @Named("formatDate")
+    static String formatDate(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+    }
 }

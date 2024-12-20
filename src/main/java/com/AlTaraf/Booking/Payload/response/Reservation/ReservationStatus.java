@@ -22,7 +22,7 @@ public class ReservationStatus {
     private Boolean isEvaluating;
     private String customerName;
     private String customerPhone;
-    private LocalDate dateOfArrival;
-    private LocalDate departureDate;
+    private String dateOfArrival;
+    private String departureDate;
     private String deviceToken;
 }

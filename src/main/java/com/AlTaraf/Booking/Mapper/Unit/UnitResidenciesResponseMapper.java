@@ -6,7 +6,10 @@ import com.AlTaraf.Booking.Entity.unit.Unit;
 import com.AlTaraf.Booking.Payload.response.Unit.UnitResidenciesResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,8 +38,8 @@ public interface UnitResidenciesResponseMapper {
     @Mapping(source = "longForMapping", target = "longForMapping")
     @Mapping(source = "evaluation.name", target = "evaluationName")
     @Mapping(source = "evaluation.arabicName", target = "evaluationArabicName")
-    @Mapping(source = "dateOfArrival", target = "dateOfArrival")
-    @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "dateOfArrival", target = "dateOfArrival", qualifiedByName = "formatDate")
+    @Mapping(source = "departureDate", target = "departureDate", qualifiedByName = "formatDate")
     UnitResidenciesResponseDto toResponseDto(Unit unit);
 
     default List<FileForUnitDTO> mapImages(List<FileForUnit> files) {
@@ -69,5 +72,10 @@ public interface UnitResidenciesResponseMapper {
             return null; // or return a default value if preferred
         }
         return fileForUnits.get(0).getFileVideoUrl();
+    }
+
+    @Named("formatDate")
+    static String formatDate(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
     }
 }

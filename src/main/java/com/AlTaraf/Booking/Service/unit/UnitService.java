@@ -83,9 +83,6 @@ public interface UnitService {
 
     CounterUnits getCounterForResidenciesUnits();
 
-    List<Unit> getUnitFilterDates(LocalDate dateOfArrival,
-                                             LocalDate departureDate);
-
     Page<Unit> getFiltering(Long cityId, Long regionId, Long unitTypeId, Long typesOfEventHallsIds,
                              Long availablePeriodsHallsSetId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
                             Set<Long> basicFeaturesSetIds, Set<Long> featuresHallsSetIds, Set<Long> subFeaturesSetIds,

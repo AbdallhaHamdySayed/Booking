@@ -12,6 +12,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,8 +60,8 @@ public interface UnitGeneralResponseMapper {
     @Mapping(source = "price", target = "price", defaultValue = "0")
     @Mapping(source = "oldPrice", target = "oldPrice", defaultValue = "0")
     @Mapping(source = "commission", target = "commission")
-    @Mapping(source = "dateOfArrival", target = "dateOfArrival")
-    @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "dateOfArrival", target = "dateOfArrival", qualifiedByName = "formatDate")
+    @Mapping(source = "departureDate", target = "departureDate", qualifiedByName = "formatDate")
     @Mapping(source = "adultsAllowed", target = "adultsAllowed")
     @Mapping(source = "childrenAllowed", target = "childrenAllowed")
     @Mapping(source = "favorite", target = "favorite")
@@ -109,5 +111,10 @@ public interface UnitGeneralResponseMapper {
                 .filter(url -> url != null) // Exclude null URLs
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Named("formatDate")
+    static String formatDate(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
     }
 }

@@ -1432,12 +1432,4 @@ public class UnitController {
         }
     }
 
-    @GetMapping("/filter-dates")
-    public ResponseEntity<?> filterByDates(@RequestParam("dateOfArrival") LocalDate dateOfArrival,
-                                           @RequestParam("departureDate") LocalDate departureDate) {
-        List<Unit> units = unitService.getUnitFilterDates(dateOfArrival, departureDate);
-//        return ResponseEntity.status(HttpStatus.OK).body(units);
-        return null;
-    }
-
 }

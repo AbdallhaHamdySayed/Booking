@@ -36,6 +36,6 @@ public class ReservationResponseGetId {
     private int childrenAllowed;
     private Long evaluationId;
     private int price;
-    private LocalDate dateOfArrival;
-    private LocalDate departureDate;
+    private String dateOfArrival;
+    private String departureDate;
 }

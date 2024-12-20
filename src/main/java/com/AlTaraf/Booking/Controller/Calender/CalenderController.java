@@ -72,12 +72,6 @@ public class CalenderController {
     @Autowired
     ReserveDateRoomDetailsMapper reserveDateRoomDetailsMapper;
 
-    @Autowired
-    ReserveDateRoomDetails2Repository reserveDateRoomDetails2Repository;
-
-    @Autowired
-    ReserveDate2Repository reserveDate2Repository;
-
     @PostMapping("/reserve-date-halls")
     public ResponseEntity<?> createReserveDateForHalls(@RequestBody ReserveDateHallsRequest reserveDateHallsDto,
                                                        @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {

@@ -562,49 +562,41 @@ public class UnitServiceImpl implements UnitService {
         return counterUnits;
     }
 
-    public List<Unit> getUnitFilterDates(LocalDate dateOfArrival, LocalDate departureDate) {
-        List<Unit> units = unitRepository.findAvailableUnitsByDateRange(dateOfArrival, departureDate);
-        for (Unit unit : units) {
-            System.out.println("units Id: " + unit.getId());
-        }
-        return unitRepository.findAvailableUnitsByDateRange(dateOfArrival, departureDate);
-    }
-
-        public Page<Unit> getFiltering(Long cityId, Long regionId, Long unitTypeId,
-                                       Long typesOfEventHallsIds, Long availablePeriodsHallsSetId,
-                                       Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
-                                       Set<Long> basicFeaturesSetIds, Set<Long> featuresHallsSetIds,
-                                       Set<Long> subFeaturesSetIds, Set<Long> evaluationIds,
-                                       Integer minCapacityHalls, Integer maxCapacityHalls,
-                                       Integer minAdultsAllowed, Integer maxAdultsAllowed,
-                                       Integer minChildrenAllowed, Integer maxChildrenAllowed,
-                                       Integer priceMin, Integer priceMax,
-                                       LocalDate dateOfArrival, LocalDate departureDate,
-                                       Pageable pageable) {
+    public Page<Unit> getFiltering(Long cityId, Long regionId, Long unitTypeId,
+                                   Long typesOfEventHallsIds, Long availablePeriodsHallsSetId,
+                                   Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
+                                   Set<Long> basicFeaturesSetIds, Set<Long> featuresHallsSetIds,
+                                   Set<Long> subFeaturesSetIds, Set<Long> evaluationIds,
+                                   Integer minCapacityHalls, Integer maxCapacityHalls,
+                                   Integer minAdultsAllowed, Integer maxAdultsAllowed,
+                                   Integer minChildrenAllowed, Integer maxChildrenAllowed,
+                                   Integer priceMin, Integer priceMax,
+                                   LocalDate dateOfArrival, LocalDate departureDate,
+                                   Pageable pageable) {
 
 
-            System.out.println("before call");
-            Page<Unit> unitContent = unitRepository.findFilteringTwo(cityId, regionId, unitTypeId, typesOfEventHallsIds,
-                    availablePeriodsHallsSetId, accommodationTypeIds, hotelClassificationIds,
-                    basicFeaturesSetIds, featuresHallsSetIds, subFeaturesSetIds,
-                    evaluationIds,
-                    minCapacityHalls, maxCapacityHalls,
-                    minAdultsAllowed, maxAdultsAllowed,
-                    minChildrenAllowed, maxChildrenAllowed,
-                    priceMin, priceMax,
-                    dateOfArrival, departureDate, pageable);
+        System.out.println("before call");
+        Page<Unit> unitContent = unitRepository.findFilteringTwo(cityId, regionId, unitTypeId, typesOfEventHallsIds,
+                availablePeriodsHallsSetId, accommodationTypeIds, hotelClassificationIds,
+                basicFeaturesSetIds, featuresHallsSetIds, subFeaturesSetIds,
+                evaluationIds,
+                minCapacityHalls, maxCapacityHalls,
+                minAdultsAllowed, maxAdultsAllowed,
+                minChildrenAllowed, maxChildrenAllowed,
+                priceMin, priceMax,
+                dateOfArrival, departureDate, pageable);
 
-            System.out.println("After call");
+        System.out.println("After call");
 
-            System.out.println("Size of unitContent:" + unitContent.getContent().size());
-            for (Unit unit : unitContent.getContent()) {
-                System.out.println("unitContent: " + unit.getId());
-            }
-
-        for (Unit unit: unitContent.getContent()) {
-            System.out.println("Unit Id: " + unit.getId());
+        System.out.println("Size of unitContent:" + unitContent.getContent().size());
+        for (Unit unit : unitContent.getContent()) {
+            System.out.println("unitContent: " + unit.getId());
         }
 
-        return unitContent;
+    for (Unit unit: unitContent.getContent()) {
+        System.out.println("Unit Id: " + unit.getId());
     }
+
+    return unitContent;
+}
 }

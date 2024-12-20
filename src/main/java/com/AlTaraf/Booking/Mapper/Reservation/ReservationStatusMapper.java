@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -27,8 +28,8 @@ public interface ReservationStatusMapper {
     @Mapping(source = "isEvaluating", target = "isEvaluating")
     @Mapping(source = "clientName", target = "customerName")
     @Mapping(source = "clientPhone", target = "customerPhone")
-    @Mapping(source = "dateOfArrival", target = "dateOfArrival")
-    @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "dateOfArrival", target = "dateOfArrival", qualifiedByName = "formatDate")
+    @Mapping(source = "departureDate", target = "departureDate", qualifiedByName = "formatDate")
     ReservationStatus toReservationStatusDto(Reservations reservation);
 
     @Mapping(source = "id", target = "reservationId")
@@ -44,8 +45,8 @@ public interface ReservationStatusMapper {
     @Mapping(source = "unit.user.phone", target = "traderPhone")
     @Mapping(source = "clientName", target = "customerName")
     @Mapping(source = "clientPhone", target = "customerPhone")
-    @Mapping(source = "dateOfArrival", target = "dateOfArrival")
-    @Mapping(source = "departureDate", target = "departureDate")
+    @Mapping(source = "dateOfArrival", target = "dateOfArrival", qualifiedByName = "formatDate")
+    @Mapping(source = "departureDate", target = "departureDate", qualifiedByName = "formatDate")
     @Mapping(source = "createdDate", target = "createdDateFormatted", qualifiedByName = "formatDateTime")
     ReservationDashboard toReservationDashboardDto(Reservations reservation);
 
@@ -73,4 +74,8 @@ public interface ReservationStatusMapper {
                 .orElse(null);
     }
 
+    @Named("formatDate")
+    static String formatDate(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+    }
 }

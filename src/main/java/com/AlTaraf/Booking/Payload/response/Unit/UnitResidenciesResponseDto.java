@@ -44,6 +44,6 @@ public class UnitResidenciesResponseDto {
     private Double longForMapping;
     private String evaluationName;
     private String evaluationArabicName;
-    private LocalDate dateOfArrival;
-    private LocalDate departureDate;
+    private String dateOfArrival;
+    private String departureDate;
 }
