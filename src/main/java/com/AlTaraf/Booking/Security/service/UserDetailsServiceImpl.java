@@ -1,7 +1,7 @@
 package com.AlTaraf.Booking.Security.service;
 
-import com.AlTaraf.Booking.Entity.User.User;
-import com.AlTaraf.Booking.Repository.user.UserRepository;
+import com.AlTaraf.Booking.database.entity.User;
+import com.AlTaraf.Booking.database.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     @Autowired
     UserRepository userRepository;
 

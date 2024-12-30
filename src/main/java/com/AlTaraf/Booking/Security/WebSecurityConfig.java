@@ -4,7 +4,7 @@ package com.AlTaraf.Booking.Security;
 import com.AlTaraf.Booking.Security.jwt.AuthEntryPointJwt;
 import com.AlTaraf.Booking.Security.jwt.AuthTokenFilter;
 import com.AlTaraf.Booking.Security.service.UserDetailsServiceImpl;
-import com.AlTaraf.Booking.Service.user.UserService;
+import com.AlTaraf.Booking.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,12 +32,7 @@ public class WebSecurityConfig {
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
-
-    @Autowired
-    @Lazy
-    private UserService userService; // Ensure this is autowired
-
+    AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
