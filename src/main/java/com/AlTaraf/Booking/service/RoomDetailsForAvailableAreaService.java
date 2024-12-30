@@ -28,18 +28,6 @@ public class RoomDetailsForAvailableAreaService {
         AvailableArea availableArea = availableAreaRepository.findById(roomAvailableId)
                 .orElseThrow(() -> new RuntimeException("RoomAvailable not found with ID: " + roomAvailableId));
 
-        if (unit.getRoomAvailableCount() == null) {
-            unit.setRoomAvailableCount(0);
-        }
-
-        Integer i = unit.getRoomAvailableCount();
-        System.out.println("i = " + i);
-
-        i++;
-
-        System.out.println("After increase i = " + i);
-
-        unit.setRoomAvailableCount(i);
 
         roomDetailsForAvailableArea.setUnit(unit);
         roomDetailsForAvailableArea.setAvailableArea(availableArea);
