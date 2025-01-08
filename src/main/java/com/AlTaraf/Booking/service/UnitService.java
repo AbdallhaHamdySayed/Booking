@@ -1,7 +1,6 @@
 package com.AlTaraf.Booking.service;
 
 
-import com.AlTaraf.Booking.database.Specifications.UnitSpecifications;
 import com.AlTaraf.Booking.database.entity.*;
 import com.AlTaraf.Booking.database.repository.*;
 import com.AlTaraf.Booking.rest.dto.CounterUnits;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -430,92 +428,92 @@ public class UnitService {
         return unitRepository.findAllByStatusUnitId(pageable);
     }
 
-    public List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
-                                         Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
-                                         Set<Long> basicFeaturesIds, Set<Long> featuresHallsIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
-                                         Set<Long> evaluationIds, int capacityHalls, int adultsAllowed, int childrenAllowed, int priceMin, int priceMax
-            , LocalDate dateOfArrival, LocalDate departureDate, Sort sort) {
-        Specification<Unit> spec = Specification.where(null);
-
-        if (cityId != null) {
-            spec = spec.and(UnitSpecifications.byCity(cityId));
-        }
-
-        if (regionId != null) {
-            spec = spec.and(UnitSpecifications.byRegion(regionId));
-        }
-
-        if (availablePeriodsId != null) {
-            spec = spec.and(UnitSpecifications.byAvailablePeriod(availablePeriodsId));
-        }
-
-
-        if (unitTypeId != null) {
-            spec = spec.and(UnitSpecifications.byUnitTypeId(unitTypeId));
-        }
-
-        if (hallTypeId != null) {
-            spec = spec.and(UnitSpecifications.byHallTypeId(hallTypeId));
-        }
-
-        if (accommodationTypeIds != null) {
-            spec = spec.and(UnitSpecifications.byAccommodationTypeIds(accommodationTypeIds));
-        }
-
-        if (hotelClassificationIds != null) {
-            spec = spec.and(UnitSpecifications.byHotelClassificationIds(hotelClassificationIds));
-        }
-
-        if (evaluationIds != null) {
-            spec = spec.and(UnitSpecifications.byEvaluationIds(evaluationIds));
-        }
-
-        if (basicFeaturesIds != null && !basicFeaturesIds.isEmpty()) {
-            spec = spec.and(UnitSpecifications.byBasicFeaturesIds(basicFeaturesIds));
-        }
-
-        if (featuresHallsIds != null && !featuresHallsIds.isEmpty()) {
-            spec = spec.and(UnitSpecifications.byFeaturesHallsIds(featuresHallsIds));
-        }
-
-        if (subFeaturesIds != null && !subFeaturesIds.isEmpty()) {
-            spec = spec.and(UnitSpecifications.bySubFeaturesIds(subFeaturesIds));
-        }
-
-        if (capacityHalls != 0) {
-            spec = spec.and(UnitSpecifications.byCapacityHalls(capacityHalls));
-        }
-
-        if (adultsAllowed != 0) {
-            spec = spec.and(UnitSpecifications.byAdultsAllowed(adultsAllowed));
-        }
-        if (childrenAllowed != 0) {
-            spec = spec.and(UnitSpecifications.byChildrenAllowed(childrenAllowed));
-        }
-
-        if (priceMin > 0) {
-            spec = spec.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.greaterThanOrEqualTo(root.get("price"), priceMin));
-        }
-
-        if (priceMax > 0) {
-            spec = spec.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.lessThanOrEqualTo(root.get("price"), priceMax));
-        }
-
-        if (dateOfArrival != null) {
-            spec = spec.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.greaterThanOrEqualTo(root.get("dateOfArrival"), dateOfArrival));
-        }
-
-        if (departureDate != null) {
-            spec = spec.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.lessThanOrEqualTo(root.get("departureDate"), departureDate));
-        }
-
-        spec = spec.and((root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("statusUnit").get("id"), 2));
-
-        return unitRepository.findAll(spec, sort);
-    }
+//    public List<Unit> findUnitsByFilters(Long cityId, Long regionId, Long availablePeriodsId,
+//                                         Long unitTypeId, Long hallTypeId, Set<Long> accommodationTypeIds, Set<Long> hotelClassificationIds,
+//                                         Set<Long> basicFeaturesIds, Set<Long> featuresHallsIds, Set<Long> subFeaturesIds, Set<Long> foodOptionsIds,
+//                                         Set<Long> evaluationIds, int capacityHalls, int adultsAllowed, int childrenAllowed, int priceMin, int priceMax
+//            , LocalDate dateOfArrival, LocalDate departureDate, Sort sort) {
+//        Specification<Unit> spec = Specification.where(null);
+//
+//        if (cityId != null) {
+//            spec = spec.and(UnitSpecifications.byCity(cityId));
+//        }
+//
+//        if (regionId != null) {
+//            spec = spec.and(UnitSpecifications.byRegion(regionId));
+//        }
+//
+//        if (availablePeriodsId != null) {
+//            spec = spec.and(UnitSpecifications.byAvailablePeriod(availablePeriodsId));
+//        }
+//
+//
+//        if (unitTypeId != null) {
+//            spec = spec.and(UnitSpecifications.byUnitTypeId(unitTypeId));
+//        }
+//
+//        if (hallTypeId != null) {
+//            spec = spec.and(UnitSpecifications.byHallTypeId(hallTypeId));
+//        }
+//
+//        if (accommodationTypeIds != null) {
+//            spec = spec.and(UnitSpecifications.byAccommodationTypeIds(accommodationTypeIds));
+//        }
+//
+//        if (hotelClassificationIds != null) {
+//            spec = spec.and(UnitSpecifications.byHotelClassificationIds(hotelClassificationIds));
+//        }
+//
+//        if (evaluationIds != null) {
+//            spec = spec.and(UnitSpecifications.byEvaluationIds(evaluationIds));
+//        }
+//
+//        if (basicFeaturesIds != null && !basicFeaturesIds.isEmpty()) {
+//            spec = spec.and(UnitSpecifications.byBasicFeaturesIds(basicFeaturesIds));
+//        }
+//
+//        if (featuresHallsIds != null && !featuresHallsIds.isEmpty()) {
+//            spec = spec.and(UnitSpecifications.byFeaturesHallsIds(featuresHallsIds));
+//        }
+//
+//        if (subFeaturesIds != null && !subFeaturesIds.isEmpty()) {
+//            spec = spec.and(UnitSpecifications.bySubFeaturesIds(subFeaturesIds));
+//        }
+//
+//        if (capacityHalls != 0) {
+//            spec = spec.and(UnitSpecifications.byCapacityHalls(capacityHalls));
+//        }
+//
+//        if (adultsAllowed != 0) {
+//            spec = spec.and(UnitSpecifications.byAdultsAllowed(adultsAllowed));
+//        }
+//        if (childrenAllowed != 0) {
+//            spec = spec.and(UnitSpecifications.byChildrenAllowed(childrenAllowed));
+//        }
+//
+//        if (priceMin > 0) {
+//            spec = spec.and((root, query, criteriaBuilder) ->
+//                    criteriaBuilder.greaterThanOrEqualTo(root.get("price"), priceMin));
+//        }
+//
+//        if (priceMax > 0) {
+//            spec = spec.and((root, query, criteriaBuilder) ->
+//                    criteriaBuilder.lessThanOrEqualTo(root.get("price"), priceMax));
+//        }
+//
+//        if (dateOfArrival != null) {
+//            spec = spec.and((root, query, criteriaBuilder) ->
+//                    criteriaBuilder.greaterThanOrEqualTo(root.get("dateOfArrival"), dateOfArrival));
+//        }
+//
+//        if (departureDate != null) {
+//            spec = spec.and((root, query, criteriaBuilder) ->
+//                    criteriaBuilder.lessThanOrEqualTo(root.get("departureDate"), departureDate));
+//        }
+//
+//        spec = spec.and((root, query, criteriaBuilder) ->
+//                criteriaBuilder.equal(root.get("statusUnit").get("id"), 2));
+//
+//        return unitRepository.findAll(spec, sort);
+//    }
 }

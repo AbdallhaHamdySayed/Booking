@@ -7,9 +7,14 @@ import com.AlTaraf.Booking.database.entity.SubFeature;
 import com.AlTaraf.Booking.database.entity.Unit;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+
 import java.util.Set;
 
+@Component
 public class UnitSpecifications {
 
     public static Specification<Unit> byUnitTypeId(Long unitTypeId) {
@@ -56,8 +61,23 @@ public class UnitSpecifications {
 
     public static Specification<Unit> byFeaturesHallsIds(Set<Long> featuresHallsIds) {
         return (root, query, criteriaBuilder) -> {
+            // Join with the featuresHallsSet
             Join<Unit, FeatureForHalls> featuresJoin = root.join("featuresHallsSet", JoinType.INNER);
-            return featuresJoin.get("id").in(featuresHallsIds);
+
+            // Subquery to count the number of matches
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Unit> subqueryRoot = subquery.from(Unit.class);
+            Join<Unit, FeatureForHalls> subqueryJoin = subqueryRoot.join("featuresHallsSet", JoinType.INNER);
+
+            // Filter subquery by the specified feature IDs
+            subquery.select(subqueryRoot.get("id"))
+                    .where(subqueryRoot.get("id").in(root.get("id")),
+                            subqueryJoin.get("id").in(featuresHallsIds))
+                    .groupBy(subqueryRoot.get("id"))
+                    .having(criteriaBuilder.equal(criteriaBuilder.count(subqueryJoin.get("id")), featuresHallsIds.size()));
+
+            // Filter main query by the subquery results
+            return criteriaBuilder.in(root.get("id")).value(subquery);
         };
     }
 
@@ -88,6 +108,5 @@ public class UnitSpecifications {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.join("roomDetails").get("childrenAllowed"), childrenAllowed);
     }
-
 
 }
