@@ -997,51 +997,52 @@ public class UnitController {
             @PathVariable Long userId,
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
 
-        try {
-            Locale locale = LocaleContextHolder.getLocale();
-
-            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
-                try {
-                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
-                    if (!languageRanges.isEmpty()) {
-                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
-                    }
-                } catch (IllegalArgumentException e) {
-                    System.out.println("IllegalArgumentException: " + e);
-                }
-            }
-
-            Sort sort = Sort.unsorted();
-
-            if (sortDirectionByPrice != null) {
-                sort = getSortByPrice(sortDirectionByPrice);
-            }
-
-            if (sortDirectionByEvaluationId != null) {
-                sort = sort.and(getSortByEvaluationId(sortDirectionByEvaluationId));
-            }
-
-            List<Unit> units = unitService.findUnitsByFilters(cityId, regionId, availablePeriodsId,
-                    unitTypeId, hallTypeId, accommodationTypeIds, hotelClassificationIds,
-                    basicFeaturesIds, featuresHallsIds, subFeaturesIds, foodOptionsIds, evaluationId, capacityHalls, adultsAllowed, childrenAllowed,
-                    priceMin, priceMax, dateOfArrival, departureDate, sort);
-
-
-
-            for (Unit unit: units){
-                Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
-
-                if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitForFavorite.getId())){
-                    unitForFavorite.setFavorite(true);
-                }
-            }
-            List<UnitDtoFavorite>  unitFavoriteDtoList = unitFavoriteMapper.toUnitFavoriteDtoList(units);
-            return ResponseEntity.ok(unitFavoriteDtoList);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse(204, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));
-        }
+//        try {
+//            Locale locale = LocaleContextHolder.getLocale();
+//
+//            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+//                try {
+//                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+//                    if (!languageRanges.isEmpty()) {
+//                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+//                    }
+//                } catch (IllegalArgumentException e) {
+//                    System.out.println("IllegalArgumentException: " + e);
+//                }
+//            }
+//
+//            Sort sort = Sort.unsorted();
+//
+//            if (sortDirectionByPrice != null) {
+//                sort = getSortByPrice(sortDirectionByPrice);
+//            }
+//
+//            if (sortDirectionByEvaluationId != null) {
+//                sort = sort.and(getSortByEvaluationId(sortDirectionByEvaluationId));
+//            }
+//
+//            List<Unit> units = unitService.findUnitsByFilters(cityId, regionId, availablePeriodsId,
+//                    unitTypeId, hallTypeId, accommodationTypeIds, hotelClassificationIds,
+//                    basicFeaturesIds, featuresHallsIds, subFeaturesIds, foodOptionsIds, evaluationId, capacityHalls, adultsAllowed, childrenAllowed,
+//                    priceMin, priceMax, dateOfArrival, departureDate, sort);
+//
+//
+//
+//            for (Unit unit: units){
+//                Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
+//
+//                if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitForFavorite.getId())){
+//                    unitForFavorite.setFavorite(true);
+//                }
+//            }
+//            List<UnitDtoFavorite>  unitFavoriteDtoList = unitFavoriteMapper.toUnitFavoriteDtoList(units);
+//            return ResponseEntity.ok(unitFavoriteDtoList);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse(204, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));
+//        }
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/Filtering/{userId}")
