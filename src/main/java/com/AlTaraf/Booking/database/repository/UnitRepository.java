@@ -119,9 +119,13 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
             "(:availablePeriodsHallsSetId IS NULL OR :availablePeriodsHallsSetId IN (SELECT aph.id FROM u.availablePeriodsHallsSet aph)) AND " +
             "(:accommodationTypeIds IS NULL OR u.accommodationType.id IN :accommodationTypeIds) AND " +
             "(:hotelClassificationIds IS NULL OR u.hotelClassification.id IN :hotelClassificationIds) AND " +
-            "(:basicFeaturesSetIds IS NULL OR EXISTS (SELECT 1 FROM u.basicFeaturesSet bf WHERE bf.id IN :basicFeaturesSetIds)) AND " +
-            "(:featuresHallsSetIds IS NULL OR EXISTS (SELECT 1 FROM u.featuresHallsSet fh WHERE fh.id IN :featuresHallsSetIds)) AND " +
-            "(:subFeaturesSetIds IS NULL OR EXISTS (SELECT 1 FROM u.subFeaturesSet sf WHERE sf.id IN :subFeaturesSetIds)) AND " +
+
+            "(:basicFeaturesSetIds IS NULL OR (SELECT COUNT(bf.id) FROM u.basicFeaturesSet bf WHERE bf.id IN :basicFeaturesSetIds) = COALESCE(:#{#basicFeaturesSetIds?.size}, 0)) AND " +
+
+            "(:featuresHallsSetIds IS NULL OR (SELECT COUNT(fh.id) FROM u.featuresHallsSet fh WHERE fh.id IN :featuresHallsSetIds) = COALESCE(:#{#featuresHallsSetIds?.size}, 0)) AND " +
+
+            "(:subFeaturesSetIds IS NULL OR (SELECT COUNT(sf.id) FROM u.subFeaturesSet sf WHERE sf.id IN :subFeaturesSetIds) = COALESCE(:#{#subFeaturesSetIds?.size}, 0)) AND " +
+
             "(:evaluationIds IS NULL OR u.evaluation.id IN :evaluationIds) AND " +
             "(:minCapacityHalls IS NULL OR u.capacityHalls >= :minCapacityHalls) AND " +
             "(:maxCapacityHalls IS NULL OR u.capacityHalls <= :maxCapacityHalls) AND " +
@@ -139,7 +143,7 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
             "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) AND " +
 
             " u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
-            "JOIN rdu.dateInfoList d WHERE d.date >= :dateOfArrival AND d.date <= :departureDate) AND " +
+            "JOIN rdu.dateInfoList d WHERE d.date >= :dateOfArrival AND d.date < :departureDate) AND " +
 
             "u.statusUnit.id = 2")
     Page<Unit> findFilteringTwo(@Param("cityId") Long cityId,
