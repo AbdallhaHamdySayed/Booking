@@ -65,7 +65,6 @@ insert into feature (feature_arabic_name, feature_name) values ("مصعد","elev
 insert into feature (feature_arabic_name, feature_name) values ("إنترنت","Internet");
 insert into feature (feature_arabic_name, feature_name) values ("إفطار صباحي","Morning breakfast");
 insert into feature (feature_arabic_name, feature_name) values ("شاطئ خاص","Private beach");
-insert into feature (feature_arabic_name, feature_name) values ("شاطئ خاص","Private beach");
 insert into feature (feature_arabic_name, feature_name) values ("موقف سيارة","Parking");
 insert into feature (feature_arabic_name, feature_name) values ("مكتب أمن","Security office");
 
