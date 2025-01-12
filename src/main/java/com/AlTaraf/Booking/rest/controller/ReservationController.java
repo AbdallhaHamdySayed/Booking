@@ -164,7 +164,7 @@ public class ReservationController {
 //            // Log the exception
             logger.error("Error occurred while processing create-reservation request", e);
 
-            System.out.println("Error Message: " + e);
+            System.out.println("Catch Error Message: " + e);
             // Return user-friendly error response
             ApiResponse response = new ApiResponse(400, messageSource.getMessage("Failed_Reservation.message", null, LocaleContextHolder.getLocale()));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
