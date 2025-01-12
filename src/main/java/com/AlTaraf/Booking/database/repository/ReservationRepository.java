@@ -41,8 +41,12 @@ public interface ReservationRepository extends JpaRepository<Reservations, Long>
     @Query("SELECT r FROM Reservations r WHERE r.unit.id = :unitId")
     Page<Reservations> findByUnitId(Long unitId, Pageable pageable);
 
-    @Query("SELECT r FROM Reservations r JOIN r.statusUnit s WHERE s.id = :statusId AND r.unit.id = :unitId")
-    Page<Reservations> findByStatusIdAndUnitId(@Param("statusId") Long statusId, @Param("unitId") Long unitId, Pageable pageable);
+    @Query("SELECT r FROM Reservations r JOIN r.statusUnit s " +
+            "WHERE s.id = :statusId AND r.unit IN :units")
+    Page<Reservations> getByStatusIdAndUnits(@Param("statusId") Long statusId,
+                                             @Param("units") List<Unit> units,
+                                             Pageable pageable);
+
 
     @Modifying
     @Transactional
@@ -63,4 +67,25 @@ public interface ReservationRepository extends JpaRepository<Reservations, Long>
             @Param("userId") Long userId,
             @Param("currentDate") LocalDate currentDate,
             Pageable pageable);
+
+    @Query("SELECT r FROM Reservations r " +
+            "WHERE (r.unit.accommodationType.id IN (3, 4, 6) OR r.unit.unitType.id = 2) " +
+            "AND r.unit.user.id = :userId " +
+            "AND r.statusUnit.id = 1 " +
+            "AND r.dateOfArrival = :dateOfArrival " +
+            "AND r.departureDate = :departureDate")
+    List<Reservations> findReservationsByCriteria(
+            @Param("userId") Long userId,
+            @Param("dateOfArrival") LocalDate dateOfArrival,
+            @Param("departureDate") LocalDate departureDate);
+
+    @Query("SELECT r FROM Reservations r " +
+            "WHERE r.unit.user.id = :userId " +
+            "AND r.statusUnit.id = 1 " +
+            "AND r.dateOfArrival = :dateOfArrival " +
+            "AND r.departureDate = :departureDate")
+    List<Reservations> findReservationsByDate(
+            @Param("userId") Long userId,
+            @Param("dateOfArrival") LocalDate dateOfArrival,
+            @Param("departureDate") LocalDate departureDate);
 }
