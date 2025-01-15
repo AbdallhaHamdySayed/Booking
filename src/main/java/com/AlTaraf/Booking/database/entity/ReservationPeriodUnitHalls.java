@@ -26,4 +26,8 @@ public class ReservationPeriodUnitHalls {
     @JoinColumn(name = "available_periods_id")
     private AvailablePeriods availablePeriods;
 
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
 }
