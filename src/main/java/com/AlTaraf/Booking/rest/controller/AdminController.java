@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -86,6 +87,7 @@ public class AdminController {
     TransactionService transactionService;
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/technical-support-get-all")
     public Page<TechnicalSupportResponse> getAllTechnicalSupport(@RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "5") int size,
@@ -103,6 +105,7 @@ public class AdminController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/technical-support-unit-get-all")
     public Page<TechnicalSupportUnitsResponse> getAllTechnicalSupportUnit(@RequestParam(defaultValue = "0") int page,
                                                                           @RequestParam(defaultValue = "5") int size) {
@@ -113,6 +116,7 @@ public class AdminController {
         return new PageImpl<>(technicalSupportResponseList, PageRequest.of(page, size), technicalSupportPage.getTotalElements());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("technical-support/{id}/mark-as-seen")
     public ResponseEntity<?> markAsSeen(@PathVariable Long id) {
         Optional<TechnicalSupport> optionalTechnicalSupport = technicalSupportRepository.findById(id);
@@ -126,6 +130,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("technical-support-unit/{id}/mark-as-seen")
     public ResponseEntity<?> markAsSeenUnit(@PathVariable Long id) {
         Optional<TechnicalSupportForUnits> optionalTechnicalSupport = technicalSupportUnitRepository.findById(id);
@@ -139,6 +144,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/technical-support/{id}")
     public ResponseEntity<TechnicalSupportResponse> getByIdTechnicalSupport(@PathVariable Long id) {
         Optional<TechnicalSupport> optionalTechnicalSupport = technicalSupportRepository.findById(id);
@@ -147,6 +153,7 @@ public class AdminController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/technical-support-units/{id}")
     public ResponseEntity<TechnicalSupportUnitsResponse> getByIdTechnicalSupportUnits(@PathVariable Long id) {
         Optional<TechnicalSupportForUnits> optionalTechnicalSupport = technicalSupportUnitRepository.findById(id);
@@ -155,6 +162,7 @@ public class AdminController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-units-by-accommodation-Type")
     public ResponseEntity<?> getUnitsByAccommodationType(
             @RequestParam Long accommodationTypeId,
@@ -171,6 +179,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-units-for-dashboard")
     public Page<UnitDashboard> getUnitsForDashboard(
             @RequestParam(required = false) String traderName,
@@ -193,6 +202,7 @@ public class AdminController {
         return unitsPage.map(unit -> unitDashboard.toUnitDashboard(unit));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}/technical-support")
     public ResponseEntity<?> deleteTechnicalSupportById(@PathVariable Long id) {
         try {
@@ -203,6 +213,8 @@ public class AdminController {
                     .body(new ApiResponse(500, "Failed to delete technical support message."));
         }
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
 
     @DeleteMapping("/deleteAll/technical-support")
     public ResponseEntity<?> deleteAllTechnicalSupport() {
@@ -215,6 +227,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}/technical-support-units")
     public ResponseEntity<?> deleteTechnicalSupportUnitsById(@PathVariable Long id) {
         try {
@@ -226,6 +239,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteAll/technical-support-units")
     public ResponseEntity<?> deleteAllTechnicalSupportUnits() {
         try {
@@ -237,6 +251,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("by-id-general/{id}")
     public ResponseEntity<?> getUnitById(@PathVariable Long id) {
         Unit unit = unitService.getUnitById(id);
@@ -248,6 +263,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
 
     @PutMapping("change/status/ads/{adsId}/{statusUnitId}")
     public ResponseEntity<?> updateStatusForAds(@PathVariable Long adsId, @PathVariable Long statusUnitId) {
@@ -259,6 +275,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("change/status/units/{unitId}/{statusUnitId}")
     public ResponseEntity<?> updateStatusForUnits(@PathVariable Long unitId, @PathVariable Long statusUnitId) {
         try {
@@ -269,6 +286,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     @DeleteMapping("delete/unit/{id}")
     public ResponseEntity<?> deleteUnit(@PathVariable Long id) {
@@ -292,6 +310,7 @@ public class AdminController {
 
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{userId}/ban")
     public ResponseEntity<?> toggleBanStatus(@PathVariable Long userId) {
 
@@ -316,6 +335,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, "Ban for User are Changed"));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-user-all-or-byrole")
     public ResponseEntity<Page<?>> getUsersByRole(
             @RequestParam(required = false) ERole roleName,
@@ -346,6 +366,8 @@ public class AdminController {
 
         return ResponseEntity.ok(userDashboardPage);
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
 
     @GetMapping("/users-of-dashboard")
     public ResponseEntity<Page<?>> usersOfDashboard(
@@ -378,6 +400,7 @@ public class AdminController {
         return ResponseEntity.ok(userDashboardPage);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("edit-package-ads/{id}")
     public ResponseEntity<?> editPackageAds(@PathVariable Long id, @RequestBody PackageAdsEditDTO packageAdsEditDTO) {
         Optional<PackageAds> optionalPackageAds = packageAdsRepository.findById(id);
@@ -400,6 +423,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, "Updated Package Ads successfully"));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete-users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
@@ -412,6 +436,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{userId}/warnings")
     public ResponseEntity<?> setWarnings(@PathVariable Long userId, @RequestBody List<Boolean> warnings) {
         try {
@@ -431,6 +456,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("get-ads-for-dashboard")
     public ResponseEntity<?> getAllAdsByPageAndSize(
             @RequestParam(defaultValue = "0") int page,
@@ -448,18 +474,21 @@ public class AdminController {
         return ResponseEntity.ok(adsResponseStatusDtos);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/set-commission-all-units")
     public ResponseEntity<String> setCommissionForAllUnits(@RequestParam Double commission) {
         unitService.setCommissionForAllUnits(commission);
         return ResponseEntity.ok("Commission set successfully for all units.");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/set-commission-all-reservations")
     public ResponseEntity<String> setCommissionForAllReservations(@RequestParam Double commission) {
         reservationService.setCommissionForAllReservations(commission);
         return ResponseEntity.ok("Commission set successfully for all reservations.");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("delete/ads/{id}")
     public ResponseEntity<?> deleteAds(@PathVariable Long id) {
 
@@ -473,24 +502,28 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-counter-units")
     public ResponseEntity<CounterUnits> getCounterUnit() {
         CounterUnits counterUnits = unitService.getCounterForResidenciesUnits();
         return new ResponseEntity<>(counterUnits, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-counter-users")
     public ResponseEntity<CounterUser> getCounterUser() {
         CounterUser counterUser = userService.getCountUser();
         return new ResponseEntity<>(counterUser, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-counter-ads")
     public ResponseEntity<CounterAds> getCounterAds() {
         CounterAds counterAds = adsService.getCountAds();
         return new ResponseEntity<>(counterAds, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/Package-Ads")
     public ResponseEntity<?> getAllPackageAds() {
         try {
@@ -502,6 +535,7 @@ public class AdminController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/transactions/details")
     public ResponseEntity<?> getAllTransactionDetails(
             @RequestParam(required = false) String phone,
@@ -525,6 +559,7 @@ public class AdminController {
         return ResponseEntity.ok(transactionDetailsDtoPage);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/transactions/total")
     public ResponseEntity<List<TotalTransactions>> getAllTotalTransactions() {
         List<TotalTransactions> totalTransactions = transactionService.getAllTotalTransactions();
