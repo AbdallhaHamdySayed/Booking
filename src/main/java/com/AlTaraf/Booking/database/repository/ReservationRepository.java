@@ -1,9 +1,6 @@
 package com.AlTaraf.Booking.database.repository;
 
-
-import com.AlTaraf.Booking.database.entity.AvailableArea;
 import com.AlTaraf.Booking.database.entity.Reservations;
-import com.AlTaraf.Booking.database.entity.RoomAvailable;
 import com.AlTaraf.Booking.database.entity.Unit;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -26,27 +23,17 @@ public interface ReservationRepository extends JpaRepository<Reservations, Long>
     @Query("SELECT r.unit FROM Reservations r WHERE r.id = :reservationId")
     Unit findUnitByReservationId(@Param("reservationId") Long reservationId);
 
-    @Query("SELECT r.availableArea FROM Reservations r WHERE r.id = :reservationId")
-    AvailableArea findAvailableAreaIdByReservationId(@Param("reservationId") Long reservationId);
-
-    @Query("SELECT r.roomAvailable FROM Reservations r WHERE r.id = :reservationId")
-    RoomAvailable findRoomAvailableIdByReservationId(@Param("reservationId") Long reservationId);
-
     @Query("SELECT r FROM Reservations r JOIN r.user u JOIN r.statusUnit s WHERE u.id = :userId AND s.id = :statusUnitId")
     Page<Reservations> findByUserIdAndStatusUnitId(@Param("userId") Long userId, @Param("statusUnitId") Long statusUnitId, Pageable pageable);
 
     @Query("SELECT r FROM Reservations r JOIN r.statusUnit s WHERE s.id = :statusUnitId")
     Page<Reservations> findByStatusUnitId(@Param("statusUnitId") Long statusUnitId, Pageable pageable);
 
-    @Query("SELECT r FROM Reservations r WHERE r.unit.id = :unitId")
-    Page<Reservations> findByUnitId(Long unitId, Pageable pageable);
-
     @Query("SELECT r FROM Reservations r JOIN r.statusUnit s " +
             "WHERE s.id = :statusId AND r.unit IN :units")
     Page<Reservations> getByStatusIdAndUnits(@Param("statusId") Long statusId,
                                              @Param("units") List<Unit> units,
                                              Pageable pageable);
-
 
     @Modifying
     @Transactional
@@ -79,13 +66,14 @@ public interface ReservationRepository extends JpaRepository<Reservations, Long>
             @Param("dateOfArrival") LocalDate dateOfArrival,
             @Param("departureDate") LocalDate departureDate);
 
-    @Query("SELECT r FROM Reservations r " +
-            "WHERE r.unit.user.id = :userId " +
-            "AND r.statusUnit.id = 1 " +
-            "AND r.dateOfArrival = :dateOfArrival " +
-            "AND r.departureDate = :departureDate")
+    @Query(value = "SELECT * FROM reservation r " +
+            "WHERE r.unit_id = :unitId " +
+            "AND r.status_id = 1 " +
+            "AND r.date_of_arrival = :dateOfArrival " +
+            "AND r.date_of_departure = :departureDate", nativeQuery = true)
     List<Reservations> findReservationsByDate(
-            @Param("userId") Long userId,
+            @Param("unitId") Long unitId,
             @Param("dateOfArrival") LocalDate dateOfArrival,
             @Param("departureDate") LocalDate departureDate);
+
 }

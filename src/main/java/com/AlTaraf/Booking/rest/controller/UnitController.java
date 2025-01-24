@@ -1116,11 +1116,6 @@ public class UnitController {
             for (Unit unit: unitsPage.getContent()){
                 Unit unitForFavorite = unitRepository.findById(unit.getId()).orElse(null);
 
-//                if (unit.getId() == 41) {
-//                    Boolean count = unitRepository.isCountOfUnitEqualToTwo(unit.getId());
-//                    System.out.println("count: " + count);
-//                }
-
                 if (userFavoriteUnitService.existsByUserIdAndUnitId(userId,  unitForFavorite.getId())){
                     unitForFavorite.setFavorite(true);
                 }
@@ -1255,8 +1250,6 @@ public class UnitController {
                 User user = userRepository.findById(userId)
                         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-                System.out.println("user phone reserve: " + user.getPhone());
-//
 //                MessageWhats messageWhats = new MessageWhats(" الرقم الخاص بمالك العقار  " +userLessor.getPhone());
 //
 //                messageService.sendMessage(user.getPhone(), messageWhats);
@@ -1303,21 +1296,15 @@ public class UnitController {
                 }
             }
 
-//            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
             List<Unit> units = unitService.getUnitsByUserIdList(userId);
             
             if (units == null || units.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));
             }
 
-            List<ReservationStatus> reservationRequestDtoList = new ArrayList<>();
-
-            for (Unit unit : units) {
-                System.out.println("Unit Id: " + unit.getId());
-                Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-                Page<Reservations> reservationsPage = reservationService.getByStatusIdAndUnitId(statusId, unit.getId(), pageable);
-                reservationRequestDtoList.addAll(reservationStatusMapper.toReservationStatusDtoList(reservationsPage.getContent()));
-            }
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+            Page<Reservations> reservationsPage = reservationService.getByStatusIdAndUnitId(statusId, units, pageable);
+            List<ReservationStatus> reservationRequestDtoList = reservationStatusMapper.toReservationStatusDtoList(reservationsPage.getContent());
 
             if (reservationRequestDtoList.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, messageSource.getMessage("no_content.message", null, LocaleContextHolder.getLocale())));

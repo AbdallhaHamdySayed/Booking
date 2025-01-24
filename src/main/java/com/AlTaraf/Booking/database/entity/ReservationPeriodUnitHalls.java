@@ -30,4 +30,7 @@ public class ReservationPeriodUnitHalls {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private StatusUnit statusUnit;
 }

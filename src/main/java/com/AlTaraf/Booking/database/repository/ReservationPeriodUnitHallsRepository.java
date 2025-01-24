@@ -14,12 +14,9 @@ public interface ReservationPeriodUnitHallsRepository extends JpaRepository<Rese
     @Query("SELECT r FROM ReservationPeriodUnitHalls r WHERE r.reservations.id = :reservationId")
     ReservationPeriodUnitHalls findByReservationId(@Param("reservationId") Long reservationId);
 
-    @Query("SELECT r FROM ReservationPeriodUnitHalls r WHERE r.unit.id = :unitId")
-    ReservationPeriodUnitHalls findByUnitId(@Param("unitId") Long unitId);
+    @Query("SELECT r FROM ReservationPeriodUnitHalls r WHERE r.unit.id = :unitId AND r.availablePeriods.id = :availablePeriodsId AND r.statusUnit.id = 2")
+    List<ReservationPeriodUnitHalls> findByUnitIdAndAvailableAndAccepted(@Param("unitId") Long unitId, @Param("availablePeriodsId") Long availablePeriodsId);
 
-    @Query("SELECT r FROM ReservationPeriodUnitHalls r WHERE r.reservations.id = :reservationId AND r.availablePeriods.id = :availablePeriodsId")
-    ReservationPeriodUnitHalls findByReservationIdAndAvailablePeriodsId(@Param("reservationId") Long reservationId, @Param("availablePeriodsId") Long availablePeriodsId);
-
-    @Query("SELECT r FROM ReservationPeriodUnitHalls r WHERE r.availablePeriods.id = :availablePeriodsId")
-    List<ReservationPeriodUnitHalls> findByAvailablePeriodsId(Long availablePeriodsId);
+    @Query("SELECT r FROM ReservationPeriodUnitHalls r WHERE r.unit.id = :unitId AND r.availablePeriods.id = :availablePeriodsId AND r.statusUnit.id = 1")
+    List<ReservationPeriodUnitHalls> findByUnitIdAndAvailableAndPended(@Param("unitId") Long unitId, @Param("availablePeriodsId") Long availablePeriodsId);
 }

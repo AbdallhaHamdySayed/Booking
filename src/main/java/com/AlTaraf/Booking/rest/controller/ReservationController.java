@@ -1,10 +1,7 @@
 package com.AlTaraf.Booking.rest.controller;
 
 import com.AlTaraf.Booking.database.entity.*;
-import com.AlTaraf.Booking.database.repository.EvaluationRepository;
-import com.AlTaraf.Booking.database.repository.ReservationRepository;
-import com.AlTaraf.Booking.database.repository.StatusRepository;
-import com.AlTaraf.Booking.database.repository.UserRepository;
+import com.AlTaraf.Booking.database.repository.*;
 import com.AlTaraf.Booking.rest.dto.*;
 import com.AlTaraf.Booking.rest.mapper.CommentMapper;
 import com.AlTaraf.Booking.rest.mapper.ReservationGetByIdMapper;
@@ -77,6 +74,9 @@ public class ReservationController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    ReservationPeriodUnitHallsRepository reservationPeriodUnitHallsRepository;
+
 
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
@@ -107,7 +107,6 @@ public class ReservationController {
 
             // Convert UnitRequestDto to Unit
             Reservations reservationsToSave = reservationRequestMapper.toReservation(reservationRequestDto);
-
 
             if (reservationRequestDto.getRoomAvailableId() != null) {
                 RoomDetails roomDetails = roomDetailsService.getRoomDetailsByUnitIdAndRoomAvailableId(reservationRequestDto.getUnitId(), reservationRequestDto.getRoomAvailableId());
@@ -144,6 +143,13 @@ public class ReservationController {
 
             // Save the reservation in the database
             Reservations reservation = reservationService.saveReservation(reservationsToSave);
+            if ( unit.getUnitType().getId() != null && unit.getUnitType().getId() != 1) {
+                ReservationPeriodUnitHalls reservationPeriodUnitHalls = reservationPeriodUnitHallsRepository.findByReservationId(reservationsToSave.getId());
+                reservationPeriodUnitHalls.setUnit(reservationsToSave.getUnit());
+                reservationPeriodUnitHalls.setStatusUnit(statusRepository.findById(1L).orElse(null));
+                reservationPeriodUnitHallsRepository.save(reservationPeriodUnitHalls);
+                System.out.println("reservationPeriodUnitHalls: " + reservationPeriodUnitHalls.getStatusUnit().getId());
+            }
 
             PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
                     messageSource.getMessage("notification_body_reservation.message", null,
@@ -156,8 +162,6 @@ public class ReservationController {
                             LocaleContextHolder.getLocale()) + " " + unit.getNameUnit() ,userIdLessor,
                     null, reservation.getId(), null);
             notificationService.processNotification(notificationRequest2);
-
-
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(200, messageSource.getMessage("Successful_Reservation.message", null, LocaleContextHolder.getLocale())) );
         } catch (Exception e) {
