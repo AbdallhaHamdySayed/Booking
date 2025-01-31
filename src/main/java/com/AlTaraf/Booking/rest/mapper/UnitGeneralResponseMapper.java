@@ -22,6 +22,7 @@ public interface UnitGeneralResponseMapper {
     @Mapping(target = "comments", expression = "java(extractComment(unit.getComments()))")
     @Mapping(target = "videoPaths", expression = "java(extractFirstFileVideoPath(unit.getFileForUnits()))")
     @Mapping(source = "nameUnit", target = "nameUnit")
+    @Mapping(source = "youtubeUrl", target = "youtubeUrl")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "city", target = "cityDtoSample")
     @Mapping(source = "region", target = "regionDto")

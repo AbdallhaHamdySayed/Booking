@@ -18,6 +18,7 @@ public interface UnitFavoriteMapper {
             @Mapping(source = "unitType.id", target = "unitTypeId"),
             @Mapping(target = "imagePath", expression = "java(extractFirstFileImagePath(unit.getFileForUnits()))"),
             @Mapping(target = "videoPath", expression = "java(extractFirstFileVideoPath(unit.getFileForUnits()))"),
+            @Mapping(source = "youtubeUrl", target = "youtubeUrl"),
             @Mapping(source = "unit.nameUnit", target = "nameUnit"),
             @Mapping(source = "unit.favorite", target = "favorite"),
             @Mapping(source = "unit.city.cityName", target = "cityName"),

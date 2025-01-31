@@ -188,7 +188,10 @@ public class Unit extends Auditable<String> {
 
     @Column(name = "PeriodsCount")
     private Long periodCount;
-    
+
+    @Column(name = "YoutubeUrl")
+    private String youtubeUrl;
+
     public Unit() {
         this.statusUnit = new StatusUnit();
         this.statusUnit.setId(1L);

@@ -21,6 +21,7 @@ public interface UnitMapper {
             @Mapping(source = "unitType.id", target = "unitTypeId"),
             @Mapping(target = "images", expression = "java(extractFileImagePaths(unit.getFileForUnits()))"),
             @Mapping(target = "video", expression = "java(extractFirstFileVideoPath(unit.getFileForUnits()))"),
+            @Mapping(source = "youtubeUrl", target = "youtubeUrl"),
             @Mapping(source = "unit.nameUnit", target = "nameUnit"),
             @Mapping(source = "unit.city.cityName", target = "cityName"),
             @Mapping(source = "unit.region.regionName", target = "regionName"),

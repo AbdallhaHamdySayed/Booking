@@ -19,6 +19,7 @@ public class UnitGeneralResponseDto {
     private List<String> imagePaths;
     private List<Comment> comments;
     private String videoPaths;
+    private String youtubeUrl;
     private String nameUnit;
     private String description;
     private CityDtoSample cityDtoSample;

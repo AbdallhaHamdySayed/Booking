@@ -3,12 +3,10 @@ package com.AlTaraf.Booking.service;
 
 import com.AlTaraf.Booking.database.entity.*;
 import com.AlTaraf.Booking.database.repository.*;
-import com.AlTaraf.Booking.rest.dto.CounterUnits;
-import com.AlTaraf.Booking.rest.dto.PushNotificationRequest;
-import com.AlTaraf.Booking.rest.dto.UnitDashboard;
-import com.AlTaraf.Booking.rest.dto.UnitDtoFavorite;
+import com.AlTaraf.Booking.rest.dto.*;
 import com.AlTaraf.Booking.rest.mapper.UnitDashboardMapper;
 import com.AlTaraf.Booking.rest.mapper.UnitFavoriteMapper;
+import com.AlTaraf.Booking.rest.mapper.UnitMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -98,6 +96,8 @@ public class UnitService {
     @Autowired
     UserFavoriteUnitService userFavoriteUnitService;
 
+    @Autowired
+    UnitMapper unitMapper;
 
     public Unit saveUnit(Unit unit) {
         try {
@@ -516,4 +516,13 @@ public class UnitService {
 //
 //        return unitRepository.findAll(spec, sort);
 //    }
+
+    @Transactional
+    public UnitDto updateYoutubeUrl(Long unitId, String youtubeUrl) {
+        Unit unit = unitRepository.findById(unitId)
+                .orElseThrow(() -> new EntityNotFoundException("Unit not found with id: " + unitId));
+        unit.setYoutubeUrl(youtubeUrl);
+        Unit updatedUnit = unitRepository.save(unit);
+        return unitMapper.toUnitDto(updatedUnit);
+    }
 }

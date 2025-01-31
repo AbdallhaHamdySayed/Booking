@@ -1346,4 +1346,11 @@ public class UnitController {
         }
     }
 
+    @PatchMapping("set-youtube-url/{unitId}")
+    public ResponseEntity<UnitDto> updateYoutubeUrl(
+            @PathVariable Long unitId,
+            @RequestParam String youtubeUrl) {
+        UnitDto updatedUnit = unitService.updateYoutubeUrl(unitId, youtubeUrl);
+        return ResponseEntity.ok(updatedUnit);
+    }
 }

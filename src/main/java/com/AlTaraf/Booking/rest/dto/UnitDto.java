@@ -15,6 +15,7 @@ public class UnitDto {
     private Long unitTypeId;
     private List<String> images; // List of image file paths
     private String video; // List of image file paths
+    private String youtubeUrl;
     private String nameUnit;
     private String cityName;
     private String regionName;
