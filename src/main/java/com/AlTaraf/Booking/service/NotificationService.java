@@ -8,6 +8,8 @@ import com.AlTaraf.Booking.database.repository.RoleRepository;
 import com.AlTaraf.Booking.database.repository.UserRepository;
 import com.AlTaraf.Booking.rest.dto.PushNotificationRequest;
 import com.AlTaraf.Booking.rest.mapper.NotificationMapper;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Collections;
 
 @Service
 public class NotificationService {
@@ -36,21 +39,22 @@ public class NotificationService {
     @Autowired
     RoleRepository roleRepository;
 
-    private final String SERVER_KEY = "AAAAhedicPc:APA91bGAf6fu3fMrWlMZtW1vmILgLmbHz6Ot5xmmiUEdjq13GuhRHIkHSALL6g-hLOIhnqZ-Odj6_E6v9dduMNJqovCDx10v8Z2K9EcVuxNblYsGY2TkP_TsvS5sXrCvFMWLO7yTvYWZ";
-    private final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+    private final String FCM_URL = "https://fcm.googleapis.com/v1/projects/safari-d2dda/messages:send";
+
 
     public void sendPushMessage(String title, String body, Long userId) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         System.out.println("userId: " + userId);
         User user = userRepository.findByUserId(userId);
 
+        String accessToken = getAccessToken();
 
         String jsonPayload = createJsonPayload(title, body, user.getDeviceToken());
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(FCM_URL))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "key=" + SERVER_KEY)
+                .header("Authorization", "Bearer " + accessToken)
                 .POST(BodyPublishers.ofString(jsonPayload))
                 .build();
 
@@ -62,19 +66,26 @@ public class NotificationService {
 
     private String createJsonPayload(String title, String body, String deviceToken) {
         return "{"
-                + "\"to\":\"" + deviceToken + "\","
-                + "\"priority\":\"high\","
-                + "\"data\":{"
-                + "\"click_action\":\"FLUTTER_NOTIFICATION_CLICK\","
-                + "\"id\":\"1\","
-                + "\"status\":\"done\""
-                + "},"
+                + "\"message\":{"
+                + "\"token\":\"" + deviceToken + "\","
                 + "\"notification\":{"
                 + "\"title\":\"" + title + "\","
                 + "\"body\":\"" + body + "\""
                 + "}"
+                + "}"
                 + "}";
     }
+
+    private String getAccessToken() throws IOException {
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
+                getClass().getClassLoader().getResourceAsStream("service-account.json")
+        ).createScoped(Collections.singleton("https://www.googleapis.com/auth/firebase.messaging"));
+
+        googleCredentials.refreshIfExpired();
+        AccessToken token = googleCredentials.getAccessToken();
+        return token.getTokenValue();
+    }
+
 
     public Page<Notifications> findAllByUserIdAndRoleId(Long userId, Long roleId, Pageable pageable) {
         return notificationRepository.findAllByUserIdAndRoleId(userId, roleId, pageable);
