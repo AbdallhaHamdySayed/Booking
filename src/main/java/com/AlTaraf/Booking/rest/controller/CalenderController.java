@@ -60,33 +60,32 @@ public class CalenderController {
     @Autowired
     ReserveDateRoomDetailsMapper reserveDateRoomDetailsMapper;
 
-    @PostMapping("/reserve-date-halls")
+    @PostMapping("/reserve-date-halls-for-add-unit")
     public ResponseEntity<?> createReserveDateForHalls(@RequestBody ReserveDateHallsRequest reserveDateHallsDto,
                                                        @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
-//        try {
-//
-//            Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
-//
-//            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
-//                try {
-//                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
-//                    if (!languageRanges.isEmpty()) {
-//                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
-//                    }
-//                } catch (IllegalArgumentException e) {
-//                    // Handle the exception if needed
-//                    System.out.println("IllegalArgumentException: " + e);
-//                }
-//            }
-//
-//            ReserveDateHalls reserveDateHalls = ReserveDateHallsMapper.INSTANCE.toEntity(reserveDateHallsDto);
-//            reserveDateHallsRepository.save(reserveDateHalls);
-//            return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
-//        } catch (Exception e) {
-//            System.out.println("Failed Reserve Date Halls: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500, messageSource.getMessage("Reserve_Date_Fail.message", null, LocaleContextHolder.getLocale())) );
-//        }
-        return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
+        try {
+
+            Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
+
+            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+                try {
+                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                    if (!languageRanges.isEmpty()) {
+                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+                    }
+                } catch (IllegalArgumentException e) {
+                    // Handle the exception if needed
+                    System.out.println("IllegalArgumentException: " + e);
+                }
+            }
+
+            ReserveDateHalls reserveDateHalls = ReserveDateHallsMapper.INSTANCE.toEntity(reserveDateHallsDto);
+            reserveDateHallsRepository.save(reserveDateHalls);
+            return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
+        } catch (Exception e) {
+            System.out.println("Failed Reserve Date Halls: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(500, messageSource.getMessage("Reserve_Date_Fail.message", null, LocaleContextHolder.getLocale())) );
+        }
     }
 
     @PostMapping("/edit-reserve-date-halls")
