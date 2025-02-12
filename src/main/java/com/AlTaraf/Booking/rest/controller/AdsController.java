@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -69,9 +70,6 @@ public class AdsController {
 
     @Autowired
     NotificationService notificationService;
-
-    @Autowired
-    UnitRepository unitRepository;
 
     @GetMapping("/package-ads")
     public ResponseEntity<?> getAllPackageAds(@RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
@@ -177,6 +175,9 @@ public class AdsController {
         userRepository.save(user);
 
         Ads createdAds = adsService.createAds(adsMapper.toEntity(adsRequestDto));
+        createdAds.setDateAds(LocalDate.now());
+        adsService.createAds(createdAds);
+
         Long createdAdsId = createdAds.getId();
 
         System.out.println("name unit Id: " + createdAds.getUnit().getId());
