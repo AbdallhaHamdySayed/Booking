@@ -173,10 +173,17 @@ public class ReservationService {
         reservations.setStatusUnit(statusUnit);
 
         User user = reservations.getUser();
+        System.out.println("user.getId(): " + user.getId());
 
         if (user.getWallet() > 0) {
+            System.out.println("user.getWallet() > 0 ");
+
             double currentWallentBalance = user.getWallet();
+            System.out.println("currentWallentBalance: " + currentWallentBalance);
+
             currentWallentBalance -= reservations.getCommision();
+            System.out.println("currentWallentBalance: " + currentWallentBalance);
+
             user.setWallet(currentWallentBalance);
 
             TotalTransactions totalTransactions = totalTransactionsRepository.findById(1L).orElse(null);
