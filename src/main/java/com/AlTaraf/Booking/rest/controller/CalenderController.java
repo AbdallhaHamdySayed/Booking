@@ -415,6 +415,8 @@ public class CalenderController {
 
             List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitIdAndReserveIsTrue(unitId);
 
+            List<ReserveDateHalls> reserveDateHallsListForTrader = reserveDateHallsRepository.findListByUnitId(unitId);
+
             if (roomDetailsForAvailableAreaId != null) {
                 boolean roomNumberZeroExists = roomDetailsForAvailableAreaRepository.existsByRoomNumberZero();
 
@@ -427,9 +429,14 @@ public class CalenderController {
                             .map(ReserveDateMapper.INSTANCE::reserveDateToReserveDateRequest)
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(reserveDateRequests);
+                } else  {
+                    List<ReserveDate> reserveDateList = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableAreaId, unitId);
+                    List<ReserveDateDto> reserveDateRequests = reserveDateList.stream()
+                            .map(ReserveDateMapper.INSTANCE::reserveDateToReserveDateRequest)
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(reserveDateRequests);
                 }
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(205, messageSource.getMessage("Room_Still_Available.message", null, LocaleContextHolder.getLocale())));
             }
 
             else if (roomDetailsId != null) {
@@ -445,13 +452,27 @@ public class CalenderController {
                     return ResponseEntity.ok(reserveDateRoomDetailsDtoList);
                 }
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(205, messageSource.getMessage("Room_Still_Available.message", null, LocaleContextHolder.getLocale())));
+                else {
+                    List<ReserveDateRoomDetails> reserveDateRoomDetailsList = reserveDateRoomDetailsRepository.findByRoomDetailsIdAndUnitId(roomDetailsId, unitId);
+                    List<ReserveDateRoomDetailsDto> reserveDateRoomDetailsDtoList = reserveDateRoomDetailsList.stream()
+                            .map(ReserveDateRoomDetailsMapper.INSTANCE::reserveDateRoomDetailsToReserveDateRequest)
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(reserveDateRoomDetailsDtoList);
+                }
+
             }
 
             else if (!reserveDateHallsList.isEmpty()) {
 
 
                 List<ReserveDateHallsRequest> reserveDateHallsDtoList = reserveDateHallsList.stream()
+                        .map(ReserveDateHallsMapper.INSTANCE::toDto)
+                        .collect(Collectors.toList());
+                return ResponseEntity.ok(reserveDateHallsDtoList);
+            }
+
+            else if (!reserveDateHallsListForTrader.isEmpty()) {
+                List<ReserveDateHallsRequest> reserveDateHallsDtoList = reserveDateHallsListForTrader.stream()
                         .map(ReserveDateHallsMapper.INSTANCE::toDto)
                         .collect(Collectors.toList());
                 return ResponseEntity.ok(reserveDateHallsDtoList);
