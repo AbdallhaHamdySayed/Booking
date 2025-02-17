@@ -54,12 +54,15 @@ public class User extends Auditable<String> {
     @Column
     private boolean stayLoggedIn;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(
+//            name = "user_roles",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
+//    private Set<Role> roles = new HashSet<>();
+
+    @Column(name = "ROLE")
+    private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true)
     @JoinColumn(name = "FILE_FOR_PROFILE_ID")

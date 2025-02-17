@@ -350,14 +350,14 @@ public class AdminController {
         } else if (roleName != null && username == null && phone == null) {
             usersPage = userRepository.findAllByRolesName(roleName, pageable);
         } else if (roleName != null && username != null && phone == null) {
-            usersPage = userRepository.findByUsernameAndRolesName(username, roleName, pageable);
+            usersPage = userRepository.findByUsernameAndRoleName(username, roleName, pageable);
         } else if (roleName == null && username == null && phone != null) {
             usersPage = userRepository.findAllByPhoneExcludingRoles(phone, pageable);
         }
         else if (roleName == null && phone == null && username != null ) {
             usersPage = userRepository.findByUsername(username, pageable);
         } else if (roleName != null && username == null && phone != null) {
-            usersPage = userRepository.findAllByPhoneAndRolesName(phone, roleName, pageable);
+            usersPage = userRepository.findAllByPhoneAndRoleName(phone, roleName, pageable);
         }
         else {
             usersPage = userRepository.findAllExclude(pageable);
@@ -383,14 +383,14 @@ public class AdminController {
         } else if (roleName != null && username == null && phone == null) {
             usersPage = userRepository.findAllByRolesName(roleName, pageable);
         } else if (roleName != null && username != null && phone == null) {
-            usersPage = userRepository.findByUsernameAndRolesName(username, roleName, pageable);
+            usersPage = userRepository.findByUsernameAndRoleName(username, roleName, pageable);
         } else if (roleName == null && username == null && phone != null) {
-            usersPage = userRepository.findAllByPhoneExcludingRolesDashboard(phone, pageable);
+            usersPage = userRepository.findAllByPhoneExcludingRoleDashboard(phone, pageable);
         }
         else if (roleName == null && phone == null && username != null ) {
             usersPage = userRepository.findByUsernameDashboard(username, pageable);
         } else if (roleName != null && username == null && phone != null) {
-            usersPage = userRepository.findAllByPhoneAndRolesName(phone, roleName, pageable);
+            usersPage = userRepository.findAllByPhoneAndRoleName(phone, roleName, pageable);
         }
         else {
             usersPage = userRepository.findAllExcludeDashboard(pageable);

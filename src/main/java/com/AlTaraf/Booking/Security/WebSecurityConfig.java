@@ -1,7 +1,6 @@
 package com.AlTaraf.Booking.Security;
 
 import com.AlTaraf.Booking.Security.jwt.AuthEntryPointJwt;
-import com.AlTaraf.Booking.Security.jwt.AuthTokenFilter;
 import com.AlTaraf.Booking.Security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

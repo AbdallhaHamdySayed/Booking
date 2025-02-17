@@ -283,7 +283,7 @@ public class UserService {
     }
 
     public List<User> getAllByRolesName(ERole roleName) {
-        return userRepository.findAllByRoles_Name(roleName);
+        return userRepository.findAllByRole_Name(roleName);
     }
 
     public void deleteUsersWithIsActiveNull() {
