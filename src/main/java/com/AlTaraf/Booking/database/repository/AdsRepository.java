@@ -43,4 +43,7 @@ public interface AdsRepository extends JpaRepository<Ads, Long> {
 
     @Query("SELECT a FROM Ads a WHERE a.user.id = :userId AND a.unit.id = :unitId")
     Ads findByUserIdAndUnitId(@Param("userId") Long userId, @Param("unitId") Long unitId);
+
+    @Query("SELECT COUNT(a) FROM Ads a WHERE a.user.id = :userId")
+    Integer countAdsByUserId(@Param("userId") Long userId);
 }

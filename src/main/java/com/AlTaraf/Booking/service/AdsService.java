@@ -127,4 +127,9 @@ public class AdsService {
 
     public Ads getByUserIdAndUnitId(Long userId, Long unitId) {
         return adsRepository.findByUserIdAndUnitId(userId, unitId);
-    }}
+    }
+
+    public Integer getAdsCountByUserId(Long userId) {
+        return adsRepository.countAdsByUserId(userId);
+    }
+}

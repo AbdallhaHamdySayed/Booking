@@ -112,7 +112,7 @@ public class User extends Auditable<String> {
         this.id = id;
     }
 
-    public int getNumberAds() {
+    public Integer getNumberAds() {
         return numberAds != null ? numberAds : 0;
     }
 

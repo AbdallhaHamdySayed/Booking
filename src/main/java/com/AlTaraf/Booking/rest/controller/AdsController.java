@@ -159,7 +159,17 @@ public class AdsController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("exist_ads.message", null, LocaleContextHolder.getLocale()));
             }
 
-            int numberAds = user.getNumberAds();
+            Integer numberAds = user.getNumberAds();
+            Integer numberAdsForUser = adsService.getAdsCountByUserId(adsRequestDto.getUserId());
+        System.out.println("****************************************");
+        System.out.println("numberAdsForUser: " + numberAdsForUser);
+        System.out.println("****************************************");
+
+        if (numberAds == numberAdsForUser || numberAdsForUser > numberAds) {
+            System.out.println("numberAds == numberAdsForUser");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("number_ads_exceed.message", null, LocaleContextHolder.getLocale()));
+        }
+
             System.out.println("numberAds: " + numberAds);
 
         if (numberAds == 0) {
