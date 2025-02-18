@@ -135,42 +135,43 @@ public class AdsController {
                                        @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) throws IOException, InterruptedException {
 
 
-            Locale locale = LocaleContextHolder.getLocale();
-            if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
-                try {
-                    List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
-                    if (!languageRanges.isEmpty()) {
-                        locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
-                    }
-                } catch (IllegalArgumentException e) {
-                    // Handle the exception if needed
-                    System.out.println("IllegalArgumentException: " + e);
+        Locale locale = LocaleContextHolder.getLocale();
+        if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+            try {
+                List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+                if (!languageRanges.isEmpty()) {
+                    locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
                 }
+            } catch (IllegalArgumentException e) {
+                // Handle the exception if needed
+                System.out.println("IllegalArgumentException: " + e);
             }
+        }
 
-            User user = userRepository.findByUserId(adsRequestDto.getUserId());
-            PackageAds packageAds = packageAdsRepository.findById(0L).orElse(null);
+        User user = userRepository.findByUserId(adsRequestDto.getUserId());
+        PackageAds packageAds = packageAdsRepository.findById(0L).orElse(null);
 
-            Ads existAds = null;
-            existAds = adsService.getByUserIdAndUnitId(adsRequestDto.getUserId(), adsRequestDto.getUnitId());
+        Integer numberAdsForPackage = user.getPackageAds().getNumberAds();
 
+        Ads existAds = null;
+        existAds = adsService.getByUserIdAndUnitId(adsRequestDto.getUserId(), adsRequestDto.getUnitId());
 
-            if (existAds != null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("exist_ads.message", null, LocaleContextHolder.getLocale()));
-            }
+        if (existAds != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("exist_ads.message", null, LocaleContextHolder.getLocale()));
+        }
 
-            Integer numberAds = user.getNumberAds();
-            Integer numberAdsForUser = adsService.getAdsCountByUserId(adsRequestDto.getUserId());
+        Integer numberAds = user.getNumberAds();
+        Integer numberAdsForUser = adsService.getAdsCountByUserId(adsRequestDto.getUserId());
         System.out.println("****************************************");
         System.out.println("numberAdsForUser: " + numberAdsForUser);
         System.out.println("****************************************");
 
-        if (numberAds == numberAdsForUser || numberAdsForUser > numberAds) {
+        if (numberAdsForPackage == numberAdsForUser) {
             System.out.println("numberAds == numberAdsForUser");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("number_ads_exceed.message", null, LocaleContextHolder.getLocale()));
         }
 
-            System.out.println("numberAds: " + numberAds);
+        System.out.println("numberAds: " + numberAds);
 
         if (numberAds == 0) {
             user.setPackageAds(packageAds);
