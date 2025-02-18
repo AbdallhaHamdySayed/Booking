@@ -99,7 +99,6 @@ public class AdsService {
         }
 
         ads.setStatusUnit(statusUnit);
-        ads.setDateAds(LocalDate.now().plusDays(30));
         adsRepository.save(ads);
 
         if ( statusUnitId == 2) {
