@@ -196,6 +196,13 @@ public class UnitController {
             if (unitRequestDto.getNameUnit() != null) {
                 unitToUpdate.setNameUnit(unitRequestDto.getNameUnit());
             }
+            if (unitRequestDto.getYoutubeUrl() != null) {
+                unitToUpdate.setYoutubeUrl(unitRequestDto.getYoutubeUrl());
+                StatusUnit statusUnit = statusUnitRepository.findById(1L).orElse(null);
+                unitToUpdate.setStatusUnit(statusUnit);
+
+                unitService.saveUnit(unitToUpdate);
+            }
 
             if (unitRequestDto.getDescription() != null) {
                 unitToUpdate.setDescription(unitRequestDto.getDescription());
@@ -334,11 +341,6 @@ public class UnitController {
             updatedUnit.setPeriodCount(unitRepository.countUnitOccurrences(updatedUnit.getId()));
 
             System.out.println("updatedUnit.getPeriodCount(): " + updatedUnit.getPeriodCount());
-
-            StatusUnit statusUnit = statusUnitRepository.findById(1L).orElse(null);
-            updatedUnit.setStatusUnit(statusUnit);
-
-            unitService.saveUnit(unitToUpdate);
 
             // Return a success response with the updated unitId in the body
             return ResponseEntity.ok( messageSource.getMessage("unit_updated.message", null, LocaleContextHolder.getLocale())
@@ -1258,7 +1260,7 @@ public class UnitController {
                         messageSource.getMessage("notification_body_accepted_reservation_successful.message", null,
                                 LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId()
                         , null, reservationId, null);
-                notificationService.processNotification(notificationRequest);
+                notificationService.processNotificationForGuest(notificationRequest);
             }
 
             else if (reservations.getStatusUnit().getId() == 3) {
@@ -1266,7 +1268,11 @@ public class UnitController {
                         messageSource.getMessage("notification_body_rejected_updated_reservation.message", null,
                                 LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
                         null, reservationId, null);
-                notificationService.processNotification(notificationRequest);
+                notificationService.processNotificationForGuest(notificationRequest);
+            }
+
+            else if (reservations.getStatusUnit().getId() == 4) {
+
             }
             return ResponseEntity.ok(new ApiResponse(200,messageSource.getMessage("status_reservation_changed_successful.message", null, LocaleContextHolder.getLocale())));
         } catch (Exception e) {

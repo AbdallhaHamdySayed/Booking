@@ -14,6 +14,7 @@ import java.util.Set;
 public class UnitRequestDto {
     private Long unitTypeId;
     private Long userId;
+    private String youtubeUrl;
     private String nameUnit;
     private String description;
     private Long cityId;
