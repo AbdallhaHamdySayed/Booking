@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -426,13 +428,43 @@ public class CalenderController {
                     System.out.println("roomNumberZeroExists Is True");
                     List<ReserveDate> reserveDates = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableAreaId, unitId);
                     List<ReserveDateDto> reserveDateRequests = reserveDates.stream()
-                            .map(ReserveDateMapper.INSTANCE::reserveDateToReserveDateRequest)
+                            .map(reserveDate -> {
+                                // Convert entity to DTO
+                                ReserveDateDto dto = ReserveDateMapper.INSTANCE.reserveDateToReserveDateRequest(reserveDate);
+
+                                // Filter dateInfoList: keep only today or future dates
+                                List<DateInfoDto> filteredDates = dto.getDateInfoList().stream()
+                                        .filter(dateInfo -> {
+                                            LocalDate date = LocalDate.parse(dateInfo.getDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                                            return !date.isBefore(LocalDate.now()); // Keep today or future dates
+                                        })
+                                        .collect(Collectors.toList());
+
+                                // Return a new DTO with the filtered list
+                                return new ReserveDateDto(filteredDates, dto.getRoomDetailsForAvailableAreaId(), dto.getUnitId());
+                            })
+                            .filter(dto -> !dto.getDateInfoList().isEmpty()) // Remove DTOs where dateInfoList is empty after filtering
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(reserveDateRequests);
                 } else  {
                     List<ReserveDate> reserveDateList = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableAreaId, unitId);
                     List<ReserveDateDto> reserveDateRequests = reserveDateList.stream()
-                            .map(ReserveDateMapper.INSTANCE::reserveDateToReserveDateRequest)
+                            .map(reserveDate -> {
+                                // Convert entity to DTO
+                                ReserveDateDto dto = ReserveDateMapper.INSTANCE.reserveDateToReserveDateRequest(reserveDate);
+
+                                // Filter dateInfoList: keep only today or future dates
+                                List<DateInfoDto> filteredDates = dto.getDateInfoList().stream()
+                                        .filter(dateInfo -> {
+                                            LocalDate date = LocalDate.parse(dateInfo.getDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                                            return !date.isBefore(LocalDate.now()); // Keep today or future dates
+                                        })
+                                        .collect(Collectors.toList());
+
+                                // Return a new DTO with the filtered list
+                                return new ReserveDateDto(filteredDates, dto.getRoomDetailsForAvailableAreaId(), dto.getUnitId());
+                            })
+                            .filter(dto -> !dto.getDateInfoList().isEmpty()) // Remove DTOs where dateInfoList is empty after filtering
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(reserveDateRequests);
                 }
@@ -447,15 +479,46 @@ public class CalenderController {
                     System.out.println("roomNumberZeroExists Is True");
                     List<ReserveDateRoomDetails> reserveDateRoomDetails = reserveDateRoomDetailsRepository.findByRoomDetailsIdAndUnitId(roomDetailsId, unitId);
                     List<ReserveDateRoomDetailsDto> reserveDateRoomDetailsDtoList = reserveDateRoomDetails.stream()
-                            .map(ReserveDateRoomDetailsMapper.INSTANCE::reserveDateRoomDetailsToReserveDateRequest)
+                            .map(reserveDateRoomDetails2 -> {
+                                // Convert entity to DTO
+                                ReserveDateRoomDetailsDto dto = ReserveDateRoomDetailsMapper.INSTANCE.reserveDateRoomDetailsToReserveDateRequest(reserveDateRoomDetails2);
+
+                                // Filter dateInfoList where date >= today
+                                List<DateInfoDto> filteredDates = dto.getDateInfoList().stream()
+                                        .filter(dateInfo -> {
+                                            LocalDate date = LocalDate.parse(dateInfo.getDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                                            return !date.isBefore(LocalDate.now()); // Keep only today or future dates
+                                        })
+                                        .collect(Collectors.toList());
+
+                                // Return a new DTO with filtered dates
+                                return new ReserveDateRoomDetailsDto(filteredDates, dto.getRoomDetailsId(), dto.getUnitId());
+                            })
+                            .filter(dto -> !dto.getDateInfoList().isEmpty()) // Remove DTOs with empty date lists
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(reserveDateRoomDetailsDtoList);
                 }
 
                 else {
                     List<ReserveDateRoomDetails> reserveDateRoomDetailsList = reserveDateRoomDetailsRepository.findByRoomDetailsIdAndUnitId(roomDetailsId, unitId);
+
                     List<ReserveDateRoomDetailsDto> reserveDateRoomDetailsDtoList = reserveDateRoomDetailsList.stream()
-                            .map(ReserveDateRoomDetailsMapper.INSTANCE::reserveDateRoomDetailsToReserveDateRequest)
+                            .map(reserveDateRoomDetails2 -> {
+                                // Convert entity to DTO
+                                ReserveDateRoomDetailsDto dto = ReserveDateRoomDetailsMapper.INSTANCE.reserveDateRoomDetailsToReserveDateRequest(reserveDateRoomDetails2);
+
+                                // Filter dateInfoList where date >= today
+                                List<DateInfoDto> filteredDates = dto.getDateInfoList().stream()
+                                        .filter(dateInfo -> {
+                                            LocalDate date = LocalDate.parse(dateInfo.getDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                                            return !date.isBefore(LocalDate.now()); // Keep only today or future dates
+                                        })
+                                        .collect(Collectors.toList());
+
+                                // Return a new DTO with filtered dates
+                                return new ReserveDateRoomDetailsDto(filteredDates, dto.getRoomDetailsId(), dto.getUnitId());
+                            })
+                            .filter(dto -> !dto.getDateInfoList().isEmpty()) // Remove DTOs with empty date lists
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(reserveDateRoomDetailsDtoList);
                 }
@@ -464,16 +527,35 @@ public class CalenderController {
 
             else if (!reserveDateHallsList.isEmpty()) {
 
-
                 List<ReserveDateHallsRequest> reserveDateHallsDtoList = reserveDateHallsList.stream()
-                        .map(ReserveDateHallsMapper.INSTANCE::toDto)
+                        .map(ReserveDateHallsMapper.INSTANCE::toDto) // Convert to DTO first
+                        .map(dto -> {
+                            // Filter dateInfoList where date >= today
+                            List<DateInfoHallsRequest> filteredDates = dto.getDateInfoList().stream()
+                                    .filter(dateInfo -> !dateInfo.getDate().isBefore(LocalDate.now()))
+                                    .collect(Collectors.toList());
+
+                            // Return a new DTO with filtered dates (without modifying the original object)
+                            return new ReserveDateHallsRequest(filteredDates, dto.getUnitId());
+                        })
+                        .filter(dto -> !dto.getDateInfoList().isEmpty()) // Remove objects with no valid dates
                         .collect(Collectors.toList());
                 return ResponseEntity.ok(reserveDateHallsDtoList);
             }
 
             else if (!reserveDateHallsListForTrader.isEmpty()) {
                 List<ReserveDateHallsRequest> reserveDateHallsDtoList = reserveDateHallsListForTrader.stream()
-                        .map(ReserveDateHallsMapper.INSTANCE::toDto)
+                        .map(ReserveDateHallsMapper.INSTANCE::toDto) // Convert to DTO first
+                        .map(dto -> {
+                            // Filter dateInfoList where date >= today
+                            List<DateInfoHallsRequest> filteredDates = dto.getDateInfoList().stream()
+                                    .filter(dateInfo -> !dateInfo.getDate().isBefore(LocalDate.now()))
+                                    .collect(Collectors.toList());
+
+                            // Return a new DTO with filtered dates (without modifying the original object)
+                            return new ReserveDateHallsRequest(filteredDates, dto.getUnitId());
+                        })
+                        .filter(dto -> !dto.getDateInfoList().isEmpty()) // Remove objects with no valid dates
                         .collect(Collectors.toList());
                 return ResponseEntity.ok(reserveDateHallsDtoList);
             }
@@ -483,7 +565,22 @@ public class CalenderController {
                 System.out.println("unitId != null && reserveDateHallsList.isEmpty() && roomDetailsForAvailableAreaId == null && roomDetailsId == null");
                 List<ReserveDateUnit> reserveDateUnits = reserveDateUnitRepository.findListByUnitId(unitId);
                 List<ReserveDateUnitDto> reserveDateUnitDtoList = reserveDateUnits.stream()
-                        .map(ReserveDateUnitMapper.INSTANCE::reserveDateUnitToReserveDateRequest)
+                        .map(reserveDateUnit -> {
+                            // Convert the entity to DTO
+                            ReserveDateUnitDto dto = ReserveDateUnitMapper.INSTANCE.reserveDateUnitToReserveDateRequest(reserveDateUnit);
+
+                            // Filter the dateInfoList in the DTO without modifying the original entity
+                            List<DateInfoDto> filteredDates = dto.getDateInfoList().stream()
+                                    .filter(dateInfo -> {
+                                        LocalDate date = LocalDate.parse(dateInfo.getDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                                        return !date.isBefore(LocalDate.now()); // Filter dates >= today
+                                    })
+                                    .collect(Collectors.toList());
+
+                            // Create a new DTO with the filtered list (Immutable approach)
+                            return new ReserveDateUnitDto(filteredDates, dto.getUnitId());
+                        })
+                        .filter(reserveDateUnitDto -> !reserveDateUnitDto.getDateInfoList().isEmpty()) // Remove units with no available dates
                         .collect(Collectors.toList());
                 return ResponseEntity.ok(reserveDateUnitDtoList);
 
