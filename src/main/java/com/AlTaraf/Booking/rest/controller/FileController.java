@@ -1,13 +1,12 @@
 package com.AlTaraf.Booking.rest.controller;
 
-import com.AlTaraf.Booking.database.entity.FileForAds;
-import com.AlTaraf.Booking.database.entity.FileForPdf;
-import com.AlTaraf.Booking.database.entity.FileForProfile;
-import com.AlTaraf.Booking.database.entity.FileForUnit;
+import com.AlTaraf.Booking.database.entity.*;
+import com.AlTaraf.Booking.database.repository.StatusRepository;
 import com.AlTaraf.Booking.rest.dto.ApiResponse;
 import com.AlTaraf.Booking.rest.dto.FileResponseMessage;
 import com.AlTaraf.Booking.rest.dto.ImageUploadResponse;
 import com.AlTaraf.Booking.service.FileStorageService;
+import com.AlTaraf.Booking.service.UnitService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,9 +33,14 @@ public class FileController {
     @Autowired
     MessageSource messageSource;
 
+    @Autowired
+    UnitService unitService;
+
+    @Autowired
+    StatusRepository statusUnitRepository;
+
     @PostMapping("/upload-file-for-unit")
     public ResponseEntity<?> uploadImages(@RequestParam(value = "files", required = false) List<MultipartFile> files,
-                                          @RequestParam(value = "video", required = false) MultipartFile video,
                                           @RequestParam("userId") Long userId,
                                           @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
 
@@ -55,48 +59,22 @@ public class FileController {
         }
 
         String message1 = "";
-        String message2 = "";
 
         try {
-            if (files != null && video != null) {
-                storageService.storeForUnit(userId, video);
-                for (MultipartFile file : files) {
-                    storageService.storeForUnit(file, userId);
-                }
 
-                message1 = messageSource.getMessage("uploaded_files_successfully.message", null, LocaleContextHolder.getLocale()) + files.stream()
-                        .map(MultipartFile::getOriginalFilename)
-                        .collect(Collectors.toList());
-
-                message2 = messageSource.getMessage("uploaded_files_successfully.message", null, LocaleContextHolder.getLocale()) + video.getOriginalFilename();
-
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new FileResponseMessage(message1 + " & " + message2));
+            for (MultipartFile file : files) {
+                storageService.storeForUnit(file, userId);
             }
-
-            else if (video == null) {
-                for (MultipartFile file : files) {
-                    storageService.storeForUnit(file, userId);
-                }
-                message1 = messageSource.getMessage("uploaded_files_successfully.message", null, LocaleContextHolder.getLocale()) + files.stream()
-                        .map(MultipartFile::getOriginalFilename)
-                        .collect(Collectors.toList());
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new FileResponseMessage(message1));
-            }
-
-            else {
-                storageService.storeForUnit(userId, video);
-
-                message2 = messageSource.getMessage("uploaded_files_successfully.message", null, LocaleContextHolder.getLocale()) + video.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new FileResponseMessage(message2));
-            }
+            message1 = messageSource.getMessage("uploaded_files_successfully.message", null, LocaleContextHolder.getLocale()) + files.stream()
+                    .map(MultipartFile::getOriginalFilename)
+                    .collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new FileResponseMessage(message1));
 
         }
 
         catch (IOException e) {
-            String message = messageSource.getMessage("uploaded_files_failed.message", null, LocaleContextHolder.getLocale()) + video.getOriginalFilename();
+            String message = messageSource.getMessage("uploaded_files_failed.message", null, LocaleContextHolder.getLocale());
             System.out.println("Exception Upload Image: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new FileResponseMessage(message));
@@ -223,6 +201,11 @@ public class FileController {
             }
         }
 
+        StatusUnit statusUnit = statusUnitRepository.findById(1L).orElse(null);
+
+        Unit unit = unitService.getUnitById(unitId);
+        unit.setStatusUnit(statusUnit);
+        unitService.saveUnit(unit);
         storageService.setFileForUnit(unitId, userId);
         return new ResponseEntity<>( messageSource.getMessage("Image_Updated.message", null, LocaleContextHolder.getLocale()) + unitId, HttpStatus.OK);
     }

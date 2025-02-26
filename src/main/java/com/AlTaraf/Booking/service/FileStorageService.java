@@ -36,30 +36,6 @@ public class FileStorageService {
     @Autowired
     AdsRepository adsRepository;
 
-    public void storeForUnit(Long userId, MultipartFile video) throws IOException {
-
-        String fileNameVideo = StringUtils.cleanPath(video.getOriginalFilename());
-        FileForUnit fileForUnitVideo = new FileForUnit(fileNameVideo, video.getContentType(), video.getBytes());
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        fileForUnitVideo.setUser(user);
-        fileForUnitRepository.save(fileForUnitVideo);
-
-        String fileDownloadVideoUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-//                .scheme("https") // Set the scheme to HTTPS
-                .path("/files-for-unit/")
-                .path(fileForUnitVideo.getId())
-                .toUriString();
-
-
-        fileForUnitVideo.setFileVideoUrl(fileDownloadVideoUri);
-
-        fileForUnitRepository.save(fileForUnitVideo);
-    }
-
     public void storeForUnit( MultipartFile file, Long userId) throws IOException {
 
         String fileNameImage = StringUtils.cleanPath(file.getOriginalFilename());
