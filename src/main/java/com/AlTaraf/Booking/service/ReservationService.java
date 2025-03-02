@@ -2,12 +2,16 @@ package com.AlTaraf.Booking.service;
 
 import com.AlTaraf.Booking.database.entity.*;
 import com.AlTaraf.Booking.database.repository.*;
+import com.AlTaraf.Booking.rest.dto.PushNotificationRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -41,16 +45,28 @@ public class ReservationService {
     WalletRepository walletRepository;
 
     @Autowired
-    ReserveDateUnitRepository reserveDateUnitRepository;
+    ReserveDateUnitService reserveDateUnitService;
 
     @Autowired
     DateInfoRepository dateInfoRepository;
 
     @Autowired
-    DateInfoHallsRepository dateInfoHallsRepository;
+    DateInfoHallsService dateInfoHallsService;
 
     @Autowired
-    ReservationPeriodUnitHallsRepository reservationPeriodUnitHallsRepository;
+    ReservationPeriodUnitHallsService reservationPeriodUnitHallsService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    MessageSource messageSource;
+
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    ReserveDateHallsService reserveDateHallsService;
 
     public Reservations saveReservation(Reservations reservations) {
         return reservationRepository.save(reservations);
@@ -64,7 +80,7 @@ public class ReservationService {
         return reservationRepository.findUnitByReservationId(reservationId);
     }
 
-    public void updateStatusForReservation(Long reservationId, Long statusUnitId) {
+    public void acceptReservation(Long reservationId, Long statusUnitId) {
 
         Reservations reservations = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + reservationId));
@@ -75,28 +91,29 @@ public class ReservationService {
 
         Unit unit = findUnitByReservationId(reservationId);
 
-        if ( unit.getUnitType().getId() == 2 && statusUnitId.equals(2L) ) {
+        if ( unit.getUnitType().getId() == 2 ) {
 
             ReserveDateHalls reserveDateHall = new ReserveDateHalls();
             reserveDateHall.setUnit(unit);
+            reserveDateHall.setReservations(reservations);
             reserveDateHallsRepository.save(reserveDateHall);
 
             DateInfoHalls dateInfoHalls = new DateInfoHalls();
             dateInfoHalls.setReserveDateHalls(reserveDateHall);
             dateInfoHalls.setDate(dateOfArrival);
-            dateInfoHallsRepository.save(dateInfoHalls);
+            dateInfoHallsService.save(dateInfoHalls);
 
-            ReservationPeriodUnitHalls reservationPeriodUnitHalls = reservationPeriodUnitHallsRepository.findByReservationId(reservationId);
+            ReservationPeriodUnitHalls reservationPeriodUnitHalls = reservationPeriodUnitHallsService.getByReservationId(reservationId);
             System.out.println("reservationPeriodUnitHalls getAvailablePeriods: " + reservationPeriodUnitHalls.getAvailablePeriods().getId());
             reservationPeriodUnitHalls.setStatusUnit(statusRepository.findById(statusUnitId).orElse(null));
-            reservationPeriodUnitHallsRepository.save(reservationPeriodUnitHalls);
+            reservationPeriodUnitHallsService.save(reservationPeriodUnitHalls);
 
             if (reservationPeriodUnitHalls.getAvailablePeriods().getId() == 2) {
                 dateInfoHalls.setEvening(true);
             } else if (reservationPeriodUnitHalls.getAvailablePeriods().getId() == 1) {
                 dateInfoHalls.setMorning(true);
             }
-            dateInfoHallsRepository.save(dateInfoHalls);
+            dateInfoHallsService.save(dateInfoHalls);
 
             if (unit.getPeriodCount() == 2) {
                 System.out.println("unit.getPeriodCount() == 2");
@@ -104,8 +121,8 @@ public class ReservationService {
                 List<Reservations> reservationsList = reservationRepository.findReservationsByDate(unit.getId(), dateOfArrival, departureDate);
 
                 for (Reservations reservation : reservationsList) {
-                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitMorningAndAccepted = reservationPeriodUnitHallsRepository.findByUnitIdAndAvailableAndAccepted(unit.getId(), 1L);
-                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitMorningAndPended = reservationPeriodUnitHallsRepository.findByUnitIdAndAvailableAndPended(unit.getId(), 1L);
+                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitMorningAndAccepted = reservationPeriodUnitHallsService.getByUnitIdAndAvailableAndAccepted(unit.getId(), 1L);
+                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitMorningAndPended = reservationPeriodUnitHallsService.getByUnitIdAndAvailableAndPended(unit.getId(), 1L);
                     System.out.println("reservation: " + reservation.getId());
                     System.out.println("reservationPeriodUnitHallsListByUnitMorning.size(): " + reservationPeriodUnitHallsListByUnitMorningAndAccepted.size());
 
@@ -113,21 +130,21 @@ public class ReservationService {
                         System.out.println("!reservationPeriodUnitHallsListByUnitMorning.isEmpty()");
                         for (ReservationPeriodUnitHalls reservationPeriodUnitHalls1 : reservationPeriodUnitHallsListByUnitMorningAndPended) {
                             reservationPeriodUnitHalls1.setStatusUnit(statusRepository.findById(3L).orElse(null));
-                            reservationPeriodUnitHallsRepository.save(reservationPeriodUnitHalls1);
+                            reservationPeriodUnitHallsService.save(reservationPeriodUnitHalls1);
                             reservationPeriodUnitHalls1.getReservations().setStatusUnit(statusRepository.findById(3L).orElse(null));
                             reservationRepository.save(reservationPeriodUnitHalls1.getReservations());
                         }
                     }
 
-                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitEveningAndAccepted = reservationPeriodUnitHallsRepository.findByUnitIdAndAvailableAndAccepted(unit.getId(), 2L);
-                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitEveningAndPended = reservationPeriodUnitHallsRepository.findByUnitIdAndAvailableAndPended(unit.getId(), 2L);
+                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitEveningAndAccepted = reservationPeriodUnitHallsService.getByUnitIdAndAvailableAndAccepted(unit.getId(), 2L);
+                    List<ReservationPeriodUnitHalls> reservationPeriodUnitHallsListByUnitEveningAndPended = reservationPeriodUnitHallsService.getByUnitIdAndAvailableAndPended(unit.getId(), 2L);
                     System.out.println("reservationPeriodUnitHallsListByUnitEvening.size(): " + reservationPeriodUnitHallsListByUnitEveningAndAccepted.size());
 
                     if (!reservationPeriodUnitHallsListByUnitEveningAndAccepted.isEmpty()) {
                         System.out.println("!reservationPeriodUnitHallsListByUnitEvening.isEmpty()");
                         for (ReservationPeriodUnitHalls reservationPeriodUnitHalls2 : reservationPeriodUnitHallsListByUnitEveningAndPended) {
                             reservationPeriodUnitHalls2.setStatusUnit(statusRepository.findById(3L).orElse(null));
-                            reservationPeriodUnitHallsRepository.save(reservationPeriodUnitHalls2);
+                            reservationPeriodUnitHallsService.save(reservationPeriodUnitHalls2);
                             reservationPeriodUnitHalls2.getReservations().setStatusUnit(statusRepository.findById(3L).orElse(null));
                             reservationRepository.save(reservationPeriodUnitHalls2.getReservations());
                         }
@@ -144,18 +161,19 @@ public class ReservationService {
                         System.out.println("------------------------------------------------------");
                         reservationRepository.save(reservation);
                         reservationPeriodUnitHalls.setStatusUnit(statusRepository.findById(3L).orElse(null));
-                        reservationPeriodUnitHallsRepository.save(reservationPeriodUnitHalls);
+                    reservationPeriodUnitHallsService.save(reservationPeriodUnitHalls);
                     }
                 }
             }
 
         if (unit.getAccommodationType() != null) {
 
-            if (statusUnitId.equals(2L) && (unit.getAccommodationType().getId() == 4 || unit.getAccommodationType().getId() == 6 ||
-                    unit.getAccommodationType().getId() == 3)) {
+            if ( unit.getAccommodationType().getId() == 4 || unit.getAccommodationType().getId() == 6 ||
+                    unit.getAccommodationType().getId() == 3 ) {
                 ReserveDateUnit reserveDateUnit = new ReserveDateUnit();
                 reserveDateUnit.setUnit(unit);
-                reserveDateUnitRepository.save(reserveDateUnit);
+                reserveDateUnit.setReservations(reservations);
+                reserveDateUnitService.save(reserveDateUnit);
 
                 for (LocalDate date = dateOfArrival; date.isBefore(departureDate); date = date.plusDays(1)) {
                     System.out.println(date);
@@ -178,13 +196,7 @@ public class ReservationService {
         if (user.getWallet() > 0) {
             System.out.println("user.getWallet() > 0 ");
 
-            double currentWallentBalance = user.getWallet();
-            System.out.println("currentWallentBalance: " + currentWallentBalance);
-
-            currentWallentBalance -= reservations.getCommision();
-            System.out.println("currentWallentBalance: " + currentWallentBalance);
-
-            user.setWallet(currentWallentBalance);
+            userService.addingWallet(user, reservations.getCommision());
 
             TotalTransactions totalTransactions = totalTransactionsRepository.findById(1L).orElse(null);
 
@@ -217,13 +229,12 @@ public class ReservationService {
 
         reservationRepository.save(reservations);
 
-        if (statusUnitId.equals(2L) &&
-                (Optional.ofNullable(unit.getAccommodationType())
+        if ( Optional.ofNullable(unit.getAccommodationType())
                         .map(accommodationType ->
                                 accommodationType.getId() == 4 ||
                                         accommodationType.getId() == 6 ||
                                         accommodationType.getId() == 3)
-                        .orElse(false) )) {
+                        .orElse(false) ) {
 
             System.out.println("**************************************************************************************************");
             List<Reservations> reservationsLists = reservationRepository.findReservationsByCriteria(unit.getUser().getId(), dateOfArrival, departureDate);
@@ -238,6 +249,39 @@ public class ReservationService {
                 reservationRepository.save(reservation);
             }
         }
+    }
+
+    public void cancelReservation(Long reservationId) throws IOException, InterruptedException {
+
+        Reservations reservations = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + reservationId));
+
+        Unit unit = findUnitByReservationId(reservationId);
+
+
+        if ( reservations.getUnit().getUnitType().getId() == 2 ) {
+
+            reserveDateHallsService.deleteByReservationId(reservations.getId());
+
+            reservationPeriodUnitHallsService.deleteByReservationId(reservations.getId());
+
+        }
+
+        else if ( unit.getAccommodationType().getId() == 4 || unit.getAccommodationType().getId() == 6 ||
+                unit.getAccommodationType().getId() == 3 ) {
+
+            reserveDateUnitService.deleteByReservationId(reservations.getId());
+
+        }
+
+        userService.subtractWallet(reservations.getUser(), reservations.getCommision());
+
+        updateStatueReservation(reservations.getId(), 4L);
+
+        notificationService.pushNotificationsReservationCanceled(reservations.getId());
+
+        notificationService.pushNotificationsRecoveryWallet(reservations.getId());
+
     }
 
     public Page<Reservations> getReservationForUserAndStatus(Long userId, Long statusUnitId , Pageable pageable) {
@@ -279,6 +323,26 @@ public class ReservationService {
 
         LocalDate currentDate = LocalDate.now();
         return reservationRepository.findUserReservationsWithStatusAndGreaterArrivalDate(userId, currentDate, pageable);
+    }
+
+    public void updateStatueReservation(Long reservationId, Long statusUnitId) {
+
+        Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
+        StatusUnit statusUnit = statusRepository.findById(statusUnitId).orElse(null);
+        reservations.setStatusUnit(statusUnit);
+        reservationRepository.save(reservations);
+    }
+
+    public void pushNotificationsReservationCanceled(Long reservationId) throws IOException, InterruptedException {
+        Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
+
+        PushNotificationRequest notificationReservationCanceled = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                messageSource.getMessage("notification_body_canceled_reservation.message", null,
+                        LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
+                null, reservationId, null);
+        notificationService.processNotificationForGuest(notificationReservationCanceled);
+
+
     }
 
 }
