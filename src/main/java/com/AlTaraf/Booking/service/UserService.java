@@ -313,5 +313,29 @@ public class UserService {
     public void setActive(Long unitId) {
         userRepository.activateUserById(unitId);
     }
+
+    public void addingWallet(User user, double commision) {
+        double currentWallentBalance = user.getWallet();
+        System.out.println("currentWallentBalance: " + currentWallentBalance);
+
+        currentWallentBalance -= commision;
+        System.out.println("currentWallentBalance: " + currentWallentBalance);
+
+        user.setWallet(currentWallentBalance);
+
+        userRepository.save(user);
+    }
+
+    public void subtractWallet(User user, double commision) {
+        double currentWallentBalance = user.getWallet();
+        System.out.println("currentWallentBalance: " + currentWallentBalance);
+
+        currentWallentBalance += commision;
+        System.out.println("currentWallentBalance: " + currentWallentBalance);
+
+        user.setWallet(currentWallentBalance);
+
+        userRepository.save(user);
+    }
 }
 
