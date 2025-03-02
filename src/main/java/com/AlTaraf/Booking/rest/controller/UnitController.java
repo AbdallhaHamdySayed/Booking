@@ -1241,9 +1241,9 @@ public class UnitController {
             }
 
             Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
-            reservationService.updateStatusForReservation(reservationId, statusUnitId);
 
-            if (reservations.getStatusUnit().getId() == 2) {
+            if (statusUnitId == 2) {
+
                 Unit unit = unitService.getUnitById(reservations.getUnit().getId());
                 User userLessor = unit.getUser();
 
@@ -1251,6 +1251,8 @@ public class UnitController {
 
                 User user = userRepository.findById(userId)
                         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+                reservationService.acceptReservation(reservationId, statusUnitId);
 
 //                MessageWhats messageWhats = new MessageWhats(" الرقم الخاص بمالك العقار  " +userLessor.getPhone());
 //
@@ -1271,8 +1273,8 @@ public class UnitController {
                 notificationService.processNotificationForGuest(notificationRequest);
             }
 
-            else if (reservations.getStatusUnit().getId() == 4) {
-
+            else if (statusUnitId == 4) {
+                reservationService.cancelReservation(reservationId);
             }
             return ResponseEntity.ok(new ApiResponse(200,messageSource.getMessage("status_reservation_changed_successful.message", null, LocaleContextHolder.getLocale())));
         } catch (Exception e) {
@@ -1342,7 +1344,7 @@ public class UnitController {
                 }
             }
 
-            reservationService.updateStatusForReservation(id, 4L);
+//            reservationService.updateStatusForReservation(id, 4L);
             reservationService.deleteUnit(id);
             ApiResponse response = new ApiResponse(200,messageSource.getMessage("reservation_deleted_unit.message", null, LocaleContextHolder.getLocale()));
             return ResponseEntity.status(HttpStatus.OK).body(response);
