@@ -8,6 +8,8 @@ import com.AlTaraf.Booking.rest.mapper.ReserveDateHallsMapper;
 import com.AlTaraf.Booking.rest.mapper.ReserveDateMapper;
 import com.AlTaraf.Booking.rest.mapper.ReserveDateRoomDetailsMapper;
 import com.AlTaraf.Booking.rest.mapper.ReserveDateUnitMapper;
+import com.AlTaraf.Booking.service.ReserveDateHallsService;
+import com.AlTaraf.Booking.service.ReserveDateUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -33,7 +35,7 @@ public class CalenderController {
     ReserveDateRoomDetailsRepository reserveDateRoomDetailsRepository;
 
     @Autowired
-    ReserveDateHallsRepository reserveDateHallsRepository;
+    ReserveDateHallsService reserveDateHallsService;
 
     @Autowired
     ReserveDateMapper reserveDateMapper;
@@ -57,7 +59,7 @@ public class CalenderController {
     ReserveDateUnitMapper reserveDateUnitMapper;
 
     @Autowired
-    ReserveDateUnitRepository reserveDateUnitRepository;
+    ReserveDateUnitService reserveDateUnitService;
 
     @Autowired
     ReserveDateRoomDetailsMapper reserveDateRoomDetailsMapper;
@@ -82,7 +84,7 @@ public class CalenderController {
             }
 
             ReserveDateHalls reserveDateHalls = ReserveDateHallsMapper.INSTANCE.toEntity(reserveDateHallsDto);
-            reserveDateHallsRepository.save(reserveDateHalls);
+            reserveDateHallsService.save(reserveDateHalls);
             return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
         } catch (Exception e) {
             System.out.println("Failed Reserve Date Halls: " + e.getMessage());
@@ -109,15 +111,15 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(reserveDateHallsDto.getUnitId());
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsService.getByUnitId(reserveDateHallsDto.getUnitId());
             for (ReserveDateHalls reserveDateHalls: reserveDateHallsList) {
-                reserveDateHallsRepository.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
+                reserveDateHallsService.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
             }
 
-            reserveDateHallsRepository.deleteByUnitId(reserveDateHallsDto.getUnitId());
+            reserveDateHallsService.deleteByUnitId(reserveDateHallsDto.getUnitId());
 
             ReserveDateHalls reserveDateHalls = ReserveDateHallsMapper.INSTANCE.toEntity(reserveDateHallsDto);
-            reserveDateHallsRepository.save(reserveDateHalls);
+            reserveDateHallsService.save(reserveDateHalls);
             return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
         } catch (Exception e) {
             System.out.println("Failed Reserve Date Halls: " + e.getMessage());
@@ -145,12 +147,12 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(reserveDateHallsDeleteDto.getUnitId());
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsService.getByUnitId(reserveDateHallsDeleteDto.getUnitId());
             for (ReserveDateHalls reserveDateHalls: reserveDateHallsList) {
-                reserveDateHallsRepository.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
+                reserveDateHallsService.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
             }
 
-            reserveDateHallsRepository.deleteByUnitId(reserveDateHallsDeleteDto.getUnitId());
+            reserveDateHallsService.deleteByUnitId(reserveDateHallsDeleteDto.getUnitId());
 
             return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_deleted_success.message", null, LocaleContextHolder.getLocale())));
         } catch (Exception e) {
@@ -230,7 +232,7 @@ public class CalenderController {
 
             else {
                 ReserveDateUnit reserveDateUnit = reserveDateUnitMapper.INSTANCE.reserveDateRequestToReserveDate(reserveDateRequest);
-                reserveDateUnitRepository.save(reserveDateUnit);
+                reserveDateUnitService.save(reserveDateUnit);
             }
             return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
         } catch (Exception e) {
@@ -326,14 +328,14 @@ public class CalenderController {
 
             else {
 
-                List<ReserveDateUnit> reserveDateUnits = reserveDateUnitRepository.findListByUnitId(reserveDateRequest.getUnitId());
+                List<ReserveDateUnit> reserveDateUnits = reserveDateUnitService.getListByUnitId(reserveDateRequest.getUnitId());
                 for (ReserveDateUnit reserveDateRoomDetails1 : reserveDateUnits) {
-                    reserveDateUnitRepository.deleteDateInfoByReserveDateId(reserveDateRoomDetails1.getId());
+                    reserveDateUnitService.deleteDateInfoByReserveDateId(reserveDateRoomDetails1.getId());
                 }
-                reserveDateUnitRepository.deleteByUnitId(reserveDateRequest.getUnitId());
+                reserveDateUnitService.deleteByUnitId(reserveDateRequest.getUnitId());
 
                 ReserveDateUnit reserveDateUnit = reserveDateUnitMapper.INSTANCE.reserveDateRequestToReserveDate(reserveDateRequest);
-                reserveDateUnitRepository.save(reserveDateUnit);
+                reserveDateUnitService.save(reserveDateUnit);
             }
 
             return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_success.message", null, LocaleContextHolder.getLocale())));
@@ -379,11 +381,11 @@ public class CalenderController {
             }
 
             else {
-                List<ReserveDateUnit> reserveDateUnits = reserveDateUnitRepository.findListByUnitId(reserveDateDeleteDto.getUnitId());
+                List<ReserveDateUnit> reserveDateUnits = reserveDateUnitService.getListByUnitId(reserveDateDeleteDto.getUnitId());
                 for (ReserveDateUnit reserveDateRoomDetails1 : reserveDateUnits) {
-                    reserveDateUnitRepository.deleteDateInfoByReserveDateId(reserveDateRoomDetails1.getId());
+                    reserveDateUnitService.deleteDateInfoByReserveDateId(reserveDateRoomDetails1.getId());
                 }
-                reserveDateUnitRepository.deleteByUnitId(reserveDateDeleteDto.getUnitId());
+                reserveDateUnitService.deleteByUnitId(reserveDateDeleteDto.getUnitId());
             }
 
             return ResponseEntity.ok(new ApiResponse(201, messageSource.getMessage("reserve_date_deleted_success.message", null, LocaleContextHolder.getLocale())));
@@ -415,9 +417,9 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findByUnitIdAndReserveIsTrue(unitId);
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsService.getByUnitIdAndReserveIsTrue(unitId);
 
-            List<ReserveDateHalls> reserveDateHallsListForTrader = reserveDateHallsRepository.findListByUnitId(unitId);
+            List<ReserveDateHalls> reserveDateHallsListForTrader = reserveDateHallsService.getByUnitId(unitId);
 
             if (roomDetailsForAvailableAreaId != null) {
                 boolean roomNumberZeroExists = roomDetailsForAvailableAreaRepository.existsByRoomNumberZero();
@@ -563,7 +565,7 @@ public class CalenderController {
             else if (unitId != null && reserveDateHallsList.isEmpty() && roomDetailsForAvailableAreaId == null && roomDetailsId == null ) {
 
                 System.out.println("unitId != null && reserveDateHallsList.isEmpty() && roomDetailsForAvailableAreaId == null && roomDetailsId == null");
-                List<ReserveDateUnit> reserveDateUnits = reserveDateUnitRepository.findListByUnitId(unitId);
+                List<ReserveDateUnit> reserveDateUnits = reserveDateUnitService.getListByUnitId(unitId);
                 List<ReserveDateUnitDto> reserveDateUnitDtoList = reserveDateUnits.stream()
                         .map(reserveDateUnit -> {
                             // Convert the entity to DTO
@@ -620,7 +622,7 @@ public class CalenderController {
                 }
             }
 
-            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(unitId);
+            List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsService.getByUnitId(unitId);
 
             if (roomDetailsForAvailableAreaId != null) {
                 List<ReserveDate> reserveDateList = reserveDateRepository.findByRoomDetailsForAvailableAreaIdAndUnitId(roomDetailsForAvailableAreaId, unitId);
@@ -646,7 +648,7 @@ public class CalenderController {
             }
 
             else {
-                List<ReserveDateUnit> reserveDateUnitList = reserveDateUnitRepository.findListByUnitId(unitId);
+                List<ReserveDateUnit> reserveDateUnitList = reserveDateUnitService.getListByUnitId(unitId);
 
                 List<ReserveDateUnitDto> reserveDateRequests = reserveDateUnitList.stream()
                         .map(ReserveDateUnitMapper.INSTANCE::reserveDateUnitToReserveDateRequest)
