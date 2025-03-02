@@ -28,4 +28,8 @@ public class ReserveDateUnit {
     @ManyToOne
     @JoinColumn(name = "UNIT_ID")
     private Unit unit;
+
+    @ManyToOne
+    @JoinColumn(name = "RESERVATION_ID")
+    private Reservations reservations;
 }

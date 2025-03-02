@@ -24,4 +24,13 @@ public interface ReserveDateUnitRepository extends JpaRepository<ReserveDateUnit
     @Transactional
     @Query("DELETE FROM ReserveDateUnit rd WHERE rd.unit.id = :unitId")
     void deleteByUnitId(@Param("unitId") Long unitId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ReserveDateUnit rd WHERE rd.reservations.id = :reservationsId")
+    void deleteByReservationId(@Param("reservationsId") Long reservationsId);
+
+
+     @Query("SELECT rdu FROM ReserveDateUnit rdu WHERE rdu.reservations.id = :reservationsId")
+     ReserveDateUnit findByReservationId(Long reservationsId);
 }
