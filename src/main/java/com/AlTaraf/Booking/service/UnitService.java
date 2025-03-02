@@ -64,13 +64,13 @@ public class UnitService {
     ReserveDateRepository reserveDateRepository;
 
     @Autowired
-    ReserveDateHallsRepository reserveDateHallsRepository;
+    ReserveDateHallsService reserveDateHallsService;
 
     @Autowired
     ReserveDateRoomDetailsRepository reserveDateRoomDetailsRepository;
 
     @Autowired
-    ReserveDateUnitRepository reserveDateUnitRepository;
+    ReserveDateUnitService reserveDateUnitService;
 
     @Autowired
     RoomDetailsForAvailableAreaRepository roomDetailsForAvailableAreaRepository;
@@ -316,9 +316,9 @@ public class UnitService {
             reserveDateRepository.deleteDateInfoByReserveDateId(reserveDate.getId());
         }
 
-        List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsRepository.findListByUnitId(id);
+        List<ReserveDateHalls> reserveDateHallsList = reserveDateHallsService.getByUnitId(id);
         for (ReserveDateHalls reserveDateHalls: reserveDateHallsList) {
-            reserveDateHallsRepository.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
+            reserveDateHallsService.deleteDateInfoHallsByReserveDateHallsId(reserveDateHalls.getId());
         }
 
         List<ReserveDateRoomDetails> reserveDateRoomDetailsList = reserveDateRoomDetailsRepository.findListByUnitId(id);
@@ -326,16 +326,16 @@ public class UnitService {
             reserveDateRoomDetailsRepository.deleteDateInfoByReserveDateId(reserveDateRoomDetails.getId());
         }
 
-        List<ReserveDateUnit> reserveDateUnitList = reserveDateUnitRepository.findListByUnitId(id);
+        List<ReserveDateUnit> reserveDateUnitList = reserveDateUnitService.getListByUnitId(id);
         for (ReserveDateUnit reserveDateUnit : reserveDateUnitList) {
-            reserveDateUnitRepository.deleteDateInfoByReserveDateId(reserveDateUnit.getId());
+            reserveDateUnitService.deleteDateInfoByReserveDateId(reserveDateUnit.getId());
         }
 
 
-        reserveDateHallsRepository.deleteByUnitId(id);
+        reserveDateHallsService.deleteByUnitId(id);
         reserveDateRepository.deleteByUnitId(id);
         reserveDateRoomDetailsRepository.deleteByUnitId(id);
-        reserveDateUnitRepository.deleteByUnitId(id);
+        reserveDateUnitService.deleteByUnitId(id);
 
         userFavoriteUnitRepository.deleteByUnit(id);
 
