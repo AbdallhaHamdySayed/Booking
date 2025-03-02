@@ -1,9 +1,11 @@
 package com.AlTaraf.Booking.service;
 
 import com.AlTaraf.Booking.database.entity.Notifications;
+import com.AlTaraf.Booking.database.entity.Reservations;
 import com.AlTaraf.Booking.database.entity.Role;
 import com.AlTaraf.Booking.database.entity.User;
 import com.AlTaraf.Booking.database.repository.NotificationRepository;
+import com.AlTaraf.Booking.database.repository.ReservationRepository;
 import com.AlTaraf.Booking.database.repository.RoleRepository;
 import com.AlTaraf.Booking.database.repository.UserRepository;
 import com.AlTaraf.Booking.rest.dto.PushNotificationRequest;
@@ -11,6 +13,8 @@ import com.AlTaraf.Booking.rest.mapper.NotificationMapper;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,12 @@ public class NotificationService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    ReservationRepository reservationRepository;
+
+    @Autowired
+    MessageSource messageSource;
 
     private final String FCM_URL = "https://fcm.googleapis.com/v1/projects/safari-d2dda/messages:send";
 
@@ -113,5 +123,25 @@ public class NotificationService {
         if (request.getUserId() != null) {
             sendPushMessage(request.getTitle(), request.getBody(), request.getUserId());
         }
+    }
+
+    public void pushNotificationsReservationCanceled(Long reservationId) throws IOException, InterruptedException {
+        Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
+
+        PushNotificationRequest notificationReservationCanceled = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                messageSource.getMessage("notification_body_canceled_reservation.message", null,
+                        LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
+                null, reservationId, null);
+        processNotificationForGuest(notificationReservationCanceled);
+    }
+
+    public void pushNotificationsRecoveryWallet(Long reservationId) throws IOException, InterruptedException {
+        Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
+
+        PushNotificationRequest notificationRecoveryWallet = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                messageSource.getMessage("wallet_recovery.message", null,
+                        LocaleContextHolder.getLocale()), reservations.getUser().getId(),
+                null, reservationId, null);
+        processNotificationForGuest(notificationRecoveryWallet);
     }
 }
