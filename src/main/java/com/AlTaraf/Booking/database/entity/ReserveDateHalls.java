@@ -31,4 +31,8 @@ public class ReserveDateHalls {
 
     @Column(name = "RESERVE")
     private Boolean reserve;
+
+    @ManyToOne
+    @JoinColumn(name = "RESERVATION_ID")
+    private Reservations reservations;
 }

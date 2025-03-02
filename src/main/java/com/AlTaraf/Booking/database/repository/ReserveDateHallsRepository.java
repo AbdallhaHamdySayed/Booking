@@ -19,14 +19,6 @@ public interface ReserveDateHallsRepository extends JpaRepository<ReserveDateHal
     @Query("SELECT rd FROM ReserveDateHalls rd WHERE rd.unit.id = :unitId")
     List<ReserveDateHalls> findListByUnitId(@Param("unitId") Long unitId);
 
-    @Query("SELECT rd FROM ReserveDateHalls rd WHERE rd.unit.id = :unitId")
-    ReserveDateHalls findByUnitId(@Param("unitId") Long unitId);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM DateInfoHalls dih WHERE dih.reserveDateHalls.id IN (SELECT rdh.id FROM ReserveDateHalls rdh WHERE rdh.unit.id = :unitId)")
-    void deleteRelatedDateInfoHallsByUnitId(@Param("unitId") Long unitId);
-
     @Modifying
     @Transactional
     @Query("DELETE FROM ReserveDateHalls rdh WHERE rdh.unit.id = :unitId")
@@ -36,4 +28,7 @@ public interface ReserveDateHallsRepository extends JpaRepository<ReserveDateHal
     @Transactional
     @Query("DELETE FROM DateInfoHalls di WHERE di.reserveDateHalls.id = :reserveDateHallsId")
     void deleteDateInfoHallsByReserveDateHallsId(@Param("reserveDateHallsId") Long reserveDateHallsId);
+
+    @Query("SELECT rdh FROM ReserveDateHalls rdh WHERE rdh.reservations.id = :reservationId")
+    ReserveDateHalls findByReservationId( Long reservationId );
 }
