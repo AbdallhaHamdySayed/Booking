@@ -161,7 +161,7 @@ public class AdsController {
         }
 
         Integer numberAds = user.getNumberAds();
-        Integer numberAdsForUser = adsService.getAdsCountByUserId(adsRequestDto.getUserId());
+        Integer numberAdsForUser = adsService.getAdsCountByUserId(adsRequestDto.getUserId(), user.getUuidAds());
         System.out.println("****************************************");
         System.out.println("numberAdsForUser: " + numberAdsForUser);
         System.out.println("****************************************");
@@ -179,14 +179,11 @@ public class AdsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageSource.getMessage("package_ads_null.message", null, LocaleContextHolder.getLocale()));
         }
 
-        if (numberAds == 0) {
-            user.setPackageAds(packageAds);
-        }
-
         userRepository.save(user);
 
         Ads createdAds = adsService.createAds(adsMapper.toEntity(adsRequestDto));
         createdAds.setDateAds(LocalDate.now());
+        createdAds.setUuidAds(user.getUuidAds());
         adsService.createAds(createdAds);
 
         Long createdAdsId = createdAds.getId();

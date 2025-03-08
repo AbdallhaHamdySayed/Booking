@@ -235,6 +235,7 @@ public class UserService {
 
         user.setPackageAds(packageAds);
         user.setNumberAds(packageAds.getNumberAds());
+        user.setUuidAds(UUID.randomUUID().toString());
 
         if (user.getWallet() > 0) {
 

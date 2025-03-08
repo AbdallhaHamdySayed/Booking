@@ -104,6 +104,10 @@ public class User extends Auditable<String> {
     @Column(name = "IS_ACTIVE")
     private Boolean isActive;
 
+    @Column(name = "UUID_ADS")
+    private String uuidAds;
+
+
     public Double getWallet() {
         return wallet != null ? wallet : 0.0;
     }

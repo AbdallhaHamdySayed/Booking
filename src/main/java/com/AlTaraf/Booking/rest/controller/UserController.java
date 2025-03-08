@@ -231,6 +231,7 @@ public class UserController {
         if (user.getNumberAds() == 0) {
             user.setNumberAds(null);
             user.setPackageAds(null);
+            user.setUuidAds(null);
             userService.updateUser(user);
         }
 

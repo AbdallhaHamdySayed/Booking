@@ -37,6 +37,9 @@ public class Ads extends BaseEntity<Integer> {
     @Column(name = "DATE_ADS")
     private LocalDate dateAds;
 
+    @Column(name = "UUID_ADS")
+    private String uuidAds;
+
     public Ads() {
         this.statusUnit = new StatusUnit();
         this.statusUnit.setId(1L);
