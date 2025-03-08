@@ -80,6 +80,7 @@ public class WebSecurityConfig {
                             .requestMatchers("/file-for-profile/**").permitAll()
                             .requestMatchers("/file-for-pdf/**").permitAll()
                             .requestMatchers("/file-for-ads/**").permitAll()
+                            .requestMatchers("/api/integrations-url/**").permitAll()
 //
 
                             .requestMatchers("/api/ads/package-ads").permitAll()
