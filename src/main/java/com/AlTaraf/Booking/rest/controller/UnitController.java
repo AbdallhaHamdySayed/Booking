@@ -1265,12 +1265,9 @@ public class UnitController {
                 notificationService.processNotificationForGuest(notificationRequest);
             }
 
-            else if (reservations.getStatusUnit().getId() == 3) {
-                PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
-                        messageSource.getMessage("notification_body_rejected_updated_reservation.message", null,
-                                LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
-                        null, reservationId, null);
-                notificationService.processNotificationForGuest(notificationRequest);
+            else if (statusUnitId == 3) {
+                System.out.println("statusUnitId == 3");
+                reservationService.rejectReservation(reservationId, statusUnitId);
             }
 
             else if (statusUnitId == 4) {

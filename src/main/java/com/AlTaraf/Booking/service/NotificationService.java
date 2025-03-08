@@ -125,6 +125,17 @@ public class NotificationService {
         }
     }
 
+    public void pushNotificationsReservationRejected(Long reservationId) throws IOException, InterruptedException {
+        Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
+
+        PushNotificationRequest notificationRequest = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
+                messageSource.getMessage("notification_body_rejected_updated_reservation.message", null,
+                        LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
+                null, reservationId, null);
+        processNotificationForGuest(notificationRequest);
+    }
+
+
     public void pushNotificationsReservationCanceled(Long reservationId) throws IOException, InterruptedException {
         Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
 

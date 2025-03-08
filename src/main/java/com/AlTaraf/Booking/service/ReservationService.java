@@ -151,7 +151,8 @@ public class ReservationService {
                     }
                 }
 
-            } else if (unit.getPeriodCount() == 1) {
+            }
+            else if (unit.getPeriodCount() == 1) {
                 System.out.println("*********************** unit.getPeriodCount() == 1");
                 List<Reservations> reservationsList = reservationRepository.findReservationsByDate(unit.getId(),dateOfArrival, departureDate);
                 System.out.println("reservationsList size: " + reservationsList.size());
@@ -251,6 +252,20 @@ public class ReservationService {
         }
     }
 
+    public void rejectReservation(Long reservationId, Long statusUnitId) throws IOException, InterruptedException {
+        StatusUnit statusUnit = statusRepository.findById(statusUnitId)
+                .orElseThrow(() -> new EntityNotFoundException("StatusUnit not found with id: " + statusUnitId));
+        Reservations reservations = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + reservationId));
+
+        reservations.setStatusUnit(statusUnit);
+
+        reservationRepository.save(reservations);
+
+        notificationService.pushNotificationsReservationRejected(reservations.getId());
+
+    }
+
     public void cancelReservation(Long reservationId) throws IOException, InterruptedException {
 
         Reservations reservations = reservationRepository.findById(reservationId)
@@ -331,18 +346,6 @@ public class ReservationService {
         StatusUnit statusUnit = statusRepository.findById(statusUnitId).orElse(null);
         reservations.setStatusUnit(statusUnit);
         reservationRepository.save(reservations);
-    }
-
-    public void pushNotificationsReservationCanceled(Long reservationId) throws IOException, InterruptedException {
-        Reservations reservations = reservationRepository.findById(reservationId).orElse(null);
-
-        PushNotificationRequest notificationReservationCanceled = new PushNotificationRequest(messageSource.getMessage("notification_title.message", null, LocaleContextHolder.getLocale()),
-                messageSource.getMessage("notification_body_canceled_reservation.message", null,
-                        LocaleContextHolder.getLocale()) + " " + reservations.getUnit().getNameUnit(), reservations.getUser().getId(),
-                null, reservationId, null);
-        notificationService.processNotificationForGuest(notificationReservationCanceled);
-
-
     }
 
 }
