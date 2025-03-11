@@ -84,5 +84,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllExcludeDashboard( Pageable pageable);
 
 
+    @Query(value = "SELECT u FROM User u WHERE u.phone = :login")
+    Optional<User> findByLogin(@Param("login") String login);
 }
 
