@@ -1,8 +1,8 @@
 package com.AlTaraf.Booking.rest.controller;
 
 
-import com.AlTaraf.Booking.Security.jwt.JwtUtils;
-import com.AlTaraf.Booking.Security.service.UserDetailsImpl;
+//import com.AlTaraf.Booking.Security.jwt.JwtUtils;
+//import com.AlTaraf.Booking.Security.service.UserDetailsImpl;
 import com.AlTaraf.Booking.database.entity.ERole;
 import com.AlTaraf.Booking.database.entity.User;
 import com.AlTaraf.Booking.database.repository.UserRepository;
@@ -17,10 +17,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,11 +28,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+//    @Autowired
+//    AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtUtils jwtUtils;
+//    @Autowired
+//    JwtUtils jwtUtils;
 
     @Autowired
     UserMapper userMapper;
@@ -122,93 +118,93 @@ public class UserController {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest,
-                                   @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
-
-        Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
-
-        if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
-            try {
-                List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
-                if (!languageRanges.isEmpty()) {
-                    locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println("IllegalArgumentException: " + e);
-            }
-        }
-
-        if (!userService.existsByPhone(loginRequest.getPhone())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(400, messageSource.getMessage("duplicate_phone.message", null, locale)));
-        }
-
-        Optional<User> userForCheckActive = userService.findByPhone(loginRequest.getPhone());
-
-        if (userForCheckActive.isPresent()) {
-            Boolean isActive = userForCheckActive.get().getIsActive();
-            if (isActive == null || !isActive) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(400, messageSource.getMessage("account_not_valid.message", null, locale)));
-            }
-            userForCheckActive.get().setIsActive(true);
-        }
-
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getPhone(), loginRequest.getPassword()));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            userDetails.setStayLoggedIn(loginRequest.isStayLoggedIn());
-
-            Optional<User> optionalUser = userService.findByPhone(loginRequest.getPhone());
-            if (!optionalUser.isPresent()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ApiResponse(500, messageSource.getMessage("user_not_found.message", null, locale)));
-            }
-
-            User userForDeviceToken = userRepository.findByPhoneForUser(loginRequest.getPhone());
-            userForDeviceToken.setDeviceToken(loginRequest.getDeviceToken());
-            userRepository.save(userForDeviceToken);
-
-            User user = optionalUser.get();
-
-            Set<String> userRoles = user.getRoles().stream()
-                    .map(role -> role.getName().name())
-                    .collect(Collectors.toSet());
-
-            Set<String> requestRoles = loginRequest.getRoles();
-
-            if (Collections.disjoint(userRoles, requestRoles)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(400, messageSource.getMessage("role_is_not_correct.message", null, locale)));
-            }
-
-            if (userForDeviceToken.getBan()) {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ApiResponse(200, messageSource.getMessage("user_ban.message", null, locale)));
-            }
-
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(item -> item.getAuthority())
-                    .collect(Collectors.toList());
-
-            return ResponseEntity.ok(new JwtResponse(
-                    jwtUtils.generateJwtToken(authentication, loginRequest.isStayLoggedIn()),
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    userDetails.getPhone(),
-                    userDetails.getCity(),
-                    roles));
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse(401, messageSource.getMessage("invalid_password.message", null, locale)));
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest,
+//                                   @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
+//
+//        Locale locale = LocaleContextHolder.getLocale(); // Default to the locale context holder's locale
+//
+//        if (acceptLanguageHeader != null && !acceptLanguageHeader.isEmpty()) {
+//            try {
+//                List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguageHeader);
+//                if (!languageRanges.isEmpty()) {
+//                    locale = Locale.forLanguageTag(languageRanges.get(0).getRange());
+//                }
+//            } catch (IllegalArgumentException e) {
+//                System.out.println("IllegalArgumentException: " + e);
+//            }
+//        }
+//
+//        if (!userService.existsByPhone(loginRequest.getPhone())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(new ApiResponse(400, messageSource.getMessage("duplicate_phone.message", null, locale)));
+//        }
+//
+//        Optional<User> userForCheckActive = userService.findByPhone(loginRequest.getPhone());
+//
+//        if (userForCheckActive.isPresent()) {
+//            Boolean isActive = userForCheckActive.get().getIsActive();
+//            if (isActive == null || !isActive) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                        .body(new ApiResponse(400, messageSource.getMessage("account_not_valid.message", null, locale)));
+//            }
+//            userForCheckActive.get().setIsActive(true);
+//        }
+//
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(loginRequest.getPhone(), loginRequest.getPassword()));
+//
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//            userDetails.setStayLoggedIn(loginRequest.isStayLoggedIn());
+//
+//            Optional<User> optionalUser = userService.findByPhone(loginRequest.getPhone());
+//            if (!optionalUser.isPresent()) {
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                        .body(new ApiResponse(500, messageSource.getMessage("user_not_found.message", null, locale)));
+//            }
+//
+//            User userForDeviceToken = userRepository.findByPhoneForUser(loginRequest.getPhone());
+//            userForDeviceToken.setDeviceToken(loginRequest.getDeviceToken());
+//            userRepository.save(userForDeviceToken);
+//
+//            User user = optionalUser.get();
+//
+//            Set<String> userRoles = user.getRoles().stream()
+//                    .map(role -> role.getName().name())
+//                    .collect(Collectors.toSet());
+//
+//            Set<String> requestRoles = loginRequest.getRoles();
+//
+//            if (Collections.disjoint(userRoles, requestRoles)) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                        .body(new ApiResponse(400, messageSource.getMessage("role_is_not_correct.message", null, locale)));
+//            }
+//
+//            if (userForDeviceToken.getBan()) {
+//                return ResponseEntity.status(HttpStatus.OK)
+//                        .body(new ApiResponse(200, messageSource.getMessage("user_ban.message", null, locale)));
+//            }
+//
+//            List<String> roles = userDetails.getAuthorities().stream()
+//                    .map(item -> item.getAuthority())
+//                    .collect(Collectors.toList());
+//
+//            return ResponseEntity.ok(new JwtResponse(
+//                    jwtUtils.generateJwtToken(authentication, loginRequest.isStayLoggedIn()),
+//                    userDetails.getId(),
+//                    userDetails.getUsername(),
+//                    userDetails.getEmail(),
+//                    userDetails.getPhone(),
+//                    userDetails.getCity(),
+//                    roles));
+//        } catch (BadCredentialsException ex) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(new ApiResponse(401, messageSource.getMessage("invalid_password.message", null, locale)));
+//        }
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id,
