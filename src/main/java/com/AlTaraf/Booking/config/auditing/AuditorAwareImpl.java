@@ -1,4 +1,4 @@
-package com.AlTaraf.Booking.config;
+package com.AlTaraf.Booking.config.auditing;
 
 import java.util.Optional;
 
