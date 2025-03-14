@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -27,6 +28,11 @@ public class ApplicationConfig {
         // Setting Spring Boot SetTimeZone
         TimeZone.setDefault(TimeZone.getTimeZone("Africa/Tripoli"));
         System.out.println("Spring boot application running in UTC+2 timezone: " + TimeZone.getDefault().getID());
+    }
+
+    @Bean
+    public AuditorAware<String> auditorAware() {
+        return new AuditorAwareImpl();
     }
 
     @Bean
