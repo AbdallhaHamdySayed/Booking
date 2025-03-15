@@ -525,4 +525,8 @@ public class UnitService {
         Unit updatedUnit = unitRepository.save(unit);
         return unitMapper.toUnitDto(updatedUnit);
     }
+
+    public List<Unit> findUnitsByAvailability(LocalDate dateOfArrival, LocalDate departureDate, Boolean isMorning, Boolean isEvening) {
+        return unitRepository.findUnitsByAvailability(dateOfArrival, departureDate, isMorning, isEvening);
+    }
 }
