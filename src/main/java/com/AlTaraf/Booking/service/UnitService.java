@@ -394,6 +394,7 @@ public class UnitService {
                                    Integer minAdultsAllowed, Integer maxAdultsAllowed,
                                    Integer minChildrenAllowed, Integer maxChildrenAllowed,
                                    Integer priceMin, Integer priceMax,
+                                   Boolean isMorning, Boolean isEvening,
                                    LocalDate dateOfArrival, LocalDate departureDate,
                                    Pageable pageable) {
 
@@ -406,6 +407,7 @@ public class UnitService {
                 minAdultsAllowed, maxAdultsAllowed,
                 minChildrenAllowed, maxChildrenAllowed,
                 priceMin, priceMax,
+                isMorning, isEvening,
                 dateOfArrival, departureDate, pageable);
 
 
