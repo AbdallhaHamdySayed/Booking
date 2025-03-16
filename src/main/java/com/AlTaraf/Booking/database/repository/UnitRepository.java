@@ -111,41 +111,53 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
     long countByAccommodationTypeIdSix();
 
 
-    @Query("SELECT u FROM Unit u WHERE " +
-            "(:cityId IS NULL OR u.city.id = :cityId) AND " +
-            "(:regionId IS NULL OR u.region.id = :regionId) AND " +
-            "(:unitTypeId IS NULL OR u.unitType.id = :unitTypeId) AND " +
-            "(:typesOfEventHallsId IS NULL OR u.typesOfEventHalls.id = :typesOfEventHallsId) AND " +
-            "(:availablePeriodsHallsSetId IS NULL OR :availablePeriodsHallsSetId IN (SELECT aph.id FROM u.availablePeriodsHallsSet aph)) AND " +
-            "(:accommodationTypeIds IS NULL OR u.accommodationType.id IN :accommodationTypeIds) AND " +
-            "(:hotelClassificationIds IS NULL OR u.hotelClassification.id IN :hotelClassificationIds) AND " +
+    @Query("""
+    SELECT u FROM Unit u
+    WHERE (:cityId IS NULL OR u.city.id = :cityId) 
+    AND (:regionId IS NULL OR u.region.id = :regionId) 
+    AND (:unitTypeId IS NULL OR u.unitType.id = :unitTypeId) 
+    AND (:typesOfEventHallsId IS NULL OR u.typesOfEventHalls.id = :typesOfEventHallsId) 
+    AND (:availablePeriodsHallsSetId IS NULL OR :availablePeriodsHallsSetId IN 
+         (SELECT aph.id FROM u.availablePeriodsHallsSet aph)) 
+    AND (:accommodationTypeIds IS NULL OR u.accommodationType.id IN :accommodationTypeIds) 
+    AND (:hotelClassificationIds IS NULL OR u.hotelClassification.id IN :hotelClassificationIds) 
+    AND (:basicFeaturesSetIds IS NULL OR 
+         (SELECT COUNT(bf.id) FROM u.basicFeaturesSet bf WHERE bf.id IN :basicFeaturesSetIds) = 
+         COALESCE(:#{#basicFeaturesSetIds?.size}, 0)) 
+    AND (:featuresHallsSetIds IS NULL OR 
+         (SELECT COUNT(fh.id) FROM u.featuresHallsSet fh WHERE fh.id IN :featuresHallsSetIds) = 
+         COALESCE(:#{#featuresHallsSetIds?.size}, 0)) 
+    AND (:subFeaturesSetIds IS NULL OR 
+         (SELECT COUNT(sf.id) FROM u.subFeaturesSet sf WHERE sf.id IN :subFeaturesSetIds) = 
+         COALESCE(:#{#subFeaturesSetIds?.size}, 0)) 
+    AND (:evaluationIds IS NULL OR u.evaluation.id IN :evaluationIds) 
+    AND (:minCapacityHalls IS NULL OR u.capacityHalls >= :minCapacityHalls) 
+    AND (:maxCapacityHalls IS NULL OR u.capacityHalls <= :maxCapacityHalls) 
+    AND (:minAdultsAllowed IS NULL OR u.adultsAllowed >= :minAdultsAllowed) 
+    AND (:maxAdultsAllowed IS NULL OR u.adultsAllowed <= :maxAdultsAllowed) 
+    AND (:minChildrenAllowed IS NULL OR u.childrenAllowed >= :minChildrenAllowed) 
+    AND (:maxChildrenAllowed IS NULL OR u.childrenAllowed <= :maxChildrenAllowed) 
+    AND (:priceMin IS NULL OR u.price >= :priceMin) 
+    AND (:priceMax IS NULL OR u.price <= :priceMax) 
+    AND u.dateOfArrival <= :departureDate 
+    AND u.departureDate >= :dateOfArrival 
+    AND u.id NOT IN ( 
+        SELECT rdu.unit.id FROM ReserveDateUnit rdu 
+        JOIN rdu.dateInfoList d 
+        WHERE d.date >= :dateOfArrival AND d.date < :departureDate
+    ) 
 
-            "(:basicFeaturesSetIds IS NULL OR (SELECT COUNT(bf.id) FROM u.basicFeaturesSet bf WHERE bf.id IN :basicFeaturesSetIds) = COALESCE(:#{#basicFeaturesSetIds?.size}, 0)) AND " +
-
-            "(:featuresHallsSetIds IS NULL OR (SELECT COUNT(fh.id) FROM u.featuresHallsSet fh WHERE fh.id IN :featuresHallsSetIds) = COALESCE(:#{#featuresHallsSetIds?.size}, 0)) AND " +
-
-            "(:subFeaturesSetIds IS NULL OR (SELECT COUNT(sf.id) FROM u.subFeaturesSet sf WHERE sf.id IN :subFeaturesSetIds) = COALESCE(:#{#subFeaturesSetIds?.size}, 0)) AND " +
-
-            "(:evaluationIds IS NULL OR u.evaluation.id IN :evaluationIds) AND " +
-            "(:minCapacityHalls IS NULL OR u.capacityHalls >= :minCapacityHalls) AND " +
-            "(:maxCapacityHalls IS NULL OR u.capacityHalls <= :maxCapacityHalls) AND " +
-            "(:minAdultsAllowed IS NULL OR u.adultsAllowed >= :minAdultsAllowed) AND " +
-            "(:maxAdultsAllowed IS NULL OR u.adultsAllowed <= :maxAdultsAllowed) AND " +
-            "(:minChildrenAllowed IS NULL OR u.childrenAllowed >= :minChildrenAllowed) AND " +
-            "(:maxChildrenAllowed IS NULL OR u.childrenAllowed <= :maxChildrenAllowed) AND " +
-            "(:priceMin IS NULL OR u.price >= :priceMin) AND " +
-            "(:priceMax IS NULL OR u.price <= :priceMax) AND " +
-            " u.dateOfArrival <= :departureDate " +
-            "AND u.departureDate >= :dateOfArrival " +
-            "AND u.id NOT IN (SELECT r.unit.id FROM ReserveDateHalls r " +
-            "JOIN r.dateInfoList d " +
-            "WHERE d.date BETWEEN :dateOfArrival AND :departureDate " +
-            "AND ((u.periodCount = 2 AND d.isEvening = true AND d.isMorning = true) OR u.periodCount != 2)) AND " +
-
-            " u.id NOT IN (SELECT rdu.unit.id FROM ReserveDateUnit rdu " +
-            "JOIN rdu.dateInfoList d WHERE d.date >= :dateOfArrival AND d.date < :departureDate) AND " +
-
-            "u.statusUnit.id = 2")
+                AND NOT EXISTS (
+                             SELECT 1 FROM ReserveDateHalls rdh
+                             JOIN rdh.dateInfoList dih
+                             WHERE rdh.unit.id = u.id
+                             AND dih.date BETWEEN :dateOfArrival AND :departureDate
+                        AND (:isMorning = TRUE AND dih.isMorning = TRUE OR :isEvening = TRUE AND dih.isEvening = TRUE)
+                                                                              )
+                          
+                      
+    AND u.statusUnit.id = 2
+""")
     Page<Unit> findFilteringTwo(@Param("cityId") Long cityId,
                                 @Param("regionId") Long regionId,
                                 @Param("unitTypeId") Long unitTypeId,
@@ -165,6 +177,8 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
                                 @Param("maxChildrenAllowed") Integer maxChildrenAllowed,
                                 @Param("priceMin") Integer priceMin,
                                 @Param("priceMax") Integer priceMax,
+                                @Param("isMorning") Boolean isMorning,
+                                @Param("isEvening") Boolean isEvening,
                                 @Param("dateOfArrival") LocalDate dateOfArrival,
                                 @Param("departureDate") LocalDate departureDate,
                                 Pageable pageable);
@@ -173,5 +187,20 @@ public interface UnitRepository extends JpaRepository<Unit, Long>, JpaSpecificat
     @Query(value = "SELECT COUNT(unit_id) FROM available_periods_unit_halls WHERE unit_id = :unitId", nativeQuery = true)
     Long countUnitOccurrences(@Param("unitId") Long unitId);
 
+    @Query("""
+    SELECT u FROM Unit u
+    JOIN ReserveDateHalls rdh ON rdh.unit.id = u.id
+    JOIN DateInfoHalls dih ON dih.reserveDateHalls.id = rdh.id
+    WHERE dih.date BETWEEN :dateOfArrival AND :departureDate
+    AND (
+        (:isMorning IS NOT NULL AND dih.isMorning = :isMorning) 
+        OR (:isEvening IS NOT NULL AND dih.isEvening = :isEvening)
+    )
+    """)
+    List<Unit> findUnitsByAvailability(
+            @Param("dateOfArrival") LocalDate dateOfArrival,
+            @Param("departureDate") LocalDate departureDate,
+            @Param("isMorning") Boolean isMorning,
+            @Param("isEvening") Boolean isEvening);
 
 }

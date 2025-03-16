@@ -1068,6 +1068,8 @@ public class UnitController {
             @RequestParam(required = false) Integer maxChildrenAllowed,
             @RequestParam(required = false) Integer priceMin,
             @RequestParam(required = false) Integer priceMax,
+            @RequestParam(required = false) Boolean isMorning,
+            @RequestParam(required = false) Boolean isEvening,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfArrival,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
             @RequestParam(required = false) String sortDirectionByPrice,
@@ -1111,6 +1113,7 @@ public class UnitController {
                     minAdultsAllowed, maxAdultsAllowed,
                     minChildrenAllowed, maxChildrenAllowed,
                     priceMin, priceMax,
+                    isMorning, isEvening,
                     dateOfArrival, departureDate, pageable);
 
 
@@ -1358,4 +1361,15 @@ public class UnitController {
         UnitDto updatedUnit = unitService.updateYoutubeUrl(unitId, youtubeUrl);
         return ResponseEntity.ok(updatedUnit);
     }
+
+    @GetMapping("/find-units-by-availability")
+    public ResponseEntity<?> findUnitsByAvailability(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfArrival,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+            @RequestParam(required = false) Boolean isMorning,
+            @RequestParam(required = false) Boolean isEvening
+    ) {
+        return ResponseEntity.ok(unitService.findUnitsByAvailability(dateOfArrival, departureDate, isMorning, isEvening));
+    }
+
 }
