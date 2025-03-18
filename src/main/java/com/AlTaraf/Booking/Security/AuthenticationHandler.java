@@ -28,16 +28,21 @@ public class AuthenticationHandler {
 
     public AuthenticationResponse mobileAuthenticate(AuthenticationRequest request) {
         // add in login auth mac address to mach with linked user
+        System.out.println("***************** Before Auth Manager ***********************");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getPhone(),
                         request.getPassword()
                 )
         );
+        System.out.println("************* After Auth Manager ********************");
         var user = userRepository.findByLogin(request.getPhone())
                 .orElseThrow( () -> new UsernameNotFoundException("User Not Found with Email: " + request.getPhone()) );
+        System.out.println("User Id: " +user.getId());
         var jwtToken = jwtService.generateToken(user);
+        System.out.println("jwtToken: "+jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
+        System.out.println("refreshToken: "+refreshToken);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()

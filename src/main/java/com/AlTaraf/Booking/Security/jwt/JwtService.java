@@ -50,12 +50,17 @@ public class JwtService {
   }
 
   public String generateToken(UserDetails userDetails) {
+    System.out.println("Before generateToken");
     User user = userRepository.findByLogin(userDetails.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    System.out.println("user.getPhone(): " + user.getPhone());
     List<Role> roleList = userRoleService.getRoleByUserId(user.getId());
+    System.out.println("role: " + roleList.get(0));
     List<ERole> roles = roleList.stream().map(Role::getName).toList();
+    System.out.println("ERole: " + roles.get(0));
     Map<String, Object> claims = new HashMap<>();
     claims.put("roles", roles);
+    System.out.println("After generateToken");
     return generateToken(claims, userDetails);
   }
 
