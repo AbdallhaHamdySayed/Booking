@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.config;
 
+import com.AlTaraf.Booking.config.auditing.AuditorAwareImpl;
 import com.AlTaraf.Booking.database.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +64,11 @@ public class ApplicationConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuditorAwareImpl auditorAware() {
+        return new AuditorAwareImpl();
     }
 
 //    @Bean
