@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.Security.jwt;
 
+import com.AlTaraf.Booking.database.entity.User;
 import com.AlTaraf.Booking.database.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +20,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        return userRepository.findByLogin(phone)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with phone: " + phone));
+        User user = userRepository.findByPhone(phone)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with phone number: " + phone));
+
+        return UserDetailsImpl.build(user);
     }
 }
