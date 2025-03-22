@@ -157,7 +157,7 @@ public class UserService {
             CityDtoSample DtoSample = userRegisterDto.getCity();
             City city = cityMapper.cityDTOSampleToCity(DtoSample);
             User user = new User();
-            user.setUsername(userRegisterDto.getName());
+            user.setUserName(userRegisterDto.getName());
             user.setEmail(userRegisterDto.getEmail());
             user.setPassword(encoder.encode(userRegisterDto.getPassword()));
             user.setPhone(phone);

@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 
 @Configuration
 @EnableWebSecurity
@@ -97,7 +99,7 @@ public class WebSecurityConfig {
                             .anyRequest()
                             .authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->

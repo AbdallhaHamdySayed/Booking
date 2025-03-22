@@ -33,7 +33,7 @@ public class User extends Auditable<String> implements UserDetails {
 
     @Column(nullable = false, name = "name")
 //    @Size(max = 20)
-    private String username;
+    private String userName;
 
 //    @Size(max = 50)
     @Email
@@ -107,7 +107,6 @@ public class User extends Auditable<String> implements UserDetails {
     @Column(name = "UUID_ADS")
     private String uuidAds;
 
-
     public Double getWallet() {
         return wallet != null ? wallet : 0.0;
     }
@@ -133,6 +132,16 @@ public class User extends Auditable<String> implements UserDetails {
             authorities.add(new SimpleGrantedAuthority(role.getName().name()));
         }
         return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return phone;
     }
 
     @Override

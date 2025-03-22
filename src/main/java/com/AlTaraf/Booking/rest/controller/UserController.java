@@ -260,8 +260,8 @@ public class UserController {
             User existingUser = userService.getUserById(userId);
             boolean isEmailAvailable = userService.existsByEmail(userEditDto.getEmail());
             // Update the user information conditionally based on non-null values in the UserEditDto
-            if (userEditDto.getUsername() != null) {
-                existingUser.setUsername(userEditDto.getUsername());
+            if (userEditDto.getUserName() != null) {
+                existingUser.setUserName(userEditDto.getUserName());
             }
 
             if (userEditDto.getEmail() != null && !Objects.equals(existingUser.getEmail(), userEditDto.getEmail())) {
