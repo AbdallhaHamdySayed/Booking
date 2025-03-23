@@ -36,6 +36,9 @@ public class JwtService {
   @Value("${application.security.jwt.refresh-token.expiration}")
   private long refreshExpiration;
 
+  @Value("${application.security.stayLoggedInExpirationMs}")
+  private long stayLoggedInExpirationMs;
+
   private final UserRolesService userRoleService;
 
   private final UserRepository userRepository;
@@ -87,17 +90,21 @@ public class JwtService {
     User user = userRepository.findByLogin(userDetails.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+    System.out.println("********************** buildToken ********************");
     Boolean stayLoggedIn = user.getStayLoggedIn();
+    System.out.println("stayLoggedIn: " + stayLoggedIn);
+    System.out.println("expiration: " + expiration);
+    System.out.println("stayLoggedInExpirationMs: " + stayLoggedInExpirationMs);
 
     long expirationMs = stayLoggedIn ? stayLoggedInExpirationMs : expiration;
-
+    System.out.println("expirationMs: " + expirationMs);
 
     return Jwts
             .builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + expiration))
+            .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
   }
