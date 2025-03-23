@@ -13,5 +13,7 @@ public class AuthenticationRequest {
 
   private String phone;
   private String password;
+  private String deviceToken;
   private Boolean stayLoggedIn;
+
 }
