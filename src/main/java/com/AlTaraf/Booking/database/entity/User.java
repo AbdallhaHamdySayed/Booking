@@ -50,9 +50,8 @@ public class User extends Auditable<String> implements UserDetails {
     @JoinColumn(name = "city_id")  // Many users can have the same city
     private City city;
 
-    @Transient
-    @Column
-    private boolean stayLoggedIn;
+    @Column(name = "STAY_LOGGED_IN")
+    private Boolean stayLoggedIn;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

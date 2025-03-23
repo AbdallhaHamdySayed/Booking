@@ -84,6 +84,14 @@ public class JwtService {
           UserDetails userDetails,
           long expiration
   ) {
+    User user = userRepository.findByLogin(userDetails.getUsername())
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    Boolean stayLoggedIn = user.getStayLoggedIn();
+
+    long expirationMs = stayLoggedIn ? stayLoggedInExpirationMs : expiration;
+
+
     return Jwts
             .builder()
             .setClaims(extraClaims)
