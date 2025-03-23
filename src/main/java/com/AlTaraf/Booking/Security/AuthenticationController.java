@@ -23,11 +23,11 @@ public class AuthenticationController {
     return ResponseEntity.ok(handler.mobileAuthenticate(request));
   }
 
-//  @GetMapping(value = "/login-info")
-//  @PreAuthorize("isAuthenticated()")
-//  public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
-//    return handler.getUserInfo(userDetails);
-//  }
+  @GetMapping(value = "/login-info")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
+    return handler.getUserInfo(userDetails);
+  }
 
 
 }

@@ -7,14 +7,18 @@ import com.AlTaraf.Booking.Security.token.TokenRepository;
 import com.AlTaraf.Booking.Security.token.TokenType;
 import com.AlTaraf.Booking.database.entity.User;
 import com.AlTaraf.Booking.database.repository.UserRepository;
+import com.AlTaraf.Booking.response.SuccessResponse;
+import com.AlTaraf.Booking.rest.mapper.UserMapper;
 import com.AlTaraf.Booking.support.utils.DateUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +31,7 @@ public class AuthenticationHandler {
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper;
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationHandler.class); // ✅ Manually define logger
 
@@ -114,23 +119,13 @@ public class AuthenticationHandler {
         return null ;
     }
 
-//    public ResponseEntity<?> getUserInfo(UserDetails userDetails) {
-//        SecurityUser securityUser = this.repository.findByLogin(userDetails.getUsername())
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//        EmployeeDto employeeDto = null;
-//        CustomerDto customerDto = null;
-//        if (securityUser.getEmployee() != null) {
-//            employeeDto = employeeMapper.toBaseDto(securityUser.getEmployee());
-//        }
-//        if (securityUser.getCustomer() != null) {
-//            customerDto = customersMapper.toBaseDto(securityUser.getCustomer());
-//        }
-//        return ResponseEntity.ok(new SuccessResponse<>(
-//                LoginInfoResponse.builder()
-//                        .employee(employeeDto)
-//                        .customer(customerDto)
-//                        .securityUser(securityUserMapper.toBaseDto(securityUser))
-//                        .build()));
-//    }
+    public ResponseEntity<?> getUserInfo(UserDetails userDetails) {
+        User user = this.userRepository.findByLogin(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return ResponseEntity.ok(new SuccessResponse<>(
+                LoginInfoResponse.builder()
+                        .user(userMapper.userToUserDto(user))
+                        .build()));
+    }
 
 }
