@@ -50,6 +50,7 @@ public class JwtService {
   }
 
   public String generateToken(UserDetails userDetails) {
+    System.out.println("***********************************");
     System.out.println("Before generateToken");
     User user = userRepository.findByLogin(userDetails.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -61,6 +62,7 @@ public class JwtService {
     Map<String, Object> claims = new HashMap<>();
     claims.put("roles", roles);
     System.out.println("After generateToken");
+    System.out.println("***********************************");
     return generateToken(claims, userDetails);
   }
 

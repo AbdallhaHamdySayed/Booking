@@ -64,7 +64,6 @@ public class WebSecurityConfig {
             "/file-for-pdf/**",
             "/file-for-ads/**",
             "/auth/authenticate",
-            "/auth/**",
             "/api/integrations-url/**",
             "/WhatsApp/**",
             "/Notification/**",

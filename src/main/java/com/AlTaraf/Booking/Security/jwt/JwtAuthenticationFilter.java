@@ -60,12 +60,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     jwt = authHeader.substring(7);
 
       userPhone  = jwtService.extractPhone(jwt);
+
+      System.out.println("**************************************************************************************");
+      System.out.println("userPhone: " + userPhone);
     if (userPhone  != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(userPhone );
+      System.out.println("UserDetails loaded: " + userDetails.getUsername());
+
       var isTokenValid = tokenRepository.findByToken(jwt)
           .map(t -> !t.isExpired() && !t.isRevoked())
           .orElse(false);
+      System.out.println("Token found in DB: " + tokenRepository.findByToken(jwt).isPresent());
+      System.out.println("Token valid: " + isTokenValid);
+      System.out.println("JWT validation result: " + jwtService.isTokenValid(jwt, userDetails));
+      if (isTokenValid.booleanValue()) {
+        System.out.println("isTokenValid Yeh: ");
+      } else {
+        System.out.println("isTokenValid Not: ");
+      }
       if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
             userDetails,
@@ -80,6 +93,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     filterChain.doFilter(request, response);
     } catch (Exception ex) {
+      System.out.println("****************************************************");
+      System.out.println("doFilterInternal Exception: " + ex.getMessage());
+      System.out.println("****************************************************");
       exceptionResolver.resolveException(request, response, null, ex);
     }
   }
