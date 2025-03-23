@@ -32,12 +32,12 @@ import java.util.TimeZone;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByLogin(username)
+        System.out.println("********** userDetailsService *********");
+        return phone -> userRepository.findByLogin(phone)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

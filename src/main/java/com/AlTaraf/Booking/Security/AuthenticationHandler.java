@@ -10,6 +10,8 @@ import com.AlTaraf.Booking.database.repository.UserRepository;
 import com.AlTaraf.Booking.support.utils.DateUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,15 +28,22 @@ public class AuthenticationHandler {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationHandler.class); // ✅ Manually define logger
+
     public AuthenticationResponse mobileAuthenticate(AuthenticationRequest request) {
-        // add in login auth mac address to mach with linked user
         System.out.println("***************** Before Auth Manager ***********************");
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getPhone(),
-                        request.getPassword()
-                )
-        );
+        try {
+            System.out.println("request.getPhone(): " + request.getPhone());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getPhone(), request.getPassword()));
+        } catch (Exception e) {
+            log.error("Authentication failed: ", e);
+            System.out.println("---------------------------------------------");
+            System.out.println("Authentication failed: " + e.getMessage());
+            System.out.println("---------------------------------------------");
+            System.out.println("Authentication Exception: " + e);
+            System.out.println("---------------------------------------------");
+            throw e;
+        }
         System.out.println("************* After Auth Manager ********************");
         var user = userRepository.findByLogin(request.getPhone())
                 .orElseThrow( () -> new UsernameNotFoundException("User Not Found with Email: " + request.getPhone()) );
@@ -50,6 +59,7 @@ public class AuthenticationHandler {
                 .refreshToken(refreshToken)
                 .build();
     }
+
 
     private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()

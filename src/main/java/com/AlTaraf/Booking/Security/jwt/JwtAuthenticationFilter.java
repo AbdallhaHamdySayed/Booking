@@ -27,8 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private JwtService jwtService;
   @Autowired
   private UserDetailsService userDetailsService;
-  @Autowired
-  private CustomUserDetailsService customUserDetailsService;
+
   @Autowired
   private TokenRepository tokenRepository;
 
@@ -63,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       userPhone  = jwtService.extractPhone(jwt);
     if (userPhone  != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-      UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(userPhone );
+      UserDetails userDetails = this.userDetailsService.loadUserByUsername(userPhone );
       var isTokenValid = tokenRepository.findByToken(jwt)
           .map(t -> !t.isExpired() && !t.isRevoked())
           .orElse(false);
