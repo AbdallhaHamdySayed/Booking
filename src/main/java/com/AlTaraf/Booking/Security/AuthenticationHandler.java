@@ -52,6 +52,8 @@ public class AuthenticationHandler {
         System.out.println("************* After Auth Manager ********************");
         var user = userRepository.findByLogin(request.getPhone())
                 .orElseThrow( () -> new UsernameNotFoundException("User Not Found with Email: " + request.getPhone()) );
+        user.setStayLoggedIn(request.getStayLoggedIn());
+        userRepository.save(user);
         System.out.println("User Id: " +user.getId());
         var jwtToken = jwtService.generateToken(user);
         System.out.println("jwtToken: "+jwtToken);

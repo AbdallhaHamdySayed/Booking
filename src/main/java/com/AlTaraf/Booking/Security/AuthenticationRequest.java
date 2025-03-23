@@ -13,4 +13,5 @@ public class AuthenticationRequest {
 
   private String phone;
   private String password;
+  private Boolean stayLoggedIn;
 }
