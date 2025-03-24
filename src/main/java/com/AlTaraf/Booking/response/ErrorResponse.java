@@ -1,10 +1,9 @@
 package com.AlTaraf.Booking.response;
 
-
-import com.zad.altamim.service.response.base.BaseResponse;
-import com.zad.altamim.service.response.keys.ErrorResponsePayload;
-import com.zad.altamim.service.response.keys.ErrorStatus;
-import com.zad.altamim.service.support.utils.DateUtils;
+import com.AlTaraf.Booking.response.base.BaseResponse;
+import com.AlTaraf.Booking.response.keys.ErrorResponsePayload;
+import com.AlTaraf.Booking.response.keys.ErrorStatus;
+import com.AlTaraf.Booking.support.utils.DateUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ public class ErrorResponse extends BaseResponse implements Serializable {
     private List<ErrorResponsePayload> errorResponsePayloadList = new ArrayList<>();
     @DateTimeFormat(style = "DD-MM-YYYY HH:MM:SS")
     private LocalDateTime timeStamp;
-    private Integer errorId;
+    private Long errorId;
 
     public ErrorResponse(List<String> errorCodes) {
         for (String errorKey : errorCodes) {
@@ -45,7 +44,7 @@ public class ErrorResponse extends BaseResponse implements Serializable {
                         ErrorStatus.valueOf(errorKey).getFixEn()));
     }
 
-    public ErrorResponse(String errorKey, Integer errorId) {
+    public ErrorResponse(String errorKey, Long errorId) {
         setErrorStatus(true);
         setTimeStamp(DateUtils.getCurrentDate());
         setErrorId(errorId);
@@ -71,11 +70,11 @@ public class ErrorResponse extends BaseResponse implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Integer getErrorId() {
+    public Long getErrorId() {
         return errorId;
     }
 
-    public void setErrorId(Integer errorId) {
+    public void setErrorId(Long errorId) {
         this.errorId = errorId;
     }
 
