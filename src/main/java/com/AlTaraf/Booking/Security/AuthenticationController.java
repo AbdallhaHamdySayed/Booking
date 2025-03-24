@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.Security;
 
+import com.AlTaraf.Booking.response.base.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ public class AuthenticationController {
   private final AuthenticationHandler handler;
 
   @PostMapping("/authenticate")
-  public ResponseEntity<AuthenticationResponse> authenticateMobile(@RequestBody AuthenticationRequest request) {
+  public ResponseEntity<BaseResponse> authenticateMobile(@RequestBody AuthenticationRequest request) {
     return ResponseEntity.ok(handler.mobileAuthenticate(request));
   }
 
