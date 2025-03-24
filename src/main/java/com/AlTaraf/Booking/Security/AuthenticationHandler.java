@@ -7,8 +7,12 @@ import com.AlTaraf.Booking.Security.token.TokenRepository;
 import com.AlTaraf.Booking.Security.token.TokenType;
 import com.AlTaraf.Booking.database.entity.User;
 import com.AlTaraf.Booking.database.repository.UserRepository;
+import com.AlTaraf.Booking.response.ErrorResponse;
 import com.AlTaraf.Booking.response.SuccessResponse;
+import com.AlTaraf.Booking.response.base.BaseResponse;
+import com.AlTaraf.Booking.response.keys.ResponseKeys;
 import com.AlTaraf.Booking.rest.mapper.UserMapper;
+import com.AlTaraf.Booking.service.UserService;
 import com.AlTaraf.Booking.support.utils.DateUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +27,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationHandler {
     private final UserRepository userRepository;
+    private final UserService userService;
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -35,8 +41,12 @@ public class AuthenticationHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationHandler.class); // ✅ Manually define logger
 
-    public AuthenticationResponse mobileAuthenticate(AuthenticationRequest request) {
+    public BaseResponse mobileAuthenticate(AuthenticationRequest request) {
         System.out.println("***************** Before Auth Manager ***********************");
+        if (!userService.existsByPhone(request.getPhone())) {
+            return new ErrorResponse(ResponseKeys.NUMBER_NOT_REGISTERED);
+        }
+
         try {
             System.out.println("request.getPhone(): " + request.getPhone());
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getPhone(), request.getPassword()));
@@ -47,11 +57,22 @@ public class AuthenticationHandler {
             System.out.println("---------------------------------------------");
             System.out.println("Authentication Exception: " + e);
             System.out.println("---------------------------------------------");
-            throw e;
+            return new ErrorResponse(ResponseKeys.PASSWORD_NOT_CORRECT);
+//            throw e;
         }
+
+
         System.out.println("************* After Auth Manager ********************");
         var user = userRepository.findByLogin(request.getPhone())
                 .orElseThrow( () -> new UsernameNotFoundException("User Not Found with Email: " + request.getPhone()) );
+        Boolean isActive = user.getIsActive();
+        if (isActive == null || !isActive) {
+            return new ErrorResponse(ResponseKeys.ACCOUNT_NOT_ACTIVE);
+        }
+//        user.setIsActive(true);
+        if (user.getBan()) {
+            return new ErrorResponse(ResponseKeys.ACCOUNT_IS_BAN);
+        }
         user.setDeviceToken(request.getDeviceToken());
         user.setStayLoggedIn(request.getStayLoggedIn());
         userRepository.save(user);
@@ -62,10 +83,10 @@ public class AuthenticationHandler {
         System.out.println("refreshToken: "+refreshToken);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-        return AuthenticationResponse.builder()
+        return new SuccessResponse(AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
-                .build();
+                .build());
     }
 
 
