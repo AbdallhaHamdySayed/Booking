@@ -1,13 +1,13 @@
 package com.AlTaraf.Booking.support.advice;
 
+import com.AlTaraf.Booking.database.entity.ErrorLog;
+import com.AlTaraf.Booking.response.ErrorResponse;
+import com.AlTaraf.Booking.response.base.BaseResponse;
+import com.AlTaraf.Booking.response.keys.ResponseKeys;
+import com.AlTaraf.Booking.service.ErrorLogService;
+import com.AlTaraf.Booking.support.advice.base.BaseAdvice;
+import com.AlTaraf.Booking.support.utils.UserUtils;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.zad.altamim.service.database.entity.ErrorLog;
-import com.zad.altamim.service.response.ErrorResponse;
-import com.zad.altamim.service.response.base.BaseResponse;
-import com.zad.altamim.service.response.keys.ResponseKeys;
-import com.zad.altamim.service.service.ErrorLogService;
-import com.zad.altamim.service.support.advice.base.BaseAdvice;
-import com.zad.altamim.service.support.utils.SecurityUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,7 +20,7 @@ public class InvalidFormatExceptionAdvice extends BaseAdvice implements Serializ
     private static final long serialVersionUID = -3315137559919011428L;
 //    private static final Logger logger = LoggerFactory.getLogger(InvalidFormatExceptionAdvice.class);
 
-    public InvalidFormatExceptionAdvice(SecurityUtils securityUtils, ErrorLogService errorLogService) {
+    public InvalidFormatExceptionAdvice(UserUtils securityUtils, ErrorLogService errorLogService) {
         super(securityUtils, errorLogService);
     }
 

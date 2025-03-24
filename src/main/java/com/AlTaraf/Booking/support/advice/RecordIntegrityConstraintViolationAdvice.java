@@ -1,13 +1,13 @@
 package com.AlTaraf.Booking.support.advice;
 
-import com.zad.altamim.service.database.entity.ErrorLog;
-import com.zad.altamim.service.response.ErrorResponse;
-import com.zad.altamim.service.response.base.BaseResponse;
-import com.zad.altamim.service.response.keys.ResponseKeys;
-import com.zad.altamim.service.service.ErrorLogService;
-import com.zad.altamim.service.support.advice.base.BaseAdvice;
-import com.zad.altamim.service.support.exception.RecordIntegrityConstraintViolationException;
-import com.zad.altamim.service.support.utils.SecurityUtils;
+import com.AlTaraf.Booking.database.entity.ErrorLog;
+import com.AlTaraf.Booking.response.ErrorResponse;
+import com.AlTaraf.Booking.response.base.BaseResponse;
+import com.AlTaraf.Booking.response.keys.ResponseKeys;
+import com.AlTaraf.Booking.service.ErrorLogService;
+import com.AlTaraf.Booking.support.advice.base.BaseAdvice;
+import com.AlTaraf.Booking.support.exception.RecordIntegrityConstraintViolationException;
+import com.AlTaraf.Booking.support.utils.UserUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +19,7 @@ public class RecordIntegrityConstraintViolationAdvice extends BaseAdvice impleme
     private static final long serialVersionUID = -4188022001736243871L;
 //    private static final Logger logger = LoggerFactory.getLogger(RecordIntegrityConstraintViolationAdvice.class);
 
-    public RecordIntegrityConstraintViolationAdvice(SecurityUtils securityUtils, ErrorLogService errorLogService) {
+    public RecordIntegrityConstraintViolationAdvice(UserUtils securityUtils, ErrorLogService errorLogService) {
         super(securityUtils, errorLogService);
     }
 
