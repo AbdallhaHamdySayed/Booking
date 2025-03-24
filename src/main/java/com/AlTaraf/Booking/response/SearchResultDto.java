@@ -1,7 +1,8 @@
 package com.AlTaraf.Booking.response;
 
 
-import com.zad.altamim.service.rest.dto.base.BaseDto;
+
+import com.AlTaraf.Booking.rest.dto.base.BaseDto;
 
 import java.io.Serializable;
 import java.util.List;
