@@ -20,7 +20,11 @@ public enum ErrorStatus {
     DATA_ALREADY_EXISTS("DATA_ALREADY_EXISTS", "بعض البيانات المقدمة موجودة بالفعل", "Some of the provided data already exist", "", ""),
     INVALID_OTP("INVALID_OTP", "رمز الدخول غير صحيح", "Invalid otp", "", ""),
     NOT_ACCEPTABLE_PROFIT_AMOUNT("NOT_ACCEPTABLE_PROFIT_AMOUNT",   "القيمه غير مقبوله ", "There are no profits for this client", "", ""  ),
-    VALUE_GREATER_THAN_PROFIT("VALUE_GREATER_THAN_PROFIT", "لاتوجد تلك القيمة في محفظة الأرباح", "This value is not in the profit wallet", "", "");
+    VALUE_GREATER_THAN_PROFIT("VALUE_GREATER_THAN_PROFIT", "لاتوجد تلك القيمة في محفظة الأرباح", "This value is not in the profit wallet", "", ""),
+    PASSWORD_NOT_CORRECT("PASSWORD_NOT_CORRECT", "باسورد غير صحيح" , "Password is not correct", "" , ""),
+    ACCOUNT_NOT_ACTIVE("ACCOUNT_NOT_ACTIVE", "هذا الحساب غير مفعل" , "Account is not active", "" , ""),
+    ACCOUNT_IS_BAN("ACCOUNT_IS_BAN", "هذا الحساب موقوف" , "This account is suspended", "" , ""),
+    NUMBER_NOT_REGISTERED("NUMBER_NOT_REGISTERED", "هذا الرقم غير مسجل في التطبيق", "This is number not registered on Application", "" , "");
     private final String errorKey;
     private final String arabicMessage;
     private final String englishMessage;
