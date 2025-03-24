@@ -1,9 +1,10 @@
 package com.AlTaraf.Booking.support.advice.base;
 
-import com.zad.altamim.service.database.entity.ErrorLog;
-import com.zad.altamim.service.service.ErrorLogService;
-import com.zad.altamim.service.support.utils.DateUtils;
-import com.zad.altamim.service.support.utils.SecurityUtils;
+
+import com.AlTaraf.Booking.database.entity.ErrorLog;
+import com.AlTaraf.Booking.service.ErrorLogService;
+import com.AlTaraf.Booking.support.utils.DateUtils;
+import com.AlTaraf.Booking.support.utils.UserUtils;
 import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
@@ -13,14 +14,14 @@ public class BaseAdvice implements Serializable {
 
     private static final long serialVersionUID = 4783057014277021248L;
 
-    private SecurityUtils securityUtils;
+    private UserUtils userUtils;
     private ErrorLogService errorLogService;
 
     public ErrorLog saveLog(Throwable throwable) {
         ErrorLog errorLog = new ErrorLog();
         errorLog.setErrorDate(DateUtils.getCurrentDate());
         errorLog.setExceptionTrace(getStackTraceFromException(throwable));
-        errorLog.setLoginUser(securityUtils.getLoggedInUser().getId() + "");
+        errorLog.setLoginUser(userUtils.getLoggedInUser().getId() + "");
         return errorLogService.createEntity(errorLog);
     }
 
@@ -28,7 +29,7 @@ public class BaseAdvice implements Serializable {
         ErrorLog errorLog = new ErrorLog();
         errorLog.setErrorDate(DateUtils.getCurrentDate());
         errorLog.setExceptionTrace(getStackTraceFromException(throwable));
-        errorLog.setLoginUser(securityUtils.getLoggedInUser().getId() + "");
+        errorLog.setLoginUser(userUtils.getLoggedInUser().getId() + "");
         errorLog.setRequestedPayload(requestedBody);
         return errorLogService.createEntity(errorLog);
     }
