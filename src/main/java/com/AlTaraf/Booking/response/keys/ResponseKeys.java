@@ -29,5 +29,9 @@ public class ResponseKeys {
     public static final String NOT_ACCEPTABLE_PROFIT_AMOUNT = "NOT_ACCEPTABLE_PROFIT_AMOUNT";
 
     public static final String VALUE_GREATER_THAN_PROFIT = "VALUE_GREATER_THAN_PROFIT";
+    public static final String NUMBER_NOT_REGISTERED = "NUMBER_NOT_REGISTERED";
+    public static final String PASSWORD_NOT_CORRECT = "PASSWORD_NOT_CORRECT";
+    public static final String ACCOUNT_NOT_ACTIVE = "ACCOUNT_NOT_ACTIVE";
+    public static final String ACCOUNT_IS_BAN = "ACCOUNT_IS_BAN";
 
 }
