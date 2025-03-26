@@ -1,6 +1,8 @@
 package com.AlTaraf.Booking.Security.jwt;
 
 import com.AlTaraf.Booking.Security.token.TokenRepository;
+import com.AlTaraf.Booking.response.keys.ErrorStatus;
+import com.AlTaraf.Booking.response.keys.ResponseKeys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Autowired
   private TokenRepository tokenRepository;
+
+  @Autowired
+  private InvalidJWTToken invalidJWTToken;
 
   @Qualifier("handlerExceptionResolver")
   private HandlerExceptionResolver exceptionResolver;
@@ -77,7 +82,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       if (isTokenValid.booleanValue()) {
         System.out.println("isTokenValid Yeh: ");
       } else {
+        invalidJWTToken.sendErrorResponse(response, ErrorStatus.valueOf(ResponseKeys.EXPIRED_JWT_EXCEPTION));
+
         System.out.println("isTokenValid Not: ");
+        return;
       }
       if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
