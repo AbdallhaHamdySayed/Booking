@@ -27,7 +27,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +78,17 @@ public class AuthenticationHandler {
         user.setDeviceToken(request.getDeviceToken());
         user.setStayLoggedIn(request.getStayLoggedIn());
         userRepository.save(user);
+
+        Set<String> userRoles = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+
+        Set<String> requestRoles = request.getRoles();
+
+        if (Collections.disjoint(userRoles, requestRoles)) {
+            return new ErrorResponse(ResponseKeys.ACCOUNT_IS_BAN);
+        }
+
         System.out.println("User Id: " +user.getId());
         var jwtToken = jwtService.generateToken(user);
         System.out.println("jwtToken: "+jwtToken);
