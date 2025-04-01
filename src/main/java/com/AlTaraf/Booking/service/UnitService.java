@@ -394,6 +394,7 @@ public class UnitService {
                                    Integer minAdultsAllowed, Integer maxAdultsAllowed,
                                    Integer minChildrenAllowed, Integer maxChildrenAllowed,
                                    Integer priceMin, Integer priceMax,
+                                   Boolean isMorning, Boolean isEvening,
                                    LocalDate dateOfArrival, LocalDate departureDate,
                                    Pageable pageable) {
 
@@ -406,6 +407,7 @@ public class UnitService {
                 minAdultsAllowed, maxAdultsAllowed,
                 minChildrenAllowed, maxChildrenAllowed,
                 priceMin, priceMax,
+                isMorning, isEvening,
                 dateOfArrival, departureDate, pageable);
 
 
@@ -524,5 +526,9 @@ public class UnitService {
         unit.setYoutubeUrl(youtubeUrl);
         Unit updatedUnit = unitRepository.save(unit);
         return unitMapper.toUnitDto(updatedUnit);
+    }
+
+    public List<Unit> findUnitsByAvailability(LocalDate dateOfArrival, LocalDate departureDate, Boolean isMorning, Boolean isEvening) {
+        return unitRepository.findUnitsByAvailability(dateOfArrival, departureDate, isMorning, isEvening);
     }
 }
