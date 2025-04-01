@@ -24,6 +24,7 @@ public enum ErrorStatus {
     PASSWORD_NOT_CORRECT("PASSWORD_NOT_CORRECT", "باسورد غير صحيح" , "Password is not correct", "" , ""),
     ACCOUNT_NOT_ACTIVE("ACCOUNT_NOT_ACTIVE", "هذا الحساب غير مفعل" , "Account is not active", "" , ""),
     ACCOUNT_IS_BAN("ACCOUNT_IS_BAN", "هذا الحساب موقوف" , "This account is suspended", "" , ""),
+    ROLE_INVALID("ACCOUNT_IS_INVALID", "صفة الحساب غير صحيحة يرجي التأكد من صفة الحساب" , "The account description is incorrect. Please check the account description.", "" , ""),
     NUMBER_NOT_REGISTERED("NUMBER_NOT_REGISTERED", "هذا الرقم غير مسجل في التطبيق", "This is number not registered on Application", "" , "");
     private final String errorKey;
     private final String arabicMessage;

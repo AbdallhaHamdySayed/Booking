@@ -20,7 +20,7 @@ public class AuthenticationController {
   private final AuthenticationHandler handler;
 
   @PostMapping("/authenticate")
-  public ResponseEntity<BaseResponse> authenticateMobile(@RequestBody AuthenticationRequest request) {
+  public ResponseEntity<?> authenticateMobile(@RequestBody AuthenticationRequest request) {
     return ResponseEntity.ok(handler.mobileAuthenticate(request));
   }
 

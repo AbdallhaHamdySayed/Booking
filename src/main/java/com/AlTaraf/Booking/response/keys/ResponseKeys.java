@@ -33,5 +33,6 @@ public class ResponseKeys {
     public static final String PASSWORD_NOT_CORRECT = "PASSWORD_NOT_CORRECT";
     public static final String ACCOUNT_NOT_ACTIVE = "ACCOUNT_NOT_ACTIVE";
     public static final String ACCOUNT_IS_BAN = "ACCOUNT_IS_BAN";
+    public static final String ROLE_INVALID = "ROLE_INVALID";
 
 }

@@ -86,7 +86,7 @@ public class AuthenticationHandler {
         Set<String> requestRoles = request.getRoles();
 
         if (Collections.disjoint(userRoles, requestRoles)) {
-            return new ErrorResponse(ResponseKeys.ACCOUNT_IS_BAN);
+            return new ErrorResponse(ResponseKeys.ROLE_INVALID);
         }
 
         System.out.println("User Id: " +user.getId());
@@ -103,7 +103,7 @@ public class AuthenticationHandler {
     }
 
 
-    private void saveUserToken(User user, String jwtToken) {
+    public void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
                 .token(jwtToken)
@@ -116,7 +116,7 @@ public class AuthenticationHandler {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(User user) {
+    public void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;
