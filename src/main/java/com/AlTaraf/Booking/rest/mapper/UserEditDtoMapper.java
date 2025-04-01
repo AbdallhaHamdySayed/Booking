@@ -12,7 +12,7 @@ public interface UserEditDtoMapper {
     UserEditDtoMapper INSTANCE = Mappers.getMapper(UserEditDtoMapper.class);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "username", target = "username")
+    @Mapping(source = "userName", target = "userName")
     @Mapping(source = "email", target = "email")
     User userEditDtoToUser(UserEditDto userEditDto);
 

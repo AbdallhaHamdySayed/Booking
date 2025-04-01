@@ -1,8 +1,7 @@
 package com.AlTaraf.Booking.rest.controller;
 
-
-import com.AlTaraf.Booking.Security.jwt.JwtUtils;
-import com.AlTaraf.Booking.Security.service.UserDetailsImpl;
+import com.AlTaraf.Booking.Security.AuthenticationHandler;
+import com.AlTaraf.Booking.Security.jwt.JwtService;
 import com.AlTaraf.Booking.database.entity.ERole;
 import com.AlTaraf.Booking.database.entity.User;
 import com.AlTaraf.Booking.database.repository.UserRepository;
@@ -16,11 +15,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,11 +28,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+//    @Autowired
+//    AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtUtils jwtUtils;
+//    @Autowired
+//    JwtUtils jwtUtils;
 
     @Autowired
     UserMapper userMapper;
@@ -49,6 +45,12 @@ public class UserController {
 
     @Autowired
     OtpService otpService;
+
+    @Autowired
+    JwtService jwtService;
+
+    @Autowired
+    AuthenticationHandler authenticationHandler;
 
     @PostMapping("/send-otp-whats")
     public ResponseEntity<?> sendOtpWhats(@RequestParam String recipient, @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader) {
@@ -156,13 +158,8 @@ public class UserController {
         }
 
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getPhone(), loginRequest.getPassword()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            userDetails.setStayLoggedIn(loginRequest.isStayLoggedIn());
 
             Optional<User> optionalUser = userService.findByPhone(loginRequest.getPhone());
             if (!optionalUser.isPresent()) {
@@ -170,11 +167,13 @@ public class UserController {
                         .body(new ApiResponse(500, messageSource.getMessage("user_not_found.message", null, locale)));
             }
 
+            var user = userRepository.findByLogin(loginRequest.getPhone())
+                    .orElseThrow( () -> new UsernameNotFoundException("User Not Found with Email: " + loginRequest.getPhone()) );
+
             User userForDeviceToken = userRepository.findByPhoneForUser(loginRequest.getPhone());
             userForDeviceToken.setDeviceToken(loginRequest.getDeviceToken());
             userRepository.save(userForDeviceToken);
 
-            User user = optionalUser.get();
 
             Set<String> userRoles = user.getRoles().stream()
                     .map(role -> role.getName().name())
@@ -192,17 +191,20 @@ public class UserController {
                         .body(new ApiResponse(200, messageSource.getMessage("user_ban.message", null, locale)));
             }
 
-            List<String> roles = userDetails.getAuthorities().stream()
+            List<String> roles = user.getAuthorities().stream()
                     .map(item -> item.getAuthority())
                     .collect(Collectors.toList());
 
+            authenticationHandler.revokeAllUserTokens(user);
+            authenticationHandler.saveUserToken(user, jwtService.generateToken(user));
+
             return ResponseEntity.ok(new JwtResponse(
-                    jwtUtils.generateJwtToken(authentication, loginRequest.isStayLoggedIn()),
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    userDetails.getPhone(),
-                    userDetails.getCity(),
+                    jwtService.generateToken(user),
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getPhone(),
+                    user.getCity(),
                     roles));
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -268,8 +270,8 @@ public class UserController {
             User existingUser = userService.getUserById(userId);
             boolean isEmailAvailable = userService.existsByEmail(userEditDto.getEmail());
             // Update the user information conditionally based on non-null values in the UserEditDto
-            if (userEditDto.getUsername() != null) {
-                existingUser.setUsername(userEditDto.getUsername());
+            if (userEditDto.getUserName() != null) {
+                existingUser.setUserName(userEditDto.getUserName());
             }
 
             if (userEditDto.getEmail() != null && !Objects.equals(existingUser.getEmail(), userEditDto.getEmail())) {

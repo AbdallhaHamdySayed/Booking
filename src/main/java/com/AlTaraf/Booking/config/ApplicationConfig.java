@@ -1,5 +1,6 @@
 package com.AlTaraf.Booking.config;
 
+import com.AlTaraf.Booking.config.auditing.AuditorAwareImpl;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

@@ -5,6 +5,7 @@ import com.AlTaraf.Booking.database.entity.ERole;
 import com.AlTaraf.Booking.database.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,16 +36,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByRolesName(ERole roleName, Pageable pageable);
 
-    Page<User> findAllByRolesNameAndUsernameAndPhone(
+    Page<User> findAllByRolesNameAndUserNameAndPhone(
             ERole roleName, String username, String phone, Pageable pageable);
 
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username = :username AND r.name NOT IN ('ROLE_ADMIN', 'ROLE_SERVICE')")
-    Page<User> findByUsername(String username, Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.userName = :username AND r.name NOT IN ('ROLE_ADMIN', 'ROLE_SERVICE')")
+    Page<User> findByUserName(String username, Pageable pageable);
 
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username = :username AND r.name NOT IN ('ROLE_GUEST', 'ROLE_LESSOR')")
-    Page<User> findByUsernameDashboard(String username, Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.userName = :username AND r.name NOT IN ('ROLE_GUEST', 'ROLE_LESSOR')")
+    Page<User> findByUserNameDashboard(String username, Pageable pageable);
 
-    Page<User> findByUsernameAndRolesName(String username, ERole roleName, Pageable pageable);
+    Page<User> findByUserNameAndRolesName(String username, ERole roleName, Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN u.roles r WHERE u.phone = :phone AND r.name NOT IN ('ROLE_ADMIN', 'ROLE_SERVICE')")
     Page<User> findAllByPhoneExcludingRoles(@Param("phone") String phone, Pageable pageable);
@@ -84,7 +85,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllExcludeDashboard( Pageable pageable);
 
 
-    @Query(value = "SELECT u FROM User u WHERE u.phone = :login")
-    Optional<User> findByLogin(@Param("login") String login);
+    @EntityGraph(attributePaths = {"roles"})
+    @Query("SELECT u FROM User u WHERE u.phone = :phone")
+    Optional<User> findByLogin(@Param("phone") String phone);
 }
 

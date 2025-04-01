@@ -15,6 +15,7 @@ import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
@@ -768,7 +769,8 @@ public class UnitController {
             @RequestParam(name = "statusUnitId") Long statusUnitId,
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguageHeader,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication) {
 
         try {
 
@@ -784,6 +786,13 @@ public class UnitController {
                     System.out.println("IllegalArgumentException: " + e);
                 }
             }
+
+            System.out.println("****************************************************");
+            System.out.println("Authenticated User: " + authentication.getName());
+            System.out.println("User Roles: " + authentication.getAuthorities());
+            System.out.println("****************************************************");
+
+
 
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
             Page<Unit> unitPage = unitService.getUnitsForUserAndStatus(userId, statusUnitId, pageable);

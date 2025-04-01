@@ -10,11 +10,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +24,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends Auditable<String> {
+public class User extends Auditable<String> implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class User extends Auditable<String> {
 
     @Column(nullable = false, name = "name")
 //    @Size(max = 20)
-    private String username;
+    private String userName;
 
 //    @Size(max = 50)
     @Email
@@ -50,9 +50,8 @@ public class User extends Auditable<String> {
     @JoinColumn(name = "city_id")  // Many users can have the same city
     private City city;
 
-    @Transient
-    @Column
-    private boolean stayLoggedIn;
+    @Column(name = "STAY_LOGGED_IN")
+    private Boolean stayLoggedIn;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -107,7 +106,6 @@ public class User extends Auditable<String> {
     @Column(name = "UUID_ADS")
     private String uuidAds;
 
-
     public Double getWallet() {
         return wallet != null ? wallet : 0.0;
     }
@@ -123,5 +121,45 @@ public class User extends Auditable<String> {
     public void setFileForProfile(FileForProfile fileForProfile) {
         this.fileForProfile = fileForProfile;
         fileForProfile.setUser(this);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<Role> roleSet = this.getRoles();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roleSet) {
+            authorities.add(new SimpleGrantedAuthority(role.getName().name()));
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return phone;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
