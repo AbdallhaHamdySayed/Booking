@@ -43,7 +43,8 @@ public class UserCleanupScheduler {
         Schedule schedule = scheduleService.createEntity("DELETE_ADS_EXPIRED");
         List<Ads> adsList = adsRepository.findByStatusUnitId();
         for (Ads ads : adsList) {
-            if (ads.getDateAds().isBefore(LocalDate.now())) {
+            // Delete ads that expired more than a week ago
+            if (ads.getDateAds().isBefore(LocalDate.now().minusWeeks(1))) {
                 adsRepository.delete(ads);
             }
         }
