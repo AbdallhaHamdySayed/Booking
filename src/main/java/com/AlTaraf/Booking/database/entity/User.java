@@ -106,6 +106,14 @@ public class User extends Auditable<String> implements UserDetails {
     @Column(name = "UUID_ADS")
     private String uuidAds;
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public Double getWallet() {
         return wallet != null ? wallet : 0.0;
     }
