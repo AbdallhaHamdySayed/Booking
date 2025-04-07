@@ -201,7 +201,7 @@ public class UserController {
             return ResponseEntity.ok(new JwtResponse(
                     jwtService.generateToken(user),
                     user.getId(),
-                    user.getUsername(),
+                    user.getUserName(),
                     user.getEmail(),
                     user.getPhone(),
                     user.getCity(),

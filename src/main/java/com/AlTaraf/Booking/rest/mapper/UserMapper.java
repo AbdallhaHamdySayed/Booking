@@ -38,26 +38,10 @@ public interface UserMapper {
     @Mapping(source = "email", target = "email")
     UserRegisterDto userToUserRegisterDto(User user);
 
-    @Mapping(source = "phoneNumber", target = "phone")
-    @Mapping(source = "city.cityName", target = "city.cityName")
-    @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRoleSet")
-    @Mapping(source = "password", target = "password")
-    @Mapping(source = "name", target = "username")
-    @Mapping(source = "email", target = "email")
-    List<User> userRegisterDtoListToUserList(List<UserRegisterDto> userRegisterDtoList);
-
-    @Mapping(source = "phone", target = "phoneNumber")
-    @Mapping(source = "city.cityName", target = "city.cityName")
-    @Mapping(source = "roles", target = "roles", qualifiedByName = "roleToRoleDtoList")
-    @Mapping(source = "password", target = "password")
-    @Mapping(source = "username", target = "name")
-    @Mapping(source = "email", target = "email")
-    List<UserRegisterDto> userListToUserRegisterDtoList(List<User> userList);
-
 
     @Mapping(source = "id", target = "id")
     @Mapping(target = "imagePaths", expression = "java(extractFilePath(user.getFileForProfile()))")
-    @Mapping(source = "username", target = "username")
+    @Mapping(source = "userName", target = "userName")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "city.id", target = "cityId")

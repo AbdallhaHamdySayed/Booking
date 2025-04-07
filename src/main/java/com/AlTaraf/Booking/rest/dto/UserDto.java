@@ -17,7 +17,7 @@ public class UserDto {
     private Long id;
     private Boolean ban;
     private String imagePaths;
-    private String username;
+    private String userName;
     private String email;
     private String phone;
     private Long cityId;
