@@ -1,4 +1,4 @@
-package com.AlTaraf.Booking.rest.dto;
+package com.AlTaraf.Booking.rest.dto.massarat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentSignInDto {
+public class SignInPayment {
     private Integer userId;
     private String pin;
     private Integer providerId;
